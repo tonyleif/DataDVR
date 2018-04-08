@@ -1,13 +1,42 @@
 <h2>Games</h2>
 <div class="row">
   <div class="col-2">
-    <ul>
-      <li *ngFor="let week of weeks">
-        <button class="btn btn-sm mb-1" [ngClass]="{'btn-primary': this.selectedWeek == week }"
-          (click)="setWeek(week)">Week {{week}}</button>
+    <ul id="weeks" class="list-group">
+      <li *ngFor="let week of weeks" class="list-group-item btn btn-link btn-sm hoverable" 
+        [ngClass]="{'active': this.selectedWeek == week, 'not-selected': this.selectedWeek != week }"
+        (click)="setWeek(week)">
+        Week {{week}}
       </li>
     </ul>
   </div>
+  <!-- <div class="col-2">
+    <div class="list-group">
+        <button *ngFor="let week of weeks" class="btn btn-sm mb-1" [ngClass]="{'btn-primary': this.selectedWeek == week }"
+          (click)="setWeek(week)">Week {{week}}</button>
+    </div>
+  </div>
+  <div class="col-1">
+      <ul class="list-group">
+          <li *ngFor="let week of weeks" class="btn btn-sm mb-1" 
+            [ngClass]="{'btn-link': this.selectedWeek != week, 'btn-primary': this.selectedWeek == week }"
+            (click)="setWeek(week)">Week {{week}}</li>
+      </ul>
+  </div>
+  <div class="col-1">
+      <div class="list-group">
+          <a *ngFor="let week of weeks" class="btn-link btn btn-sm mb-1" [ngClass]="{'active': this.selectedWeek == week }"
+            (click)="setWeek(week)">Week {{week}}</a>
+      </div>
+  </div>
+  <div class="col-2">
+      <div class="list-group">
+        <button *ngFor="let week of weeks" (click)="setWeek(week)"
+          class="btn btn-default" 
+          [ngClass]="{'btn-link': this.selectedWeek != week, 'btn-primary': this.selectedWeek == week  }" >
+        Week {{week}}
+      </button>
+      </div>
+  </div> -->
   <div class="col-10">
     <ul>
       <li *ngFor="let game of games">

@@ -1,3 +1,11 @@
-ul{
-    list-style-type: none;
+#weeks {
+    width: 5em;
+}
+
+#weeks li {
+    padding: .5em .2em;
+}
+
+.not-selected:hover {
+    background-color: lightgray;
 }
