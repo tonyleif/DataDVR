@@ -13,7 +13,21 @@ export class RegularSeasonGames2017Service {
       btoa('tonyleif:00bone11'));
   }
 
-  getGames(): Observable<string> {
+  getGamesJSON(): string {
+    if (!localStorage.fullgameschedule) {
+      console.log('Getting fullgameschedule from API');
+      // localStorage.fullgameschedule = JSON.stringify(this.getGamesFromAPI().subscribe());
+      this.getGamesFromAPI().subscribe(result => {
+        console.log(result);
+        localStorage.fullgameschedule = JSON.stringify(result);
+      });
+    } else {
+      console.log('fullgameschedule was already in localStorage');
+    }
+    return localStorage.fullgameschedule;
+  }
+
+  getGamesFromAPI(): Observable<string> {
     const headers = new Headers();
     this.createAuthorizationHeader(headers);
     return this.http
