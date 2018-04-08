@@ -13,6 +13,35 @@ export class RegularSeasonGames2017Service {
       btoa('tonyleif:00bone11'));
   }
 
+  getWeeks(): Set<number> {
+    const weekSet: Set<number> = new Set<number>();
+    const games: any = this.getGames();
+    games.forEach((game) => {
+      weekSet.add(game.week);
+    });
+    return weekSet;
+  }
+
+  getGames(): Array<string> {
+    const jsonObject: any = JSON.parse(this.getGamesJSON());
+    const games: Array<string> = jsonObject.fullgameschedule.gameentry;
+    return games;
+  }
+
+  getGamesByWeek(week: number): Array<any> {
+    const jsonObject: any = JSON.parse(this.getGamesJSON());
+    const allGames: Array<string> = jsonObject.fullgameschedule.gameentry;
+    const games: Array<string> = new Array<string>();
+    allGames.forEach(game => {
+      // console.log(game);
+      const gameObject: any = game;
+      if (gameObject.week === week) {
+        games.push(gameObject);
+      }
+    });
+    return games;
+  }
+
   getGamesJSON(): string {
     if (!localStorage.fullgameschedule) {
       console.log('Getting fullgameschedule from API');
@@ -21,8 +50,6 @@ export class RegularSeasonGames2017Service {
         console.log(result);
         localStorage.fullgameschedule = JSON.stringify(result);
       });
-    } else {
-      console.log('fullgameschedule was already in localStorage');
     }
     return localStorage.fullgameschedule;
   }

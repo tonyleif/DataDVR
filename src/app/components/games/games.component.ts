@@ -8,13 +8,22 @@ import { RegularSeasonGames2017Service } from '../../model/regular-season-games-
 })
 export class GamesComponent implements OnInit {
 
-  games: any;
+  selectedWeek = 0;
+  weeks: Set<number>;
+  games: Array<string>;
+  gamesJSON: string;
 
   constructor(private gamesService: RegularSeasonGames2017Service) { }
 
   ngOnInit() {
-    console.log('ngOnInit');
-    this.games = this.gamesService.getGamesJSON();
+    this.weeks = this.gamesService.getWeeks();
+    this.gamesJSON = this.gamesService.getGamesJSON();
+    this.games = this.gamesService.getGamesByWeek(this.selectedWeek);
+  }
+
+  setWeek(week: number) {
+    this.selectedWeek = week;
+    this.games = this.gamesService.getGamesByWeek(this.selectedWeek);
   }
 
 }
