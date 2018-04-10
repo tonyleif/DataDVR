@@ -1,11 +1,30 @@
 #weeks {
-    width: 5em;
+    width: 6em;
 }
 
-#weeks li {
+#weeks li,
+#games li {
     padding: .5em .2em;
+}
+
+#games {
+    width: 7em;
 }
 
 .not-selected:hover {
     background-color: lightgray;
+}
+
+.play-data {
+    padding: .25em .75em;
+}
+
+.play-data label {
+    color: darkgray;
+    padding-right: .25em;
+}
+
+.play-data p {
+    margin-bottom: 0;
+    font-size: .8em;
 }

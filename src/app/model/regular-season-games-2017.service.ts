@@ -54,12 +54,50 @@ export class RegularSeasonGames2017Service {
     return localStorage.fullgameschedule;
   }
 
+  // getGamesObservableJSON(): Observable<string> {
+  //   if (!localStorage.fullgameschedule) {
+  //     console.log('Getting fullgameschedule from API');
+  //     // localStorage.fullgameschedule = JSON.stringify(this.getGamesFromAPI().subscribe());
+  //     this.getGamesFromAPI().subscribe(result => {
+  //       console.log(result);
+  //       localStorage.fullgameschedule = JSON.stringify(result);
+  //     });
+  //   }
+  //   const test: Observable<string> = new Observable<string>(localStorage.fullgameschedule);
+  //   return test;
+  // }
+
   getGamesFromAPI(): Observable<string> {
     const headers = new Headers();
     this.createAuthorizationHeader(headers);
     return this.http
       .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/2017-regular/full_game_schedule.json', {headers: headers})
       .map((res: Response) => res.json());
+  }
+
+  getGame(id: number): any {
+    console.log('getGame(' + id + ')');
+    const jsonObject: any = JSON.parse(this.getGamesJSON());
+    const allGames: Array<string> = jsonObject.fullgameschedule.gameentry;
+    // const game: string;
+    let gameObject: any;
+    // allGames.forEach(game => {
+    //   console.log(game);
+    //   gameObject = game;
+    //   if (gameObject.id === id) {
+    //     console.log(gameObject.id);
+    //     return gameObject;
+    //   }
+    //   console.log('Should never see this');
+    // });
+    for (let i = 0; i < allGames.length; i++) {
+      gameObject = allGames[i];
+      if (gameObject.id === id) {
+        console.log(gameObject.id);
+        return gameObject;
+      }
+    }
+    return null;
   }
 
 }

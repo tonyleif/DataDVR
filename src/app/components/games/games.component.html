@@ -1,4 +1,3 @@
-<h2>Games</h2>
 <div class="row">
   <div class="col-2">
     <ul id="weeks" class="list-group">
@@ -37,15 +36,60 @@
       </button>
       </div>
   </div> -->
-  <div class="col-10">
-    <ul>
+  <div class="col-2">
+    <!-- <ul>
       <li *ngFor="let game of games">
         {{game.date}}: {{game.awayTeam.Abbreviation}} @ {{game.homeTeam.Abbreviation}}
       </li>
+    </ul> -->
+    <ul id="games" class="list-group">
+        <li *ngFor="let game of games" class="list-group-item btn btn-link btn-sm hoverable" 
+          [ngClass]="{'active': this.selectedGameId == game.id, 'not-selected': this.selectedGameId != game.id }"
+          (click)="setGame(game.id)">
+          {{game.awayTeam.Abbreviation}} @ {{game.homeTeam.Abbreviation}}
+        </li>
+      </ul>
+  </div>
+  <div class="col-6" *ngIf="selectedGame !== null" >
+    <h3>{{selectedGame.awayTeam.City}} {{selectedGame.awayTeam.Name}} @ {{selectedGame.homeTeam.City}} {{selectedGame.homeTeam.Name}}</h3>
+    <h5>{{selectedGame.date}}</h5>
+    <p *ngIf="!showPlays">
+      Loading...
+    </p>
+    <ul *ngIf="showPlays" class="list-group">
+        <li *ngFor="let play of plays" class="list-group-item play-data" >
+            <label>Quarter:</label>{{play.quarter}}
+            <label>Time:</label>{{play.time}}
+            <label>Down:</label>{{play.currentDown}}
+            <label>To go:</label>{{play.yardsRemaining}}
+        <!-- <p>
+          {{play.description}}
+        </p> -->
+      </li>
     </ul>
+    <!-- <p *ngIf="showPlays">
+      {{playsJSON}}
+    </p> -->
+  </div>
+  <div class="col-2"  ><!-- *ngIf="selectedGame !== null" -->
+    <p *ngIf="!showPlays">
+      Loading...
+    </p>
+    <p *ngIf="showPlays">
+      <!-- Here {{playArray.length}} -->
+    </p>
+    <ul *ngIf="showPlays" class="list-group">
+      <li *ngFor="let play of playArray" class="list-group-item" ><!--  play-data -->
+        <label>Index:</label>{{play.index}}
+        <label>Quarter:</label>{{play.quarter}}
+        <label>Clock:</label>{{play.clock}}
+        <label>Down:</label>{{play.currentDown}}
+      </li>
+    </ul>
+    
   </div>
 </div>
 
 
-<h3>JSON</h3>
-<div>{{gamesJSON}}</div>
+<!-- <h3>JSON</h3>
+<div>{{gamesJSON}}</div> -->
