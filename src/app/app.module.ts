@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { RegularSeasonGames2017Service } from './model/regular-season-games-2017.service';
@@ -14,7 +15,8 @@ import { RegularSeasonPlays2017Service } from './model/regular-season-plays-2017
   ],
   imports: [
     BrowserModule,
-    HttpModule
+    HttpModule,
+    FormsModule
   ],
   providers: [RegularSeasonGames2017Service, RegularSeasonPlays2017Service],
   bootstrap: [AppComponent]

@@ -28,3 +28,10 @@
     margin-bottom: 0;
     font-size: .8em;
 }
+
+select.btn-success option {
+    color: black;
+    background-color: white;
+    /* padding-top: 20px !important;
+    padding-bottom: 1em !important; */
+}
