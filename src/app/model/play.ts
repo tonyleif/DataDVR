@@ -23,6 +23,8 @@ export class Play {
         return parseInt(this.time.split(':')[1], 10);
     }
 
+    // The time property in the json was how much time had run off the clock but football fans
+    // are used to see how much time is left on the clock which what this property shows
     get clock(): string {
         let clockString = '';
         let clockMinutes: number = 15 - this.minutes - 1;

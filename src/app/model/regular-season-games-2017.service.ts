@@ -80,8 +80,19 @@ export class RegularSeasonGames2017Service {
     this.createAuthorizationHeader(headers);
     return this.http
       .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/2017-regular/full_game_schedule.json', {headers: headers})
-      .map((res: Response) => res.json());
+      .map((res: Response) => {
+        localStorage.fullgameschedule = JSON.stringify(res.json());
+        return res.json();
+      });
   }
+
+  // getScheduleFromAPI(): Observable<string> {
+  //   const headers = new Headers();
+  //   this.createAuthorizationHeader(headers);
+  //   return this.http
+  //     .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/2017-regular/full_game_schedule.json', {headers: headers})
+  //     .map((res: Response) => res.json());
+  // }
 
   getGame(id: number): any {
     // console.log('getGame(' + id + ')');

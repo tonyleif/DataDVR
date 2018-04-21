@@ -7,8 +7,6 @@ export class Game {
     date: Date;
 
     constructor(json: any) {
-        // console.log('game constructor');
-        // console.log(JSON.stringify(json));
         this.id = json.id;
         this.date = json.date;
         this.awayTeam = json.awayTeam;
@@ -16,7 +14,6 @@ export class Game {
         // this is the string used to call the gameplaybyplay service
         const dateNoHyphens: string =  this.date.toString().split('-').join('');
         this.gameid = dateNoHyphens + '-' + this.awayTeam.Abbreviation + '-' +  this.homeTeam.Abbreviation;
-        // console.log('gameid ' + this.gameid);
     }
 
 }

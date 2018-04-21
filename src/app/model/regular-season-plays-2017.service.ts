@@ -32,6 +32,7 @@ export class RegularSeasonPlays2017Service {
   }
 
   getPlaysJSONById(gameid: string): string {
+    console.log('getPlaysJSONById');
     if (!localStorage.getItem(gameid)) {
       console.log('getPlaysJSON: Getting plays for ' + gameid + ' from API');
       // localStorage.fullgameschedule = JSON.stringify(this.getGamesFromAPI().subscribe());
@@ -69,8 +70,22 @@ export class RegularSeasonPlays2017Service {
   }
 
   getPlaysById(gameid: string): Array<any> {
-    // console.log('getPlays');
+    console.log('getPlaysById');
     const jsonObject: any = JSON.parse(this.getPlaysJSONById(gameid));
+    // console.log('jsonObject.gameplaybyplay.plays string: ' + JSON.stringify(jsonObject.gameplaybyplay.plays));
+    console.log(jsonObject);
+    const allPlays: Array<string> = jsonObject.gameplaybyplay.plays.play;
+    const plays: Array<string> = new Array<string>();
+    allPlays.forEach(play => {
+      // console.log(play);
+      plays.push(play);
+    });
+    return plays;
+  }
+
+  getPlaysFromLocal(gameid: string): Array<any> {
+    console.log('getPlaysFromLocal');
+    const jsonObject: any = JSON.parse(localStorage.getItem(gameid));
     // console.log('jsonObject.gameplaybyplay.plays string: ' + JSON.stringify(jsonObject.gameplaybyplay.plays));
     const allPlays: Array<string> = jsonObject.gameplaybyplay.plays.play;
     const plays: Array<string> = new Array<string>();

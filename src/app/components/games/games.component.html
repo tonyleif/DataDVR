@@ -1,6 +1,7 @@
 <div class="row">
   <div class="col-2 mb-2">
-    <select id="weekSelect" [(ngModel)]="selectedWeek" class="btn btn-success">
+    <p *ngIf="!doneLoadingSchedule">Loading schedule...</p>
+    <select *ngIf="doneLoadingSchedule" id="weekSelect" [(ngModel)]="selectedWeek" class="btn btn-success">
       <option value="undefined">Select Week</option>
       <option *ngFor="let week of weeks; i as index" [value]="week" >
         Week {{week}}
@@ -19,41 +20,8 @@
     <!-- <h5>{{selectedGame.date}}</h5> -->
 </div>
 </div>
-  <!-- <div class="col-2">
-    <div class="list-group">
-        <button *ngFor="let week of weeks" class="btn btn-sm mb-1" [ngClass]="{'btn-primary': this.selectedWeek == week }"
-          (click)="setWeek(week)">Week {{week}}</button>
-    </div>
-  </div>
-  <div class="col-1">
-      <ul class="list-group">
-          <li *ngFor="let week of weeks" class="btn btn-sm mb-1" 
-            [ngClass]="{'btn-link': this.selectedWeek != week, 'btn-primary': this.selectedWeek == week }"
-            (click)="setWeek(week)">Week {{week}}</li>
-      </ul>
-  </div>
-  <div class="col-1">
-      <div class="list-group">
-          <a *ngFor="let week of weeks" class="btn-link btn btn-sm mb-1" [ngClass]="{'active': this.selectedWeek == week }"
-            (click)="setWeek(week)">Week {{week}}</a>
-      </div>
-  </div>
-  <div class="col-2">
-      <div class="list-group">
-        <button *ngFor="let week of weeks" (click)="setWeek(week)"
-          class="btn btn-default" 
-          [ngClass]="{'btn-link': this.selectedWeek != week, 'btn-primary': this.selectedWeek == week  }" >
-        Week {{week}}
-      </button>
-      </div>
-  </div> -->
 <div class="row">
   <div class="col-2">
-    <!-- <ul>
-      <li *ngFor="let game of games">
-        {{game.date}}: {{game.awayTeam.Abbreviation}} @ {{game.homeTeam.Abbreviation}}
-      </li>
-    </ul> -->
     <ul id="games" class="list-group">
         <li *ngFor="let game of games" class="list-group-item btn btn-link btn-sm hoverable" 
           [ngClass]="{'active': this.selectedGameId == game.id, 'not-selected': this.selectedGameId != game.id }"
@@ -63,7 +31,6 @@
       </ul>
   </div>
   <div class="col-6" *ngIf="selectedGame !== null" >
-    
     <p *ngIf="loadingPlays">
       Loading...
     </p>
@@ -78,29 +45,18 @@
         </p> -->
       </li>
     </ul>
-    <!-- <p *ngIf="showPlays">
-      {{playsJSON}}
-    </p> -->
   </div>
-  <div class="col-2"  ><!-- *ngIf="selectedGame !== null" -->
+  <div class="col-2">
     <p *ngIf="loadingPlays">
       Loading...
     </p>
-    <p *ngIf="showPlays">
-      <!-- Here {{playArray.length}} -->
-    </p>
     <ul *ngIf="showPlays" class="list-group">
-      <li *ngFor="let play of playList" class="list-group-item" ><!--  play-data -->
+      <li *ngFor="let play of playList" class="list-group-item">
         <label>Index:</label>{{play.index}}
         <label>Quarter:</label>{{play.quarter}}
         <label>Clock:</label>{{play.clock}}
         <label>Down:</label>{{play.currentDown}}
       </li>
     </ul>
-    
   </div>
 </div>
-
-
-<!-- <h3>JSON</h3>
-<div>{{gamesJSON}}</div> -->
