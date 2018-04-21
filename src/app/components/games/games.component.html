@@ -35,7 +35,7 @@
       Loading...
     </p>
     <ul *ngIf="showPlays" class="list-group">
-        <li *ngFor="let play of playArray" class="list-group-item play-data" >
+        <li *ngFor="let play of plays" class="list-group-item play-data" >
             <label>Quarter:</label>{{play.quarter}}
             <label>Time:</label>{{play.time}}
             <label>Down:</label>{{play.currentDown}}
@@ -51,7 +51,7 @@
       Loading...
     </p>
     <ul *ngIf="showPlays" class="list-group">
-      <li *ngFor="let play of playList" class="list-group-item">
+      <li *ngFor="let play of plays" class="list-group-item">
         <label>Index:</label>{{play.index}}
         <label>Quarter:</label>{{play.quarter}}
         <label>Clock:</label>{{play.clock}}

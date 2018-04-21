@@ -12,14 +12,10 @@ import { Play } from '../../model/play';
 export class GamesComponent implements OnInit {
 
   private _selectedWeek;
-  private _gamesOfSelectedWeek;
   private _selectedGame: Game;
   weeks: Set<number>;
-  // gamesJSON: string;
-  // gameJSON: string;
-  // playsJSON: string;
-  plays: Array<string>;
-  playArray: Array<Play> = [];
+  games: Array<Game>;
+  plays: Array<Play> = [];
   currentPlayId: number;
 
   constructor(private gamesService: RegularSeasonGames2017Service,
@@ -44,24 +40,25 @@ export class GamesComponent implements OnInit {
   }
 
   set selectedWeek (weekNumber: number) {
-    // console.log('set selectedWeek ' + weekNumber);
     if (this._selectedWeek !== weekNumber) {
       this.selectedGame = null;
       // this updates the original array so the reference is not lost per
       // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
-      this.playArray.length = 0;
+      this.plays.length = 0;
     }
     if (weekNumber > 0) {
       this.games = this.gamesService.getGamesByWeek(weekNumber);
     } else {
-      // console.log('no weekNumber');
       this.games = null;
     }
     this._selectedWeek = weekNumber;
   }
 
+  get selectedWeek() {
+    return this._selectedWeek;
+  }
+
   set selectedGame (value: Game) {
-    // console.log('set selectedGame ' + JSON.stringify(value));
     if (this._selectedGame !== value) {
       // this updates the original array so the reference is not lost per
       // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
@@ -85,14 +82,16 @@ export class GamesComponent implements OnInit {
 
   setGame(id: number) {
     console.log('setGame ' + id);
-    // this.selectedGameId = id;
     this.selectedGame = new Game(this.gamesService.getGame(id));
   }
 
   loadPlayArray () {
-    console.log('loadPlayArray');
-    this.playArray.length = 0;
-    const localPlayArray: Array<Play> = this.playArray;
+    // console.log('loadPlayArray');
+    this.plays.length = 0; // empty the array without making a new array
+    // const localPlayArray: Array<Play> = this.playArray;
+    // create a local variable because this.plays can't be referenced inside
+    // the observable subscription
+    const localPlayArray: Array<Play> = this.plays;
     if (localStorage.getItem(this.selectedGame.gameid)) {
       this.plays = this.playsService.getPlaysFromLocal(this.selectedGame.gameid);
       this.plays.forEach(function(jsonPlay, i) {
@@ -101,7 +100,6 @@ export class GamesComponent implements OnInit {
       });
     } else {
       this.playsService.getPlaysFromAPI(this.selectedGame.gameid).subscribe(result => {
-        // console.log(result);
         localStorage.setItem(this.selectedGame.gameid, JSON.stringify(result));
         this.plays = this.playsService.getPlaysFromLocal(this.selectedGame.gameid);
         this.plays.forEach(function(jsonPlay, i) {
@@ -110,80 +108,14 @@ export class GamesComponent implements OnInit {
         });
       });
     }
-    // this.plays.forEach(function(jsonPlay, i) {
-    //   const play = new Play(jsonPlay, i);
-    //   tempPlayArray.push(play);
-    // });
-    // return tempPlayArray;
   }
-
-  set games(value: Array<Game>) {
-    // console.log('set games');
-    // this.selectedGame = null;
-    this._gamesOfSelectedWeek = value;
-    // return this.gamesService.getGamesByWeek(this.selectedWeek);
-  }
-
-  get games(): Array<Game> {
-    // console.log('get games');
-    // this.selectedGame = null;
-    // return this.gamesService.getGamesByWeek(this.selectedWeek);
-    return this._gamesOfSelectedWeek;
-  }
-
-  get selectedWeek() {
-    // console.log('get selectedWeek ' + this._selectedWeek);
-    return this._selectedWeek;
-  }
-
-  get playList(): Array<Play> {
-    // console.log('playList');
-    // this.selectedGame = null;
-    // return this.fillPlayArray();
-    return this.playArray;
-  }
-
-  // fillPlayArray() {
-  //   console.log('fillPlayArray');
-  //   this.plays = this.playsService.getPlaysById(this.selectedGame.gameid);
-  //   // this.plays = this.playsService.getPlaysById(gameid);
-  //   const tempPlayArray: Array<Play> = [];
-  //   this.plays.forEach(function(jsonPlay, i) {
-  //     // console.log('index: ' + i);
-  //     // console.log(jsonPlay);
-  //     const play = new Play(jsonPlay, i);
-  //     // console.log(play);
-  //     tempPlayArray.push(play);
-  //   });
-  //   return tempPlayArray;
-  // }
-
-  // getPlaysJSON(dateWithHyphens: string, awayAbbr: string, homeAbbr: string): string {
-  //   // const dateNoHyphens: string = dateWithHyphens.replace('-', '');
-  //   const dateNoHyphens: string =  dateWithHyphens.split('-').join('');
-  //   const gameid: string = dateNoHyphens + '-' + awayAbbr + '-' + homeAbbr;
-  //   if (!localStorage.getItem(gameid)) {
-  //     this.playsJSON = 'Loading...';
-  //     // console.log('getPlaysJSON: Getting plays for ' + gameid + ' from API');
-  //     // localStorage.fullgameschedule = JSON.stringify(this.getGamesFromAPI().subscribe());
-  //     this.playsService.getPlaysFromAPI(gameid).subscribe(result => {
-  //       // console.log(result);
-  //       localStorage.setItem(gameid, JSON.stringify(result));
-  //       this.playsJSON = JSON.stringify(result);
-  //     });
-  //   } else {
-  //     // console.log('getPlaysJSON: Got it from local storage');
-  //   }
-  //   // console.log('getPlaysJSON: this should be LAST');
-  //   return localStorage.getItem(gameid);
-  // }
 
   get showPlays(): boolean {
-    return (this.playArray.length > 0);
+    return (this.plays.length > 0);
   }
 
   get loadingPlays(): boolean {
-    return (this.selectedGame && this.playArray.length === 0);
+    return (this.selectedGame && this.plays.length === 0);
   }
 
 }
