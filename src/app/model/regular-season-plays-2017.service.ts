@@ -10,7 +10,7 @@ export class RegularSeasonPlays2017Service {
 
   createAuthorizationHeader(headers: Headers) {
     headers.append('Authorization', 'Basic ' +
-      btoa('tonyleif:00bone11'));
+      btoa('tonyleif:00password'));
   }
 
   getPlaysJSON(dateWithHyphens: string, awayAbbr: string, homeAbbr: string): string {
@@ -18,7 +18,7 @@ export class RegularSeasonPlays2017Service {
     const dateNoHyphens: string =  dateWithHyphens.split('-').join('');
     const gameid: string = dateNoHyphens + '-' + awayAbbr + '-' + homeAbbr;
     if (!localStorage.getItem(gameid)) {
-      console.log('getPlaysJSON: Getting plays for ' + gameid + ' from API');
+      // console.log('getPlaysJSON: Getting plays for ' + gameid + ' from API');
       // localStorage.fullgameschedule = JSON.stringify(this.getGamesFromAPI().subscribe());
       this.getPlaysFromAPI(gameid).subscribe(result => {
         // console.log(result);
@@ -32,9 +32,9 @@ export class RegularSeasonPlays2017Service {
   }
 
   getPlaysJSONById(gameid: string): string {
-    console.log('getPlaysJSONById');
+    // console.log('getPlaysJSONById');
     if (!localStorage.getItem(gameid)) {
-      console.log('getPlaysJSON: Getting plays for ' + gameid + ' from API');
+      // console.log('getPlaysJSON: Getting plays for ' + gameid + ' from API');
       // localStorage.fullgameschedule = JSON.stringify(this.getGamesFromAPI().subscribe());
       this.getPlaysFromAPI(gameid).subscribe(result => {
         // console.log(result);
@@ -70,10 +70,10 @@ export class RegularSeasonPlays2017Service {
   }
 
   getPlaysById(gameid: string): Array<any> {
-    console.log('getPlaysById');
+    // console.log('getPlaysById');
     const jsonObject: any = JSON.parse(this.getPlaysJSONById(gameid));
     // console.log('jsonObject.gameplaybyplay.plays string: ' + JSON.stringify(jsonObject.gameplaybyplay.plays));
-    console.log(jsonObject);
+    // console.log(jsonObject);
     const allPlays: Array<string> = jsonObject.gameplaybyplay.plays.play;
     const plays: Array<string> = new Array<string>();
     allPlays.forEach(play => {
@@ -84,7 +84,7 @@ export class RegularSeasonPlays2017Service {
   }
 
   getPlaysFromLocal(gameid: string): Array<any> {
-    console.log('getPlaysFromLocal');
+    // console.log('getPlaysFromLocal');
     const jsonObject: any = JSON.parse(localStorage.getItem(gameid));
     // console.log('jsonObject.gameplaybyplay.plays string: ' + JSON.stringify(jsonObject.gameplaybyplay.plays));
     const allPlays: Array<string> = jsonObject.gameplaybyplay.plays.play;

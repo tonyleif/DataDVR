@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-2 mb-2">
     <p *ngIf="!doneLoadingSchedule">Loading schedule...</p>
-    <select *ngIf="doneLoadingSchedule" id="weekSelect" [(ngModel)]="selectedWeek" class="btn btn-success">
+    <select *ngIf="doneLoadingSchedule" id="weekSelect" [(ngModel)]="selectedWeek" class="btn btn-primary">
       <option value="undefined">Select Week</option>
       <option *ngFor="let week of weeks; i as index" [value]="week" >
         Week {{week}}
@@ -30,32 +30,40 @@
         </li>
       </ul>
   </div>
-  <div class="col-6" *ngIf="selectedGame !== null" >
+  <!-- <div class="col-6" *ngIf="selectedGame !== null" >
     <p *ngIf="loadingPlays">
       Loading...
     </p>
+    
     <ul *ngIf="showPlays" class="list-group">
         <li *ngFor="let play of plays" class="list-group-item play-data" >
             <label>Quarter:</label>{{play.quarter}}
             <label>Time:</label>{{play.time}}
             <label>Down:</label>{{play.currentDown}}
             <label>To go:</label>{{play.yardsRemaining}}
-        <!-- <p>
-          {{play.description}}
-        </p> -->
       </li>
     </ul>
-  </div>
-  <div class="col-2">
+  </div> -->
+  <div class="col-10">
     <p *ngIf="loadingPlays">
       Loading...
     </p>
+    <button (click)="lastPlay()" *ngIf="showPlays" class="btn btn-default">Last Play</button>
+    <button (click)="nextPlay()" *ngIf="showPlays" class="btn btn-success">Next Play</button>
+    <div (ngModel)="currentPlay" *ngIf="currentPlayIndex > -1" class="container">
+        <!-- <label>Index:</label>{{currentPlay.index}} -->
+        <label>Quarter:</label>{{currentPlay.quarter}}
+        <label>Clock:</label>{{currentPlay.clock}}
+        <label>Down:</label>{{currentPlay.currentDown}}
+        <label>To Go:</label>{{currentPlay.yardsRemaining}}
+    </div>
     <ul *ngIf="showPlays" class="list-group">
-      <li *ngFor="let play of plays" class="list-group-item">
-        <label>Index:</label>{{play.index}}
-        <label>Quarter:</label>{{play.quarter}}
-        <label>Clock:</label>{{play.clock}}
-        <label>Down:</label>{{play.currentDown}}
+      <li *ngFor="let play of playsToShow" class="list-group-item">
+        <!-- <label>Index:</label>{{play.index}} -->
+        Q{{play.quarter}} {{play.clock}}
+        <label>Down:</label>{{play.currentDown}}<br/>
+        <span>{{play.description}}</span>
+          <!-- {{play | json}} -->
       </li>
     </ul>
   </div>

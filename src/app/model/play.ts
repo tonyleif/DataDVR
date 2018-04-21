@@ -4,14 +4,16 @@ export class Play {
     quarter: number;
     time: string;
     currentDown: number;
+    yardsRemaining: number;
 
     constructor(json: any, i: number) {
-        // const jsonObject = JSON.parse(json);
+        console.log(json);
         this.index = i;
         this.description = json.description;
         this.quarter = json.quarter;
         this.time = json.time;
         this.currentDown = json.currentDown;
+        this.yardsRemaining = json.yardsRemaining;
     }
 
     private get minutes(): number {

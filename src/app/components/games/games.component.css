@@ -29,7 +29,7 @@
     font-size: .8em;
 }
 
-select.btn-success option {
+select.btn-primary option {
     color: black;
     background-color: white;
     /* padding-top: 20px !important;

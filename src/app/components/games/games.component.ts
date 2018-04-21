@@ -16,7 +16,7 @@ export class GamesComponent implements OnInit {
   weeks: Set<number>;
   games: Array<Game>;
   plays: Array<Play> = [];
-  currentPlayId: number;
+  currentPlayIndex = -1;
 
   constructor(private gamesService: RegularSeasonGames2017Service,
               private playsService: RegularSeasonPlays2017Service) { }
@@ -81,7 +81,7 @@ export class GamesComponent implements OnInit {
   }
 
   setGame(id: number) {
-    console.log('setGame ' + id);
+    // console.log('setGame ' + id);
     this.selectedGame = new Game(this.gamesService.getGame(id));
   }
 
@@ -91,23 +91,35 @@ export class GamesComponent implements OnInit {
     // const localPlayArray: Array<Play> = this.playArray;
     // create a local variable because this.plays can't be referenced inside
     // the observable subscription
-    const localPlayArray: Array<Play> = this.plays;
+    // const localPlayArray: Array<Play> = this.plays;
     if (localStorage.getItem(this.selectedGame.gameid)) {
-      this.plays = this.playsService.getPlaysFromLocal(this.selectedGame.gameid);
-      this.plays.forEach(function(jsonPlay, i) {
+      const jsonPlays = this.playsService.getPlaysFromLocal(this.selectedGame.gameid);
+      jsonPlays.forEach(function(jsonPlay, i) {
         const play = new Play(jsonPlay, i);
-        localPlayArray.push(play);
-      });
+        // localPlayArray.push(play);
+        // I want this array in revers order and unshift pushes to the front of the array
+        // https://stackoverflow.com/questions/8073673/how-can-i-add-new-array-elements-at-the-beginning-of-an-array-in-javascript
+        this.plays.unshift(play);
+      }, this); // Not sure I really like adding this reference here. It works but hard to follow.
     } else {
       this.playsService.getPlaysFromAPI(this.selectedGame.gameid).subscribe(result => {
         localStorage.setItem(this.selectedGame.gameid, JSON.stringify(result));
-        this.plays = this.playsService.getPlaysFromLocal(this.selectedGame.gameid);
-        this.plays.forEach(function(jsonPlay, i) {
+        const jsonPlays = this.playsService.getPlaysFromLocal(this.selectedGame.gameid);
+        jsonPlays.forEach(function(jsonPlay, i) {
           const play = new Play(jsonPlay, i);
-          localPlayArray.push(play);
-        });
+          // localPlayArray.push(play);
+          // I want this array in revers order and unshift pushes to the front of the array
+          // https://stackoverflow.com/questions/8073673/how-can-i-add-new-array-elements-at-the-beginning-of-an-array-in-javascript
+          this.plays.unshift(play);
+        }, this);
       });
     }
+    // console.log(localPlayArray);
+    // console.log(this.plays);
+  }
+
+  get playList(): Array<Play> {
+    return this.plays;
   }
 
   get showPlays(): boolean {
@@ -116,6 +128,22 @@ export class GamesComponent implements OnInit {
 
   get loadingPlays(): boolean {
     return (this.selectedGame && this.plays.length === 0);
+  }
+
+  get currentPlay(): Play {
+    return this.plays[this.plays.length - this.currentPlayIndex - 1];
+  }
+
+  get playsToShow(): Array<Play> {
+    return this.plays.slice(this.plays.length - this.currentPlayIndex, this.plays.length);
+  }
+
+  nextPlay() {
+    this.currentPlayIndex++;
+  }
+
+  lastPlay() {
+    this.currentPlayIndex--;
   }
 
 }
