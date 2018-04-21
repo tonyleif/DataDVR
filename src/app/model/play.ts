@@ -1,3 +1,5 @@
+import { LineOfScrimmage } from '../model/LineOfScrimmage';
+
 export class Play {
     index: number;
     description: string;
@@ -5,15 +7,21 @@ export class Play {
     time: string;
     currentDown: number;
     yardsRemaining: number;
+    lineOfScrimmage: LineOfScrimmage;
 
     constructor(json: any, i: number) {
-        console.log(json);
+        // console.log(JSON.stringify(json));
         this.index = i;
         this.description = json.description;
         this.quarter = json.quarter;
         this.time = json.time;
         this.currentDown = json.currentDown;
         this.yardsRemaining = json.yardsRemaining;
+        if (json.lineOfScrimmage) {
+            this.lineOfScrimmage = new LineOfScrimmage(json.lineOfScrimmage);
+            console.log('play constructor');
+            console.log(JSON.stringify(this.lineOfScrimmage));
+        }
     }
 
     private get minutes(): number {
@@ -46,5 +54,34 @@ export class Play {
             clockString += clockSeconds.toString();
         }
         return clockString;
+    }
+
+    get downAndDistance(): string {
+        let dnd: string;
+        // console.log('downAndDistance down ' + this.currentDown);
+        switch (+this.currentDown) {
+            case 1:
+                // console.log('case 1');
+                dnd = '1st and ' + this.yardsRemaining + ' at ' + this.lineOfScrimmage.team + ' ' + this.lineOfScrimmage.yardLine;
+                break;
+            case 2:
+                // console.log('case 2');
+                dnd = '2nd and ' + this.yardsRemaining + ' at ' + this.lineOfScrimmage.team + ' ' + this.lineOfScrimmage.yardLine;;
+                break;
+            case 3:
+                // console.log('case 3');
+                dnd = '3rd and ' + this.yardsRemaining + ' at ' + this.lineOfScrimmage.team + ' ' + this.lineOfScrimmage.yardLine;;
+                break;
+            case 4:
+                // console.log('case 4');
+                dnd = '4th and ' + this.yardsRemaining + ' at ' + this.lineOfScrimmage.team + ' ' + this.lineOfScrimmage.yardLine;;
+                break;
+            default:
+                // console.log('default case');
+                dnd = '';
+                break;
+        }
+        // console.log(dnd);
+        return dnd;
     }
 }

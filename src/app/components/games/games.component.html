@@ -3,7 +3,7 @@
     <p *ngIf="!doneLoadingSchedule">Loading schedule...</p>
     <select *ngIf="doneLoadingSchedule" id="weekSelect" [(ngModel)]="selectedWeek" class="btn btn-primary">
       <option value="undefined">Select Week</option>
-      <option *ngFor="let week of weeks; i as index" [value]="week" >
+      <option *ngFor="let week of weeks; i as index" [value]="week">
         Week {{week}}
       </option>
     </select>
@@ -18,17 +18,16 @@
   <div *ngIf="selectedGame" class="col-10">
     <h3>{{selectedGame.awayTeam.City}} {{selectedGame.awayTeam.Name}} @ {{selectedGame.homeTeam.City}} {{selectedGame.homeTeam.Name}}</h3>
     <!-- <h5>{{selectedGame.date}}</h5> -->
-</div>
+  </div>
 </div>
 <div class="row">
   <div class="col-2">
     <ul id="games" class="list-group">
-        <li *ngFor="let game of games" class="list-group-item btn btn-link btn-sm hoverable" 
-          [ngClass]="{'active': this.selectedGameId == game.id, 'not-selected': this.selectedGameId != game.id }"
-          (click)="setGame(game.id)">
-          {{game.awayTeam.Abbreviation}} @ {{game.homeTeam.Abbreviation}}
-        </li>
-      </ul>
+      <li *ngFor="let game of games" class="list-group-item btn btn-link btn-sm hoverable" [ngClass]="{'active': this.selectedGameId == game.id, 'not-selected': this.selectedGameId != game.id }"
+        (click)="setGame(game.id)">
+        {{game.awayTeam.Abbreviation}} @ {{game.homeTeam.Abbreviation}}
+      </li>
+    </ul>
   </div>
   <!-- <div class="col-6" *ngIf="selectedGame !== null" >
     <p *ngIf="loadingPlays">
@@ -50,20 +49,24 @@
     </p>
     <button (click)="lastPlay()" *ngIf="showPlays" class="btn btn-default">Last Play</button>
     <button (click)="nextPlay()" *ngIf="showPlays" class="btn btn-success">Next Play</button>
-    <div (ngModel)="currentPlay" *ngIf="currentPlayIndex > -1" class="container">
-        <!-- <label>Index:</label>{{currentPlay.index}} -->
-        <label>Quarter:</label>{{currentPlay.quarter}}
-        <label>Clock:</label>{{currentPlay.clock}}
-        <label>Down:</label>{{currentPlay.currentDown}}
-        <label>To Go:</label>{{currentPlay.yardsRemaining}}
+    <div (ngModel)="currentPlay" *ngIf="currentPlayIndex > -1" class="container jumbotron my-2">
+      <!-- <label>Index:</label>{{currentPlay.index}} -->
+      <label>Quarter:</label>{{currentPlay.quarter}}
+      <label>Clock:</label>{{currentPlay.clock}}
+      <label>Down:</label>{{currentPlay.currentDown}}
+      <label>To Go:</label>{{currentPlay.yardsRemaining}}
     </div>
     <ul *ngIf="showPlays" class="list-group">
       <li *ngFor="let play of playsToShow" class="list-group-item">
         <!-- <label>Index:</label>{{play.index}} -->
-        Q{{play.quarter}} {{play.clock}}
-        <label>Down:</label>{{play.currentDown}}<br/>
-        <span>{{play.description}}</span>
-          <!-- {{play | json}} -->
+        <small>
+          <div class="text-secondary">Q{{play.quarter}} {{play.clock}} {{play.downAndDistance}}</div>
+          
+          <!-- <br/> -->
+          <!-- <label>Down:</label>{{play.currentDown}} -->
+          {{play.description}}
+        </small>
+        <!-- {{play | json}} -->
       </li>
     </ul>
   </div>

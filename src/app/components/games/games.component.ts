@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RegularSeasonGames2017Service } from '../../model/regular-season-games-2017.service';
 import { RegularSeasonPlays2017Service } from '../../model/regular-season-plays-2017.service';
-import { Game } from '../../model/game';
-import { Play } from '../../model/play';
+import { Game } from '../../model/Game';
+import { Play } from '../../model/Play';
 
 @Component({
   selector: 'app-games',
@@ -63,6 +63,7 @@ export class GamesComponent implements OnInit {
       // this updates the original array so the reference is not lost per
       // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
       this._selectedGame = value;
+      this.currentPlayIndex = -1;
       if (value !== null) {
         this.loadPlayArray();
       }
@@ -135,7 +136,7 @@ export class GamesComponent implements OnInit {
   }
 
   get playsToShow(): Array<Play> {
-    return this.plays.slice(this.plays.length - this.currentPlayIndex, this.plays.length);
+    return this.plays.slice(this.plays.length - this.currentPlayIndex, this.plays.length - this.currentPlayIndex + 5;
   }
 
   nextPlay() {

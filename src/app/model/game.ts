@@ -1,5 +1,4 @@
 export class Game {
-
     id: number;
     gameid: string;
     awayTeam: any;
@@ -15,5 +14,4 @@ export class Game {
         const dateNoHyphens: string =  this.date.toString().split('-').join('');
         this.gameid = dateNoHyphens + '-' + this.awayTeam.Abbreviation + '-' +  this.homeTeam.Abbreviation;
     }
-
 }

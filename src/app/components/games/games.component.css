@@ -35,3 +35,7 @@ select.btn-primary option {
     /* padding-top: 20px !important;
     padding-bottom: 1em !important; */
 }
+
+.list-group-item {
+    padding: .5em 1em;
+}
