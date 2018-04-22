@@ -48,20 +48,54 @@
       Loading...
     </p>
     <button (click)="lastPlay()" *ngIf="showPlays" class="btn btn-default">Last Play</button>
-    <button (click)="nextPlay()" *ngIf="showPlays" class="btn btn-success">Next Play</button>
+    <button (click)="nextPlay()" *ngIf="showPlays" class="btn btn-success ml-2">Next Play</button>
     <div (ngModel)="currentPlay" *ngIf="currentPlayIndex > -1" class="container jumbotron my-2">
-      <!-- <label>Index:</label>{{currentPlay.index}} -->
-      <label>Quarter:</label>{{currentPlay.quarter}}
+      <div class="text-secondary">Q{{currentPlay.quarter}} {{currentPlay.clock}} {{currentPlay.downAndDistance}}</div>
+      <div *ngIf="currentPlay.playType === 0">
+        <img src={{currentPlay.kickingPlay.kickingPlayer.officialImageSrc}} class="rounded" />
+      </div>
+      <div *ngIf="currentPlay.playType === 1">
+        <img src={{currentPlay.rushingPlay.rushingPlayer.officialImageSrc}} class="rounded" />
+      </div>
+      <div *ngIf="currentPlay.playType === 2" class="container row">
+        <img src={{currentPlay.passingPlay.passingPlayer.officialImageSrc}} class="rounded mr-5" />
+        <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" style="display: inline;">
+          <img *ngIf="!currentPlay.passingPlay.receivingPlayer.noImageUrl" src={{currentPlay.passingPlay.receivingPlayer.officialImageSrc}}
+            class="rounded" />
+          <div *ngIf="currentPlay.passingPlay.receivingPlayer.noImageUrl" class="ml-6">
+            <div class="row text-center">
+              {{currentPlay.passingPlay.receivingPlayer.firstName}}
+            </div>
+            <div class="row text-center">
+              {{currentPlay.passingPlay.receivingPlayer.lastName}}
+            </div>
+            <div class="row text-center">
+              (No Image)
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div *ngIf="currentPlay.playType === 3">
+        <img src={{currentPlay.kickAttempt.kickingPlayer.officialImageSrc}} class="rounded" />
+      </div>
+      <div>{{currentPlay.description}}</div>
+      <!-- <div>{{currentPlay.kickingPlay | json}}</div> -->
+
+      {{currentPlay.playType}}
+
+      <label>Index:</label>{{currentPlay.index}}
+      <!-- <label>Quarter:</label>{{currentPlay.quarter}}
       <label>Clock:</label>{{currentPlay.clock}}
       <label>Down:</label>{{currentPlay.currentDown}}
-      <label>To Go:</label>{{currentPlay.yardsRemaining}}
+      <label>To Go:</label>{{currentPlay.yardsRemaining}} -->
     </div>
     <ul *ngIf="showPlays" class="list-group">
       <li *ngFor="let play of playsToShow" class="list-group-item">
         <!-- <label>Index:</label>{{play.index}} -->
         <small>
           <div class="text-secondary">Q{{play.quarter}} {{play.clock}} {{play.downAndDistance}}</div>
-          
+
           <!-- <br/> -->
           <!-- <label>Down:</label>{{play.currentDown}} -->
           {{play.description}}

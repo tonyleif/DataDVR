@@ -39,3 +39,12 @@ select.btn-primary option {
 .list-group-item {
     padding: .5em 1em;
 }
+
+.jumbotron {
+    padding: 1rem;
+}
+
+img {
+    height: 100px;
+    width: 100px;
+}
