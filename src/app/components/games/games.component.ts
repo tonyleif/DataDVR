@@ -223,9 +223,6 @@ export class GamesComponent implements OnInit {
     return this._currentPlay;
   }
 
-  // return this.plays[this.plays.length - this.currentPlayIndex - 1];
-  //   }
-
   get playsToShow(): Array<Play> {
     return this.plays.slice(this.plays.length - this.currentPlayIndex, this.plays.length - this.currentPlayIndex + 4);
   }
@@ -235,9 +232,14 @@ export class GamesComponent implements OnInit {
     this.currentPlayIndex++;
   }
 
-  lastPlay() {
+  previousPlay() {
     this._currentPlay = undefined;
     this.currentPlayIndex--;
+  }
+
+  goToLastPlay() {
+    this._currentPlay = undefined;
+    this.currentPlayIndex = this.plays.length - 1;
   }
 
 }
