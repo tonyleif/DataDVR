@@ -19,6 +19,10 @@
   <!-- Game Header -->
   <div *ngIf="selectedGame" class="col-10">
     <h3 class="d-inline-block">{{selectedGame.awayTeam.City}} {{selectedGame.awayTeam.Name}} @ {{selectedGame.homeTeam.City}} {{selectedGame.homeTeam.Name}}</h3>
+    <img *ngIf="selectedGame.awayTeamObject" src='{{selectedGame.awayTeamObject.officialImageSrc}}' />
+    <br/>
+    right here {{selectedGame.awayTeam | json}}
+    right here {{selectedGame.awayTeamObject.name}}
     <!-- <h5>{{selectedGame.date}}</h5> -->
     <!-- This button was here for testing end of game -->
     <!-- <button (click)="goToLastPlay()">Go to last play</button> -->
@@ -43,75 +47,83 @@
     <button (click)="nextPlay()" *ngIf="showPlays" [disabled]="this.currentPlayIndex == this.plays.length - 1" class="btn btn-success ml-1">Next Play</button>
     <div *ngIf="(showPlays && this.currentPlayIndex == this.plays.length - 1)" class="btn alert alert-success d-inline ml-1 py-2">Game Over</div>
     <!-- Current Play -->
-    <div (ngModel)="currentPlay" *ngIf="currentPlayIndex > -1" class="container jumbotron my-2 animate fadeOutDown">
-      <div class="text-secondary">Q{{currentPlay.quarter}} {{currentPlay.clock}} {{currentPlay.downAndDistance}}</div>
-      <div *ngIf="currentPlay.playType === 0">
-        <!-- Kicker -->
-        <img *ngIf="!currentPlay.kickingPlay.kickingPlayer.noImageUrl" src={{currentPlay.kickingPlay.kickingPlayer.officialImageSrc}}
-          class="rounded" />
-        <div *ngIf="currentPlay.kickingPlay.kickingPlayer.noImageUrl" class="ml-3">
-          <div class="row text-center">
-            {{currentPlay.kickingPlay.kickingPlayer.firstName}}
-          </div>
-          <div class="row text-center">
-            {{currentPlay.kickingPlay.kickingPlayer.lastName}}
-          </div>
-          <div class="row text-center">
-            (No Image)
-          </div>
-        </div>
+    <!-- <div *ngFor="let play of [currentPlay]" class="container">
+      <div *ngIf="currentPlayIndex > -1" [@flyInOut]="direction">
+        <div>{{play.description}}</div>
       </div>
-      <div *ngIf="currentPlay.playType === 1">
-        <!-- Rusher -->
-        <img *ngIf="!currentPlay.rushingPlay.rushingPlayer.noImageUrl" src={{currentPlay.rushingPlay.rushingPlayer.officialImageSrc}} class="rounded" />
-        <div *ngIf="currentPlay.rushingPlay.rushingPlayer.noImageUrl" class="ml-3">
-          <div class="row text-center">
-            {{currentPlay.rushingPlay.rushingPlayer.firstName}}
-          </div>
-          <div class="row text-center">
-            {{currentPlay.rushingPlay.rushingPlayer.lastName}}
-          </div>
-          <div class="row text-center">
-            (No Image)
-          </div>
-        </div>
-      </div>
-      <div *ngIf="currentPlay.playType === 2" class="container row">
-        <!-- Passer -->
-        <img *ngIf="!currentPlay.passingPlay.passingPlayer.noImageUrl" src={{currentPlay.passingPlay.passingPlayer.officialImageSrc}}
-          class="rounded mr-5" />
-        <div *ngIf="currentPlay.passingPlay.passingPlayer.noImageUrl" class="ml-3">
-          <div class="row text-center">
-            {{currentPlay.passingPlay.passingPlayer.firstName}}
-          </div>
-          <div class="row text-center">
-            {{currentPlay.passingPlay.passingPlayer.lastName}}
-          </div>
-          <div class="row text-center">
-            (No Image)
-          </div>
-        </div>
-        <!-- Receiver -->
-        <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" style="display: inline;">
-          <img *ngIf="!currentPlay.passingPlay.receivingPlayer.noImageUrl" src={{currentPlay.passingPlay.receivingPlayer.officialImageSrc}}
+    </div> -->
+    <div *ngFor="let currentPlay of [currentPlay]">
+      <div *ngIf="currentPlayIndex > -1" [@flyInOut]="direction" class="container jumbotron my-2">
+        <!-- <div *ngFor="let play of [currentPlay]" *ngIf="currentPlayIndex > -1" [@flyInOut]="direction" class="container jumbotron my-2"> -->
+        <div class="text-secondary">Q{{currentPlay.quarter}} {{currentPlay.clock}} {{currentPlay.downAndDistance}}</div>
+        <div *ngIf="currentPlay.playType === 0">
+          <!-- Kicker -->
+          <img *ngIf="!currentPlay.kickingPlay.kickingPlayer.noImageUrl" src={{currentPlay.kickingPlay.kickingPlayer.officialImageSrc}}
             class="rounded" />
-          <div *ngIf="currentPlay.passingPlay.receivingPlayer.noImageUrl" class="ml-6">
+          <div *ngIf="currentPlay.kickingPlay.kickingPlayer.noImageUrl" class="ml-3">
             <div class="row text-center">
-              {{currentPlay.passingPlay.receivingPlayer.firstName}}
+              {{currentPlay.kickingPlay.kickingPlayer.firstName}}
             </div>
             <div class="row text-center">
-              {{currentPlay.passingPlay.receivingPlayer.lastName}}
+              {{currentPlay.kickingPlay.kickingPlayer.lastName}}
             </div>
             <div class="row text-center">
               (No Image)
             </div>
           </div>
         </div>
-      </div>
-      <div *ngIf="currentPlay.playType === 3">
-        <!-- Kicker -->
-        <img src={{currentPlay.kickAttempt.kickingPlayer.officialImageSrc}} class="rounded" />
-        <div *ngIf="currentPlay.kickAttempt.kickingPlayer.noImageUrl" class="ml-3">
+        <div *ngIf="currentPlay.playType === 1">
+          <!-- Rusher -->
+          <img *ngIf="!currentPlay.rushingPlay.rushingPlayer.noImageUrl" src={{currentPlay.rushingPlay.rushingPlayer.officialImageSrc}}
+            class="rounded" />
+          <div *ngIf="currentPlay.rushingPlay.rushingPlayer.noImageUrl" class="ml-3">
+            <div class="row text-center">
+              {{currentPlay.rushingPlay.rushingPlayer.firstName}}
+            </div>
+            <div class="row text-center">
+              {{currentPlay.rushingPlay.rushingPlayer.lastName}}
+            </div>
+            <div class="row text-center">
+              (No Image)
+            </div>
+          </div>
+        </div>
+        <div *ngIf="currentPlay.playType === 2" class="container row">
+          <!-- Passer -->
+          <img *ngIf="!currentPlay.passingPlay.passingPlayer.noImageUrl" src={{currentPlay.passingPlay.passingPlayer.officialImageSrc}}
+            class="rounded mr-5" />
+          <div *ngIf="currentPlay.passingPlay.passingPlayer.noImageUrl" class="ml-3">
+            <div class="row text-center">
+              {{currentPlay.passingPlay.passingPlayer.firstName}}
+            </div>
+            <div class="row text-center">
+              {{currentPlay.passingPlay.passingPlayer.lastName}}
+            </div>
+            <div class="row text-center">
+              (No Image)
+            </div>
+          </div>
+          <!-- Receiver -->
+          <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" style="display: inline;">
+            <img *ngIf="!currentPlay.passingPlay.receivingPlayer.noImageUrl" src={{currentPlay.passingPlay.receivingPlayer.officialImageSrc}}
+              class="rounded" />
+            <div *ngIf="currentPlay.passingPlay.receivingPlayer.noImageUrl" class="ml-6">
+              <div class="row text-center">
+                {{currentPlay.passingPlay.receivingPlayer.firstName}}
+              </div>
+              <div class="row text-center">
+                {{currentPlay.passingPlay.receivingPlayer.lastName}}
+              </div>
+              <div class="row text-center">
+                (No Image)
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="currentPlay.playType === 3">
+          <!-- Kicker -->
+          <img src={{currentPlay.kickAttempt.kickingPlayer.officialImageSrc}} class="rounded" />
+          <div *ngIf="currentPlay.kickAttempt.kickingPlayer.noImageUrl" class="ml-3">
             <div class="row text-center">
               {{currentPlay.kickAttempt.kickingPlayer.firstName}}
             </div>
@@ -122,27 +134,49 @@
               (No Image)
             </div>
           </div>
+        </div>
+        <div>{{currentPlay.description}}</div>
       </div>
-      <div>{{currentPlay.description}}</div>
-      <!-- {{currentPlay.playType}}
-      <label>Index:</label>{{currentPlay.index}} -->
-      <!-- <label>Quarter:</label>{{currentPlay.quarter}}
-      <label>Clock:</label>{{currentPlay.clock}}
-      <label>Down:</label>{{currentPlay.currentDown}}
-      <label>To Go:</label>{{currentPlay.yardsRemaining}} -->
     </div>
-    <ul *ngIf="showPlays" class="list-group">
-      <li *ngFor="let play of playsToShow" class="list-group-item">
-        <!-- <label>Index:</label>{{play.index}} -->
+    <div *ngFor="let oneAgo of [onePlayAgo]">
+      <div *ngIf="onePlayAgo" [@flyInOut]="direction" class="list-group-item">
+        <small>
+          <div class="text-secondary">Q{{oneAgo.quarter}} {{oneAgo.clock}} {{oneAgo.downAndDistance}}</div>
+          {{oneAgo.description}}
+        </small>
+      </div>
+    </div>
+    <div *ngFor="let twoAgo of [twoPlaysAgo]">
+      <div *ngIf="twoPlaysAgo" [@flyInOut]="direction" class="list-group-item">
+        <small>
+          <div class="text-secondary">Q{{twoAgo.quarter}} {{twoAgo.clock}} {{twoAgo.downAndDistance}}</div>
+          {{twoAgo.description}}
+        </small>
+      </div>
+    </div>
+    <div *ngFor="let threeAgo of [threePlaysAgo]">
+      <div *ngIf="threePlaysAgo" [@flyInOut]="direction" class="list-group-item">
+        <small>
+          <div class="text-secondary">Q{{threeAgo.quarter}} {{threeAgo.clock}} {{threeAgo.downAndDistance}}</div>
+          {{threeAgo.description}}
+        </small>
+      </div>
+    </div>
+    <div *ngFor="let fourAgo of [fourPlaysAgo]">
+      <div *ngIf="fourPlaysAgo" [@flyInOut]="direction" class="list-group-item">
+        <small>
+          <div class="text-secondary">Q{{fourAgo.quarter}} {{fourAgo.clock}} {{fourAgo.downAndDistance}}</div>
+          {{fourAgo.description}}
+        </small>
+      </div>
+    </div>
+    <!-- <ul class="list-group">
+      <li *ngFor="let play of playsToShow" [@flyInOut]="direction" class="list-group-item">
         <small>
           <div class="text-secondary">Q{{play.quarter}} {{play.clock}} {{play.downAndDistance}}</div>
-
-          <!-- <br/> -->
-          <!-- <label>Down:</label>{{play.currentDown}} -->
           {{play.description}}
         </small>
-        <!-- {{play | json}} -->
       </li>
-    </ul>
+    </ul> -->
   </div>
 </div>

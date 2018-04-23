@@ -1,17 +1,52 @@
-import { Component, OnInit, DefaultIterableDiffer } from '@angular/core';
+import { Component, OnInit, DefaultIterableDiffer, ChangeDetectorRef } from '@angular/core';
 import { RegularSeasonGames2017Service } from '../../model/regular-season-games-2017.service';
 import { RegularSeasonPlays2017Service } from '../../model/regular-season-plays-2017.service';
 import { RegularSeasonActivePlayers2017Service } from '../../model/regular-season-active-players-2017.service';
+import { TeamService } from '../../model/team.service';
 import { Game } from '../../model/Game';
+import { Team } from '../../model/Team';
 import { Play, PlayType } from '../../model/Play';
 import { Player } from '../../model/Player';
+
+import { Input } from '@angular/core';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-games',
   templateUrl: './games.component.html',
-  styleUrls: ['./games.component.css']
+  styleUrls: ['./games.component.css'],
+  animations: [
+    trigger('flyInOut', [
+      // state('in', style({ transform: 'translateX(0)' })),
+      // state('forward', style({ transform: 'translateY(0)' })),
+      // state('backward', style({ transform: 'translateY(0)' })),
+      // transition('void => *', [
+      // transition('void => backward', [
+      //   style({ transform: 'translateY(100%)' }),
+      //   animate(500)
+      // ]),
+      transition('void => backward', [
+        style({ transform: 'translateY(50%)', opacity: 0.0, zIndex: 2 }),
+        animate('300ms ease-in-out', style({ transform: 'translateY(0)', opacity: 1.0, zIndex: 2 }))
+      ]),
+      // transition('backward => void', [
+      //   style({ top: 100, opacity: 0.0, zIndex: 2 }),
+      //   animate('500ms ease-in-out', style({ transform: 'translateY(-100%)', opacity: 0.0 }))
+      // ]),
+      transition('void => forward', [
+        style({ transform: 'translateY(-50%)', opacity: 0.0, zIndex: 2 }),
+        animate('300ms ease-in-out', style({ transform: 'translateY(0)', opacity: 1.0, zIndex: 2 }))
+      ]) // ,
+      // transition('forward => void', [
+      //   style({ transform: 'translateY(0)', opacity: 0.0, zIndex: 2 }),
+      //   animate('500ms ease-in-out', style({ transform: 'translateY(100%)', opacity: 0.0 }))
+      // ])
+    ])
+  ]
 })
 export class GamesComponent implements OnInit {
+
+  private changeDetectorRef: ChangeDetectorRef;
 
   private _selectedWeek;
   private _selectedGame: Game;
@@ -20,10 +55,16 @@ export class GamesComponent implements OnInit {
   games: Array<Game>;
   plays: Array<Play> = [];
   currentPlayIndex = -1;
+  direction: string;
 
   constructor(private gamesService: RegularSeasonGames2017Service,
     private playsService: RegularSeasonPlays2017Service,
-    private activePlayersService: RegularSeasonActivePlayers2017Service) { }
+    private activePlayersService: RegularSeasonActivePlayers2017Service,
+    private teamService: TeamService,
+    changeDetectorRef: ChangeDetectorRef) {
+    this.changeDetectorRef = changeDetectorRef;
+    this.direction = 'none';
+  }
 
   ngOnInit() {
     this.loadSchedule();
@@ -96,6 +137,16 @@ export class GamesComponent implements OnInit {
   setGame(id: number) {
     // console.log('setGame ' + id);
     this.selectedGame = new Game(this.gamesService.getGame(id));
+  }
+
+  get awayTeamObject(): Team {
+    console.log('awayTeamObject');
+    console.log(this.selectedGame.awayTeam.ID);
+    return this.teamService.getTeam(this.selectedGame.awayTeam.ID);
+  }
+
+  get homeTeamObject(): Team {
+    return this.teamService.getTeam(this.selectedGame.homeTeam.ID);
   }
 
   loadPlayArray() {
@@ -186,40 +237,43 @@ export class GamesComponent implements OnInit {
       return this._currentPlay;
     }
     this._currentPlay = this.plays[this.plays.length - this.currentPlayIndex - 1];
-    switch (this._currentPlay.playType) {
-      case PlayType.KickingPlay:
-        const kickingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.kickingPlay.kickingPlayer.ID);
-        this._currentPlay.kickingPlay.kickingPlayer = kickingPlayer;
-        break;
-      case PlayType.RushingPlay:
-        console.log('get rushing player');
-        const rushingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.rushingPlay.rushingPlayer.ID);
-        this._currentPlay.rushingPlay.rushingPlayer = rushingPlayer;
-        console.log('got rushing player');
-        break;
-      case PlayType.PassingPlay:
-        console.log('get passing players');
-        const passingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
-        this._currentPlay.passingPlay.passingPlayer = passingPlayer;
-        if (this._currentPlay.json.passingPlay.receivingPlayer) {
-          const receivingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.receivingPlayer.ID);
-          this._currentPlay.passingPlay.receivingPlayer = receivingPlayer;
-        }
-        console.log('got passing players');
-        break;
-      case PlayType.KickAttempt:
-        const kicker = this.activePlayersService.getPlayer(this._currentPlay.json.kickAttempt.kickingPlayer.ID);
-        this._currentPlay.kickAttempt.kickingPlayer = kicker;
-        break;
-      case PlayType.LateralPass:
-        const lateralPassingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
-        this._currentPlay.lateralPass.passingPlayer = passingPlayer;
-        if (this._currentPlay.json.passingPlay.receivingPlayer) {
-          const lateralReceivingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.receivingPlayer.ID);
-          this._currentPlay.lateralPass.receivingPlayer = lateralReceivingPlayer;
-        }
-        break;
+    if (this._currentPlay) {
+      switch (this._currentPlay.playType) {
+        case PlayType.KickingPlay:
+          const kickingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.kickingPlay.kickingPlayer.ID);
+          this._currentPlay.kickingPlay.kickingPlayer = kickingPlayer;
+          break;
+        case PlayType.RushingPlay:
+          console.log('get rushing player');
+          const rushingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.rushingPlay.rushingPlayer.ID);
+          this._currentPlay.rushingPlay.rushingPlayer = rushingPlayer;
+          console.log('got rushing player');
+          break;
+        case PlayType.PassingPlay:
+          console.log('get passing players');
+          const passingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
+          this._currentPlay.passingPlay.passingPlayer = passingPlayer;
+          if (this._currentPlay.json.passingPlay.receivingPlayer) {
+            const receivingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.receivingPlayer.ID);
+            this._currentPlay.passingPlay.receivingPlayer = receivingPlayer;
+          }
+          console.log('got passing players');
+          break;
+        case PlayType.KickAttempt:
+          const kicker = this.activePlayersService.getPlayer(this._currentPlay.json.kickAttempt.kickingPlayer.ID);
+          this._currentPlay.kickAttempt.kickingPlayer = kicker;
+          break;
+        case PlayType.LateralPass:
+          const lateralPassingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
+          this._currentPlay.lateralPass.passingPlayer = passingPlayer;
+          if (this._currentPlay.json.passingPlay.receivingPlayer) {
+            const lateralReceivingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.receivingPlayer.ID);
+            this._currentPlay.lateralPass.receivingPlayer = lateralReceivingPlayer;
+          }
+          break;
+      }
     }
+
     return this._currentPlay;
   }
 
@@ -227,14 +281,42 @@ export class GamesComponent implements OnInit {
     return this.plays.slice(this.plays.length - this.currentPlayIndex, this.plays.length - this.currentPlayIndex + 4);
   }
 
+  get onePlayAgo(): Play {
+    return this.plays[this.plays.length - this.currentPlayIndex];
+  }
+
+  get twoPlaysAgo(): Play {
+    return this.plays[this.plays.length - this.currentPlayIndex + 1];
+  }
+
+  get threePlaysAgo(): Play {
+    return this.plays[this.plays.length - this.currentPlayIndex + 2];
+  }
+
+  get fourPlaysAgo(): Play {
+    return this.plays[this.plays.length - this.currentPlayIndex + 3];
+  }
+
   nextPlay() {
+    // this.direction = 'backward';
+    // this.changeDetectorRef.detectChanges();
+    this.direction = 'forward';
+    // this.changeDetectorRef.detectChanges();
     this._currentPlay = undefined;
     this.currentPlayIndex++;
+    // this.changeDetectorRef.detectChanges();
+    // this.direction = 'none';
   }
 
   previousPlay() {
+    // this.direction = 'forward';
+    // this.changeDetectorRef.detectChanges();
+    this.direction = 'backward';
+    // this.changeDetectorRef.detectChanges();
     this._currentPlay = undefined;
     this.currentPlayIndex--;
+    // this.changeDetectorRef.detectChanges();
+    // this.direction = 'none';
   }
 
   goToLastPlay() {
