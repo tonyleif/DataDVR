@@ -1,11 +1,16 @@
 import { Team } from '../model/Team';
 
 export const TEAMS: Team[] = [
-{'ID': 48, 'City': 'Buffalo', 'Name': 'Bills', 'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/BUF.svg'},
-{'ID': 49, 'City': 'Miami', 'Name': 'Dolphins', 'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/MIA.svg'},
-{'ID': 50, 'City': 'New England', 'Name': 'Patriots', 'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/NE.svg'},
-{'ID': 51, 'City': 'New York', 'Name': 'Jets', 'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/NYJ.svg'},
-{'ID': 52, 'City': 'Dallas', 'Name': 'Cowboys', 'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/DAL.svg'},
+{'ID': 48, 'City': 'Buffalo', 'Name': 'Bills',
+    'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/BUF.svg'},
+{'ID': 49, 'City': 'Miami', 'Name': 'Dolphins',
+    'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/MIA.svg'},
+{'ID': 50, 'City': 'New England', 'Name': 'Patriots',
+    'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/NE.svg'},
+{'ID': 51, 'City': 'New York', 'Name': 'Jets',
+    'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/NYJ.svg'},
+{'ID': 52, 'City': 'Dallas', 'Name': 'Cowboys',
+    'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/DAL.svg'},
 {'ID': 53, 'City': 'New York', 'Name': 'Giants', 'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/NYG.svg'},
 {'ID': 54, 'City': 'Philadelphia', 'Name': 'Eagles', 'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/PHI.svg'},
 {'ID': 55, 'City': 'Washington', 'Name': 'Redskins', 'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/WAS.svg'},

@@ -121,6 +121,11 @@ export class GamesComponent implements OnInit {
         this.loadPlayArray();
       }
     }
+    if (this._selectedGame) {
+      console.log('selectedGame trying to get awayTeam');
+      const team: Team = this.awayTeamObject;
+      console.log(JSON.stringify(team));
+    }
   }
 
   get selectedGame(): Game {
@@ -140,9 +145,15 @@ export class GamesComponent implements OnInit {
   }
 
   get awayTeamObject(): Team {
-    console.log('awayTeamObject');
-    console.log(this.selectedGame.awayTeam.ID);
-    return this.teamService.getTeam(this.selectedGame.awayTeam.ID);
+    if (this._selectedGame) {
+      console.log('awayTeamObject');
+      console.log(this.selectedGame.awayTeam.ID);
+      const team: Team = this.teamService.getTeam(this.selectedGame.awayTeam.ID);
+      console.log(JSON.stringify(team));
+      return team;
+    } else {
+      return null;
+    }
   }
 
   get homeTeamObject(): Team {

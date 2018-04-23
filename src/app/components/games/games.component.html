@@ -18,11 +18,8 @@
   </div>
   <!-- Game Header -->
   <div *ngIf="selectedGame" class="col-10">
-    <h3 class="d-inline-block">{{selectedGame.awayTeam.City}} {{selectedGame.awayTeam.Name}} @ {{selectedGame.homeTeam.City}} {{selectedGame.homeTeam.Name}}</h3>
-    <img *ngIf="selectedGame.awayTeamObject" src='{{selectedGame.awayTeamObject.officialImageSrc}}' />
-    <br/>
-    right here {{selectedGame.awayTeam | json}}
-    right here {{selectedGame.awayTeamObject.name}}
+    <!-- <h3 class="d-inline-block">{{selectedGame.awayTeam.City}} {{selectedGame.awayTeam.Name}} @ {{selectedGame.homeTeam.City}} {{selectedGame.homeTeam.Name}}</h3> -->
+    <h3 class="d-inline-block"><img *ngIf="selectedGame" src='{{awayTeamObject.officialImageSrc}}' class="team-logo" /> @ <img *ngIf="selectedGame" src='{{homeTeamObject.officialImageSrc}}' class="team-logo" /></h3>
     <!-- <h5>{{selectedGame.date}}</h5> -->
     <!-- This button was here for testing end of game -->
     <!-- <button (click)="goToLastPlay()">Go to last play</button> -->
