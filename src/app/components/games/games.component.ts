@@ -1,4 +1,4 @@
-import { Component, OnInit, DefaultIterableDiffer, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, DefaultIterableDiffer} from '@angular/core'; // , ChangeDetectorRef
 import { RegularSeasonGames2017Service } from '../../model/regular-season-games-2017.service';
 import { RegularSeasonPlays2017Service } from '../../model/regular-season-plays-2017.service';
 import { RegularSeasonActivePlayers2017Service } from '../../model/regular-season-active-players-2017.service';
@@ -27,7 +27,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
       // ]),
       transition('void => backward', [
         style({ transform: 'translateY(50%)', opacity: 0.0, zIndex: 2 }),
-        animate('300ms ease-in-out', style({ transform: 'translateY(0)', opacity: 1.0, zIndex: 2 }))
+        animate('400ms ease-in-out', style({ transform: 'translateY(0)', opacity: 1.0, zIndex: 2 }))
       ]),
       // transition('backward => void', [
       //   style({ top: 100, opacity: 0.0, zIndex: 2 }),
@@ -35,7 +35,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
       // ]),
       transition('void => forward', [
         style({ transform: 'translateY(-50%)', opacity: 0.0, zIndex: 2 }),
-        animate('300ms ease-in-out', style({ transform: 'translateY(0)', opacity: 1.0, zIndex: 2 }))
+        animate('400ms ease-in-out', style({ transform: 'translateY(0)', opacity: 1.0, zIndex: 2 }))
       ]) // ,
       // transition('forward => void', [
       //   style({ transform: 'translateY(0)', opacity: 0.0, zIndex: 2 }),
@@ -46,7 +46,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 })
 export class GamesComponent implements OnInit {
 
-  private changeDetectorRef: ChangeDetectorRef;
+  // private changeDetectorRef: ChangeDetectorRef;
 
   private _selectedWeek;
   private _selectedGame: Game;
@@ -60,9 +60,8 @@ export class GamesComponent implements OnInit {
   constructor(private gamesService: RegularSeasonGames2017Service,
     private playsService: RegularSeasonPlays2017Service,
     private activePlayersService: RegularSeasonActivePlayers2017Service,
-    private teamService: TeamService,
-    changeDetectorRef: ChangeDetectorRef) {
-    this.changeDetectorRef = changeDetectorRef;
+    private teamService: TeamService) { // , changeDetectorRef: ChangeDetectorRef
+    // this.changeDetectorRef = changeDetectorRef;
     this.direction = 'none';
   }
 
@@ -122,9 +121,9 @@ export class GamesComponent implements OnInit {
       }
     }
     if (this._selectedGame) {
-      console.log('selectedGame trying to get awayTeam');
+      // console.log('selectedGame trying to get awayTeam');
       const team: Team = this.awayTeamObject;
-      console.log(JSON.stringify(team));
+      // console.log(JSON.stringify(team));
     }
   }
 
@@ -140,16 +139,20 @@ export class GamesComponent implements OnInit {
   }
 
   setGame(id: number) {
-    // console.log('setGame ' + id);
-    this.selectedGame = new Game(this.gamesService.getGame(id));
+    // Don't bother doing this work if the button clicked was already selected
+    console.log(!this.selectedGame);
+    if (this.selectedGame && this.selectedGame.id != id) {
+      // Browsers have storage limits so clear out the data from last game
+      localStorage.removeItem(this.selectedGame.gameid);
+      this.selectedGame = new Game(this.gamesService.getGame(id));
+    } else if (!this.selectedGame) {
+      this.selectedGame = new Game(this.gamesService.getGame(id));
+    }
   }
 
   get awayTeamObject(): Team {
     if (this._selectedGame) {
-      console.log('awayTeamObject');
-      console.log(this.selectedGame.awayTeam.ID);
       const team: Team = this.teamService.getTeam(this.selectedGame.awayTeam.ID);
-      console.log(JSON.stringify(team));
       return team;
     } else {
       return null;
