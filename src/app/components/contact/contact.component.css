@@ -3,12 +3,13 @@
 }
 
 .social-list > li {
-    font-size: 1.1em;
+    font-size: 1.3em;
     list-style-type: none;
     padding: 3px;
 }
 
 .social-icon{
-    height: 30px;
-    width: 30px;
+    height: 40px;
+    width: 40px;
+    margin-right: .5em;
 }

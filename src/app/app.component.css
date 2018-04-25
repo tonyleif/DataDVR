@@ -33,3 +33,7 @@ a.active-link,
     color: white;
     font-weight: bold;
 }
+
+#logo {
+    height: 45px;
+}

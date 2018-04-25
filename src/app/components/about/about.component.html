@@ -1,3 +1,44 @@
-<p>
-  about works!
-</p>
+<div class="row">
+  <div class="col-sm-5">
+    <h3>About</h3>
+    <p>
+      Data DVR allows you to see information about a play as you stream it or watch it on DVR. Currently, you can watch a game
+      real time or on-demand. You can get data real time, but you can't really get it on demand. If you were to look up play
+      by play information about a game, you would more than likely see the outcome of the game, thus ruining the experience
+      of watching it on demand.
+    </p>
+    <p>
+      Currently, this is only implemented for the NFL and the 2017 regular season. In the future, I plan to add all available seasons
+      and, perhaps, other sports as well.
+    </p>
+    <p>
+      Eventually, I'd like to add the use case of importing your fantasy teams and seeing the scores of your games but ONLY for
+      the games and plays you've watched so far.
+    </p>
+  </div>
+  <div class="col-sm-7">
+    <h3>Directions</h3>
+    <ol>
+      <li class="mb-2">Select a week
+        <select class="btn btn-primary ml-2">
+          <option selected>Select Week</option>
+        </select>
+      </li>
+      <li class="mb-3">Select a game
+        <ul class="list-group" style="display: inline-block">
+          <li class="list-group-item btn btn-link btn-sm hoverable" style="width: 9em" >
+            Away @ Home
+          </li>
+        </ul>
+         (click)  
+        <ul class="list-group active" style="display: inline-block">
+            <li class="list-group-item btn btn-sm hoverable bg-primary btn-dark" style="width: 9em">
+              Away @ Home
+            </li>
+          </ul>
+      </li>
+      <li>Click <button class="btn btn-success ml-1">Next Play</button> and 
+        <button class="btn btn-default">Previous Play</button> as you watch the game</li>
+    </ol>
+  </div>
+</div>
