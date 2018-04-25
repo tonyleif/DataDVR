@@ -9,7 +9,7 @@ header {
 }
 
 .navbar-brand {
-    font-size: 1.8em;
+    /* font-size: 1.8em; */
     padding: 0;
     color: #4E4D4D;
     font-weight: 500;
@@ -17,10 +17,11 @@ header {
 
 .navbar>.container>.nav-item {
     padding-top: .5em;
-    padding-bottom: .5em;
+    padding-bottom: .4em;
     padding-right: 1em;
     padding-left: 1em;
     color: #4E4D4D;
+    font-size: 1.1em;
 }
 
 .navbar>.container>.nav-item:hover {

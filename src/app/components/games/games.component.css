@@ -53,3 +53,21 @@ img {
     height: 100px;
     width: 100px;
 }
+
+.crop {
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+}
+
+.crop img {
+    width: 65px;
+    height: 65px;
+    /* margin: -75px 0 0 -100px; */
+    margin-top: -32px;
+    margin-bottom: -27px;
+}
+
+#gameHeader {
+    font-size: 1.5em;
+}
