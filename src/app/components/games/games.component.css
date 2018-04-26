@@ -44,10 +44,6 @@ select.btn-primary option {
     padding: 1rem;
 }
 
-img {
-    height: 100px;
-    width: 100px;
-}
 
 .team-logo {
     height: 100px;
@@ -63,10 +59,14 @@ img {
 .crop img {
     width: 65px;
     height: 65px;
-    /* margin: -75px 0 0 -100px; */
     margin-top: -32px;
     margin-bottom: -27px;
 }
+
+ /* img {
+    height: 100px;
+    width: 100px;
+}  */
 
 #gameHeader {
     font-size: 1.5em;
@@ -75,6 +75,12 @@ img {
 .player-image {
     margin-right: 1.5em;
     display: inline;
+}
+
+.player-image img,
+.player-image-2 img {
+    height: 100px;
+    width: 100px;
 }
 
 .player-image-2 {

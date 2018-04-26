@@ -2,6 +2,7 @@ import { Component, OnInit, DefaultIterableDiffer} from '@angular/core'; // , Ch
 import { RegularSeasonGames2017Service } from '../../model/regular-season-games-2017.service';
 import { RegularSeasonPlays2017Service } from '../../model/regular-season-plays-2017.service';
 import { RegularSeasonActivePlayers2017Service } from '../../model/regular-season-active-players-2017.service';
+import { Season } from '../../model/Season';
 import { TeamService } from '../../model/team.service';
 import { Game } from '../../model/Game';
 import { Team } from '../../model/Team';
@@ -17,37 +18,22 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   styleUrls: ['./games.component.css'],
   animations: [
     trigger('flyInOut', [
-      // state('in', style({ transform: 'translateX(0)' })),
-      // state('forward', style({ transform: 'translateY(0)' })),
-      // state('backward', style({ transform: 'translateY(0)' })),
-      // transition('void => *', [
-      // transition('void => backward', [
-      //   style({ transform: 'translateY(100%)' }),
-      //   animate(500)
-      // ]),
+      // this is for making the plays appear to be moving up and down
+      // it makes the order more apparent
       transition('void => backward', [
         style({ transform: 'translateY(50%)', opacity: 0.0, zIndex: 2 }),
         animate('400ms ease-in-out', style({ transform: 'translateY(0)', opacity: 1.0, zIndex: 2 }))
       ]),
-      // transition('backward => void', [
-      //   style({ top: 100, opacity: 0.0, zIndex: 2 }),
-      //   animate('500ms ease-in-out', style({ transform: 'translateY(-100%)', opacity: 0.0 }))
-      // ]),
       transition('void => forward', [
         style({ transform: 'translateY(-50%)', opacity: 0.0, zIndex: 2 }),
         animate('400ms ease-in-out', style({ transform: 'translateY(0)', opacity: 1.0, zIndex: 2 }))
-      ]) // ,
-      // transition('forward => void', [
-      //   style({ transform: 'translateY(0)', opacity: 0.0, zIndex: 2 }),
-      //   animate('500ms ease-in-out', style({ transform: 'translateY(100%)', opacity: 0.0 }))
-      // ])
+      ])
     ])
   ]
 })
 export class GamesComponent implements OnInit {
-
   // private changeDetectorRef: ChangeDetectorRef;
-
+  // selectedSeason: string; // future enhancement
   private _selectedWeek;
   private _selectedGame: Game;
   private _currentPlay: Play;
@@ -62,6 +48,7 @@ export class GamesComponent implements OnInit {
     private activePlayersService: RegularSeasonActivePlayers2017Service,
     private teamService: TeamService) { // , changeDetectorRef: ChangeDetectorRef
     // this.changeDetectorRef = changeDetectorRef;
+    // this was from some testing for Angular animations. May still need this in the future
     this.direction = 'none';
   }
 
@@ -81,7 +68,6 @@ export class GamesComponent implements OnInit {
   }
 
   loadPlayers() {
-    // console.log('loadPlayers');
     if (!localStorage.activeplayers) {
       this.activePlayersService.getActivePlayersFromAPI().subscribe(result => result);
     }
@@ -140,7 +126,6 @@ export class GamesComponent implements OnInit {
 
   setGame(id: number) {
     // Don't bother doing this work if the button clicked was already selected
-    console.log(!this.selectedGame);
     if (this.selectedGame && this.selectedGame.id != id) {
       // Browsers have storage limits so clear out the data from last game
       localStorage.removeItem(this.selectedGame.gameid);
@@ -164,17 +149,16 @@ export class GamesComponent implements OnInit {
   }
 
   loadPlayArray() {
-    // console.log('loadPlayArray');
     this.plays.length = 0; // empty the array without making a new array
-    // const localPlayArray: Array<Play> = this.playArray;
     // create a local variable because this.plays can't be referenced inside
     // the observable subscription
-    // const localPlayArray: Array<Play> = this.plays;
     if (localStorage.getItem(this.selectedGame.gameid)) {
       const jsonPlays = this.playsService.getPlaysFromLocal(this.selectedGame.gameid);
       jsonPlays.forEach(function (jsonPlay, i) {
         const play = new Play(jsonPlay, i);
-        // console.log(play.playType);
+        // Left this here just to show what I tried and failed
+        // this made the page load slowly
+
         // switch (play.playType) {
         //   case PlayType.KickingPlay:
         //     // console.log(jsonPlay.kickingPlay.kickingPlayer.ID);
@@ -213,7 +197,7 @@ export class GamesComponent implements OnInit {
         // }
 
         // localPlayArray.push(play);
-        // I want this array in revers order and unshift pushes to the front of the array
+        // I want this array in reverse order and unshift pushes to the front of the array
         // https://stackoverflow.com/questions/8073673/how-can-i-add-new-array-elements-at-the-beginning-of-an-array-in-javascript
         this.plays.unshift(play);
       }, this); // Not sure I really like adding this reference here. It works but hard to follow.
@@ -223,15 +207,12 @@ export class GamesComponent implements OnInit {
         const jsonPlays = this.playsService.getPlaysFromLocal(this.selectedGame.gameid);
         jsonPlays.forEach(function (jsonPlay, i) {
           const play = new Play(jsonPlay, i);
-          // localPlayArray.push(play);
           // I want this array in revers order and unshift pushes to the front of the array
           // https://stackoverflow.com/questions/8073673/how-can-i-add-new-array-elements-at-the-beginning-of-an-array-in-javascript
           this.plays.unshift(play);
         }, this);
       });
     }
-    // console.log(localPlayArray);
-    // console.log(this.plays);
   }
 
   get playList(): Array<Play> {
@@ -258,20 +239,16 @@ export class GamesComponent implements OnInit {
           this._currentPlay.kickingPlay.kickingPlayer = kickingPlayer;
           break;
         case PlayType.RushingPlay:
-          console.log('get rushing player');
           const rushingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.rushingPlay.rushingPlayer.ID);
           this._currentPlay.rushingPlay.rushingPlayer = rushingPlayer;
-          console.log('got rushing player');
           break;
         case PlayType.PassingPlay:
-          console.log('get passing players');
           const passingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
           this._currentPlay.passingPlay.passingPlayer = passingPlayer;
           if (this._currentPlay.json.passingPlay.receivingPlayer) {
             const receivingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.receivingPlayer.ID);
             this._currentPlay.passingPlay.receivingPlayer = receivingPlayer;
           }
-          console.log('got passing players');
           break;
         case PlayType.KickAttempt:
           const kicker = this.activePlayersService.getPlayer(this._currentPlay.json.kickAttempt.kickingPlayer.ID);
@@ -312,6 +289,8 @@ export class GamesComponent implements OnInit {
   }
 
   nextPlay() {
+    // Left commented code to show work
+
     // this.direction = 'backward';
     // this.changeDetectorRef.detectChanges();
     this.direction = 'forward';
@@ -323,6 +302,8 @@ export class GamesComponent implements OnInit {
   }
 
   previousPlay() {
+    // Left commented code to show work
+
     // this.direction = 'forward';
     // this.changeDetectorRef.detectChanges();
     this.direction = 'backward';
@@ -333,6 +314,7 @@ export class GamesComponent implements OnInit {
     // this.direction = 'none';
   }
 
+  // This is for a hidden button to speed up testing how the final plays of the game appears
   goToLastPlay() {
     this._currentPlay = undefined;
     this.currentPlayIndex = this.plays.length - 1;

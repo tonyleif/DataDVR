@@ -28,7 +28,6 @@
       <span *ngIf="loadingPlays">
         Loading...
       </span>
-      <!-- <h3 class="d-inline-block">{{selectedGame.awayTeam.City}} {{selectedGame.awayTeam.Name}} @ {{selectedGame.homeTeam.City}} {{selectedGame.homeTeam.Name}}</h3> -->
       <div class="col-4 d-inline">
         <button (click)="previousPlay()" *ngIf="showPlays" [disabled]="currentPlayIndex < 0" class="btn btn-default">Previous Play</button>
         <button (click)="nextPlay()" *ngIf="showPlays" [disabled]="this.currentPlayIndex == this.plays.length - 1" class="btn btn-success ml-1">Next Play</button>
@@ -43,9 +42,8 @@
         </div>
         {{selectedGame.homeTeam.City}}
       </div>
-      <!-- <h5>{{selectedGame.date}}</h5> -->
       <!-- This button was here for testing end of game -->
-      <!-- <button (click)="goToLastPlay()">Go to last play</button> -->
+       <!-- <button (click)="goToLastPlay()">Go to last play</button>  -->
     </div>
     <div class="row">
       <!-- Plays -->
@@ -53,20 +51,18 @@
         <div *ngIf="(showPlays && this.currentPlayIndex == this.plays.length - 1)" class="alert alert-success mb-0">Game Over</div>
       </div>
       <!-- Current Play -->
-      <!-- <div *ngFor="let play of [currentPlay]" class="container">
-          <div *ngIf="currentPlayIndex > -1" [@flyInOut]="direction">
-            <div>{{play.description}}</div>
-          </div>
-        </div> -->
+      <!-- Needed to make these single play objects into a single object array to make the animations work -->
       <div *ngFor="let currentPlay of [currentPlay]" class="container-fluid">
         <div *ngIf="currentPlayIndex > -1" [@flyInOut]="direction" class="jumbotron my-2">
-          <!-- <div *ngFor="let play of [currentPlay]" *ngIf="currentPlayIndex > -1" [@flyInOut]="direction" class="container jumbotron my-2"> -->
           <div id="playHeader" class="text-secondary">Q{{currentPlay.quarter}} {{currentPlay.clock}} {{currentPlay.downAndDistance}}</div>
           <div *ngIf="currentPlay.playType === 0" class="container row">
             <!-- Kicker -->
             <div class="player-image">
               <img *ngIf="!currentPlay.kickingPlay.kickingPlayer.noImageUrl" src={{currentPlay.kickingPlay.kickingPlayer.officialImageSrc}}
                 class="rounded" />
+                <!-- I initially created this to show the players name when there is no image url 
+                but now I show the name anyway. I'm keeping this here to show work and in case
+                I need it later -->
               <!-- <div *ngIf="currentPlay.kickingPlay.kickingPlayer.noImageUrl" class="ml-3">
                 <div class="row text-center">
                   {{currentPlay.kickingPlay.kickingPlayer.firstName}}
@@ -79,6 +75,7 @@
                 </div>
               </div> -->
             </div>
+            <!-- Add returner in future -->
           </div>
           <div *ngIf="currentPlay.playType === 1" class="container row">
             <!-- Rusher -->
@@ -147,7 +144,6 @@
               </div>
             </div>
             <!-- Receiver -->
-            <!-- <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="receiver"> -->
             <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-image-2">
               <img *ngIf="!currentPlay.passingPlay.receivingPlayer.noImageUrl" src={{currentPlay.passingPlay.receivingPlayer.officialImageSrc}}
                 class="rounded" />
@@ -163,21 +159,12 @@
                 </div>
               </div> -->
             </div>
-            <!-- <div class="player-data d-inline">
-                <div class="row d-inline">
-                  <span>{{currentPlay.passingPlay.receivingPlayer.firstName}} {{currentPlay.passingPlay.receivingPlayer.lastName}}</span>
-                </div>
-                <div *ngIf="currentPlay.passingPlay.isCompleted" class="row">
-                  <strong>{{currentPlay.passingPlay.totalYardsGained}}</strong>&nbsp;receiving yards
-                </div>
-              </div> -->
             <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-data d-inline">
               <div>{{currentPlay.passingPlay.receivingPlayer.firstName}} {{currentPlay.passingPlay.receivingPlayer.lastName}}</div>
               <div *ngIf="currentPlay.passingPlay.isCompleted">
                 <strong>{{currentPlay.passingPlay.totalYardsGained}}</strong>&nbsp;receiving yards
               </div>
             </div>
-            <!-- </div> -->
           </div>
           <div *ngIf="currentPlay.playType === 3" class="container row">
             <!-- Kicker -->
@@ -212,6 +199,7 @@
           <div class="mt-3">{{currentPlay.description}}</div>
         </div>
       </div>
+      <!-- Previous plays -->
       <div *ngFor="let oneAgo of [onePlayAgo]" class="container-fluid">
         <div *ngIf="onePlayAgo" [@flyInOut]="direction" class="list-group-item">
           <small>
@@ -244,14 +232,6 @@
           </small>
         </div>
       </div>
-      <!-- <ul class="list-group">
-      <li *ngFor="let play of playsToShow" [@flyInOut]="direction" class="list-group-item">
-        <small>
-          <div class="text-secondary">Q{{play.quarter}} {{play.clock}} {{play.downAndDistance}}</div>
-          {{play.description}}
-        </small>
-      </li>
-    </ul> -->
     </div>
   </div>
 </div>
