@@ -47,13 +47,13 @@ export class Play {
             this.kickingPlay = new KickingPlay();
         } else if (json.rushingPlay) {
             this.playType = PlayType.RushingPlay;
-            this.rushingPlay = new RushingPlay();
+            this.rushingPlay = new RushingPlay(json.rushingPlay);
         } else if (json.passingPlay) {
             this.playType = PlayType.PassingPlay;
-            this.passingPlay = new PassingPlay();
+            this.passingPlay = new PassingPlay(json.passingPlay);
         } else if (json.kickAttempt) {
             this.playType = PlayType.KickAttempt;
-            this.kickAttempt = new KickAttempt();
+            this.kickAttempt = new KickAttempt(json.kickAttempt);
         } else if (json.sackingPlay) {
             this.playType = PlayType.SackingPlay;
             this.sackingPlay = new SackingPlay();
@@ -145,14 +145,29 @@ class KickingPlay {
 
 class RushingPlay {
     rushingPlayer: Player;
-    constructor() {
+    yardsRushed: number;
+    isEndedWithTouchdown: boolean;
+    isTwoPointConversion: boolean;
+    constructor(json) {
+        this.yardsRushed = json.yardsRushed;
+        this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
+        this.isTwoPointConversion = (json.isTwoPointConversion === 'true');
     }
 }
 
 class PassingPlay {
     passingPlayer: Player;
     receivingPlayer: Player;
-    constructor() {
+    isCompleted: boolean;
+    totalYardsGained: number;
+    isEndedWithTouchdown: boolean;
+    isTwoPointConversion: boolean;
+
+    constructor(json) {
+        this.isCompleted = (json.isCompleted === 'true');
+        this.totalYardsGained = json.totalYardsGained;
+        this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
+        this.isTwoPointConversion = (json.isTwoPointConversion === 'true');
     }
     get noReceivingPlayer(): boolean {
         return (this.receivingPlayer === undefined || this.receivingPlayer == null);
@@ -161,7 +176,15 @@ class PassingPlay {
 
 class KickAttempt {
     kickingPlayer: Player;
-    constructor() {
+    isFieldGoal: boolean;
+    isExtraPoint: boolean;
+    isGood: boolean;
+    yardsKicked: boolean;
+    constructor(json) {
+        this.isFieldGoal = (json.isFieldGoal === 'true');
+        this.isExtraPoint = (json.isExtraPoint === 'true');
+        this.isGood = (json.isGood === 'true');
+        this.yardsKicked = json.yardsKicked;
     }
 }
 

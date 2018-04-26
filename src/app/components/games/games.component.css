@@ -71,3 +71,41 @@ img {
 #gameHeader {
     font-size: 1.5em;
 }
+
+.player-image {
+    margin-right: 1.5em;
+    display: inline;
+}
+
+.player-image-2 {
+    margin-left: 1.5em;
+    margin-right: .5em;
+    display: inline;
+}
+
+.receiver {
+    margin-left: 1.5em;
+    width: 15em;
+}
+
+.player-data {
+    width: 10em;
+    white-space: nowrap;
+}
+
+.player-data span {
+    vertical-align: top;
+}
+
+.single-player-data {
+    width: 20em;
+    white-space: nowrap;
+}
+
+.jumbotron {
+    padding-top: .7em;
+}
+
+#playHeader {
+    padding-bottom: .8em;
+}
