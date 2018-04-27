@@ -4,15 +4,14 @@ header {
     color: #4E4D4D;
 }
 
-.navbar>.container {
-    display: inline-block;
-}
-
 .navbar-brand {
-    /* font-size: 1.8em; */
     padding: 0;
     color: #4E4D4D;
     font-weight: 500;
+}
+
+.navbar>.container {
+    display: inline-block;
 }
 
 .navbar>.container>.nav-item {

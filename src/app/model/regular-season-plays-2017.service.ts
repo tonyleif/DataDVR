@@ -57,40 +57,30 @@ export class RegularSeasonPlays2017Service {
   }
 
   getPlays(dateWithHyphens: string, awayAbbr: string, homeAbbr: string): Array<any> {
-    // console.log('getPlays');
     const jsonObject: any = JSON.parse(this.getPlaysJSON(dateWithHyphens, awayAbbr, homeAbbr));
-    // console.log('jsonObject.gameplaybyplay.plays string: ' + JSON.stringify(jsonObject.gameplaybyplay.plays));
     const allPlays: Array<string> = jsonObject.gameplaybyplay.plays.play;
     const plays: Array<string> = new Array<string>();
     allPlays.forEach(play => {
-      // console.log(play);
       plays.push(play);
     });
     return plays;
   }
 
   getPlaysById(gameid: string): Array<any> {
-    // console.log('getPlaysById');
     const jsonObject: any = JSON.parse(this.getPlaysJSONById(gameid));
-    // console.log('jsonObject.gameplaybyplay.plays string: ' + JSON.stringify(jsonObject.gameplaybyplay.plays));
-    // console.log(jsonObject);
     const allPlays: Array<string> = jsonObject.gameplaybyplay.plays.play;
     const plays: Array<string> = new Array<string>();
     allPlays.forEach(play => {
-      // console.log(play);
       plays.push(play);
     });
     return plays;
   }
 
   getPlaysFromLocal(gameid: string): Array<any> {
-    // console.log('getPlaysFromLocal');
     const jsonObject: any = JSON.parse(localStorage.getItem(gameid));
-    // console.log('jsonObject.gameplaybyplay.plays string: ' + JSON.stringify(jsonObject.gameplaybyplay.plays));
     const allPlays: Array<string> = jsonObject.gameplaybyplay.plays.play;
     const plays: Array<string> = new Array<string>();
     allPlays.forEach(play => {
-      // console.log(play);
       plays.push(play);
     });
     return plays;

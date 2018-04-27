@@ -9,12 +9,15 @@ export class RegularSeasonGames2017Service {
   constructor(private http: Http) { }
 
   createAuthorizationHeader(headers: Headers) {
+    // Is there a way to secure this information better?
     headers.append('Authorization', 'Basic ' +
       btoa('tonyleif:00password'));
   }
 
   getWeeks(): Set<number> {
-    // console.log('getWeeks');
+    // I get the weeks from the schedule because even though the season has 17 weeks,
+    // I only want to show the weeks that are in the data. So if we've just completed
+    // week 10, only show 10 weeks.
     const weekSet: Set<number> = new Set<number>();
     const games: any = this.getGames();
     games.forEach((game) => {
@@ -24,33 +27,16 @@ export class RegularSeasonGames2017Service {
   }
 
   getGames(): Array<string> {
-    // console.log('getGames');
     const jsonObject: any = JSON.parse(localStorage.fullgameschedule); // JSON.parse(this.getGamesJSON());
     const games: Array<string> = jsonObject.fullgameschedule.gameentry;
     return games;
   }
-
-  // getGamesJSON(): string {
-  //   console.log('getGamesJSON here');
-  //   if (!localStorage.fullgameschedule) {
-  //     // console.log('Getting fullgameschedule from API');
-  //     // localStorage.fullgameschedule = JSON.stringify(this.getGamesFromAPI().subscribe());
-  //     this.getScheduleFromAPI().subscribe(result => {
-  //       // console.log(result);
-  //       localStorage.fullgameschedule = JSON.stringify(result);
-  //       // console.log('getGamesJSON localStorage loaded');
-  //     });
-  //   }
-  //   // console.log('getGamesJSON return');
-  //   return localStorage.fullgameschedule;
-  // }
 
   getGamesByWeek(week: number): Array<any> {
     const jsonObject: any = JSON.parse(localStorage.fullgameschedule); // JSON.parse(this.getGamesJSON());
     const allGames: Array<string> = jsonObject.fullgameschedule.gameentry;
     const games: Array<string> = new Array<string>();
     allGames.forEach(game => {
-      // console.log(game);
       const gameObject: any = game;
       if (gameObject.week === week) {
         games.push(gameObject);
@@ -71,28 +57,15 @@ export class RegularSeasonGames2017Service {
         localStorage.fullgameschedule = JSON.stringify(res.json());
         return res.json();
       });
-     
   }
 
   getGame(id: number): any {
-    // console.log('getGame(' + id + ')');
     const jsonObject: any = JSON.parse(localStorage.fullgameschedule); // JSON.parse(this.getGamesJSON());
     const allGames: Array<string> = jsonObject.fullgameschedule.gameentry;
-    // const game: string;
     let gameObject: any;
-    // allGames.forEach(game => {
-    //   console.log(game);
-    //   gameObject = game;
-    //   if (gameObject.id === id) {
-    //     console.log(gameObject.id);
-    //     return gameObject;
-    //   }
-    //   console.log('Should never see this');
-    // });
     for (let i = 0; i < allGames.length; i++) {
       gameObject = allGames[i];
       if (gameObject.id === id) {
-        console.log(gameObject.id);
         return gameObject;
       }
     }

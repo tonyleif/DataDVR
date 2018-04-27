@@ -5,7 +5,6 @@ export class Team {
     officialImageSrc: string;
 
     constructor(json: any) {
-        console.log('Team constructor');
         this.ID = json.id;
         this.City = json.City;
         this.Name = json.Name;

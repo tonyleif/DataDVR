@@ -1,7 +1,7 @@
 import { LineOfScrimmage } from '../model/LineOfScrimmage';
 import { Player } from '../model/Player';
 import { RegularSeasonActivePlayers2017Service } from './regular-season-active-players-2017.service';
-import { Http } from '@angular/http';
+// import { Http } from '@angular/http';
 
 export enum PlayType {
     KickingPlay,
@@ -31,7 +31,6 @@ export class Play {
     lateralPass: LateralPass;
 
     constructor(json: any, i: number) {
-        // console.log(JSON.stringify(json));
         this.json = json;
         this.index = i;
         this.description = json.description;
@@ -64,15 +63,6 @@ export class Play {
             this.lateralPass = new LateralPass();
         }
     }
-
-    // get newRushingPlay(): RushingPlay {
-    //     // const http = new Http();
-    //     const activePlayersService = new RegularSeasonActivePlayers2017Service(this.http);
-    //     const test: RushingPlay = new RushingPlay();
-    //     const rushingPlayer = activePlayersService.getPlayer(this.json.rushingPlay.rushingPlayer.ID);
-    //     test.rushingPlayer = rushingPlayer;
-    //     return test;
-    // }
 
     private get minutes(): number {
         const minuteNumber: number = parseInt(this.time.split(':')[0], 10);
@@ -108,30 +98,23 @@ export class Play {
 
     get downAndDistance(): string {
         let dnd: string;
-        // console.log('downAndDistance down ' + this.currentDown);
         switch (+this.currentDown) {
             case 1:
-                // console.log('case 1');
                 dnd = '1st and ' + this.yardsRemaining + ' at ' + this.lineOfScrimmage.team + ' ' + this.lineOfScrimmage.yardLine;
                 break;
             case 2:
-                // console.log('case 2');
                 dnd = '2nd and ' + this.yardsRemaining + ' at ' + this.lineOfScrimmage.team + ' ' + this.lineOfScrimmage.yardLine;
                 break;
             case 3:
-                // console.log('case 3');
                 dnd = '3rd and ' + this.yardsRemaining + ' at ' + this.lineOfScrimmage.team + ' ' + this.lineOfScrimmage.yardLine;
                 break;
             case 4:
-                // console.log('case 4');
                 dnd = '4th and ' + this.yardsRemaining + ' at ' + this.lineOfScrimmage.team + ' ' + this.lineOfScrimmage.yardLine;
                 break;
             default:
-                // console.log('default case');
                 dnd = '';
                 break;
         }
-        // console.log(dnd);
         return dnd;
     }
 
@@ -201,11 +184,4 @@ class LateralPass {
     get noReceivingPlayer(): boolean {
         return (this.receivingPlayer === undefined || this.receivingPlayer == null);
     }
-    // get noImageUrl(): boolean {
-    //     console.log('noImageUrl');
-    //     if (this.noReceivingPlayer) {
-    //         return true;
-    //     }
-    //     return (this.receivingPlayer.officialImageSrc == null);
-    // }
 }
