@@ -48,7 +48,7 @@ export class RegularSeasonPlays2017Service {
   }
 
   getPlaysFromAPI(gameid: string): Observable<string> {
-    const getUrl: string = 'https://api.mysportsfeeds.com/v1.2/pull/nfl/2017-regular/game_playbyplay.json?gameid=' + gameid;
+    const getUrl: string = 'https://api.mysportsfeeds.com/v1.2/pull/nfl/2018-regular/game_playbyplay.json?gameid=' + gameid;
     const headers = new Headers();
     this.createAuthorizationHeader(headers);
     return this.http

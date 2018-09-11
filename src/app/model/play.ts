@@ -121,17 +121,20 @@ export class Play {
 }
 
 class KickingPlay {
+    teamAbbreviation: string;
     kickingPlayer: Player;
     constructor() {
     }
 }
 
 class RushingPlay {
+    teamAbbreviation: string;
     rushingPlayer: Player;
     yardsRushed: number;
     isEndedWithTouchdown: boolean;
     isTwoPointConversion: boolean;
     constructor(json) {
+        this.teamAbbreviation = json.teamAbbreviation;
         this.yardsRushed = json.yardsRushed;
         this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
         this.isTwoPointConversion = (json.isTwoPointConversion === 'true');
@@ -139,6 +142,7 @@ class RushingPlay {
 }
 
 class PassingPlay {
+    teamAbbreviation: string;
     passingPlayer: Player;
     receivingPlayer: Player;
     isCompleted: boolean;
@@ -147,6 +151,7 @@ class PassingPlay {
     isTwoPointConversion: boolean;
 
     constructor(json) {
+        this.teamAbbreviation = json.teamAbbreviation;
         this.isCompleted = (json.isCompleted === 'true');
         this.totalYardsGained = json.totalYardsGained;
         this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
@@ -158,12 +163,14 @@ class PassingPlay {
 }
 
 class KickAttempt {
+    teamAbbreviation: string;
     kickingPlayer: Player;
     isFieldGoal: boolean;
     isExtraPoint: boolean;
     isGood: boolean;
     yardsKicked: boolean;
     constructor(json) {
+        this.teamAbbreviation = json.teamAbbreviation;
         this.isFieldGoal = (json.isFieldGoal === 'true');
         this.isExtraPoint = (json.isExtraPoint === 'true');
         this.isGood = (json.isGood === 'true');
@@ -177,6 +184,7 @@ class SackingPlay {
 }
 
 class LateralPass {
+    teamAbbreviation: string;
     passingPlayer: Player;
     receivingPlayer: Player;
     constructor() {

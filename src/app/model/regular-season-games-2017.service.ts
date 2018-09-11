@@ -52,7 +52,7 @@ export class RegularSeasonGames2017Service {
     // Generally speaking, users will only want the most recent season but
     // I'd like to give them the option
     return this.http
-      .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/2017-regular/full_game_schedule.json', {headers: headers})
+      .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/2018-regular/full_game_schedule.json', {headers: headers})
       .map((res: Response) => {
         localStorage.fullgameschedule = JSON.stringify(res.json());
         return res.json();

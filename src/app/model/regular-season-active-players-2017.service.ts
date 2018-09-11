@@ -19,7 +19,7 @@ export class RegularSeasonActivePlayers2017Service {
     const headers = new Headers();
     this.createAuthorizationHeader(headers);
     return this.http
-      .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/2017-regular/active_players.json', { headers: headers })
+      .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/2018-regular/active_players.json', { headers: headers })
       .map((res: Response) => {
         localStorage.activeplayers = JSON.stringify(res.json());
         const allPlayers: Array<string> = res.json().activeplayers.playerentry;

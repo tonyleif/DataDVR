@@ -1,11 +1,11 @@
 <div class="row container">
   <!-- Left column -->
-  <div class="col-2 mb-2">
+  <div class="mb-2 ml-0" style="width: 7em">
     <!-- Weeks dropdown -->
     <div class="row mb-2">
       <p *ngIf="!doneLoadingSchedule">Loading schedule...</p>
-      <select *ngIf="doneLoadingSchedule" id="weekSelect" [(ngModel)]="selectedWeek" class="btn btn-primary">
-        <option value="undefined">Select Week</option>
+      <select *ngIf="doneLoadingSchedule" id="weekSelect" [(ngModel)]="selectedWeek" class="btn btn-primary left-col-btn">
+        <option value="undefined">Select</option>
         <option *ngFor="let week of weeks; i as index" [value]="week">
           Week {{week}}
         </option>
@@ -22,7 +22,7 @@
     </div>
   </div>
   <!-- Main part of page -->
-  <div class="col-10">
+  <div>
     <!-- Game Header -->
     <div *ngIf="selectedGame" class="row d-inline">
       <span *ngIf="loadingPlays">
@@ -47,190 +47,228 @@
     </div>
     <div class="row">
       <!-- Plays -->
-      <div class="container-fluid mb-0 mt-2">
-        <div *ngIf="(showPlays && this.currentPlayIndex == this.plays.length - 1)" class="alert alert-success mb-0">Game Over</div>
-      </div>
-      <!-- Current Play -->
-      <!-- Needed to make these single play objects into a single object array to make the animations work -->
-      <div *ngFor="let currentPlay of [currentPlay]" class="container-fluid">
-        <div *ngIf="currentPlayIndex > -1" [@flyInOut]="direction" class="jumbotron my-2">
-          <div id="playHeader" class="text-secondary">Q{{currentPlay.quarter}} {{currentPlay.clock}} {{currentPlay.downAndDistance}}</div>
-          <div *ngIf="currentPlay.playType === 0" class="container row">
-            <!-- Kicker -->
-            <div class="player-image">
-              <img *ngIf="!currentPlay.kickingPlay.kickingPlayer.noImageUrl" src={{currentPlay.kickingPlay.kickingPlayer.officialImageSrc}}
-                class="rounded" />
-                <!-- I initially created this to show the players name when there is no image url 
-                but now I show the name anyway. I'm keeping this here to show work and in case
-                I need it later -->
-              <!-- <div *ngIf="currentPlay.kickingPlay.kickingPlayer.noImageUrl" class="ml-3">
+      <div class="col-8">
+        <div class="container-fluid mb-0 mt-2 ml-0 pl-0">
+          <div *ngIf="(showPlays && this.currentPlayIndex == this.plays.length - 1)" class="alert alert-success mb-0">Game Over</div>
+        </div>
+        <!-- Current Play -->
+        <!-- Needed to make these single play objects into a single object array to make the animations work -->
+        <div *ngFor="let currentPlay of [currentPlay]" class="container-fluid play">
+          <div *ngIf="currentPlayIndex > -1" [@flyInOut]="direction" class="jumbotron my-2">
+            <div id="playHeader" class="text-secondary">Q{{currentPlay.quarter}} {{currentPlay.clock}} {{currentPlay.downAndDistance}}</div>
+            <div *ngIf="currentPlay.playType === 0" class="container row current-play">
+              <!-- Kicker -->
+              <div class="player-image">
+                <img *ngIf="!currentPlay.kickingPlay.kickingPlayer.noImageUrl" src={{currentPlay.kickingPlay.kickingPlayer.officialImageSrc}}
+                  class="rounded" />
+                  <!-- I initially created this to show the players name when there is no image url 
+                  but now I show the name anyway. I'm keeping this here to show work and in case
+                  I need it later -->
+                <!-- <div *ngIf="currentPlay.kickingPlay.kickingPlayer.noImageUrl" class="ml-3">
+                  <div class="row text-center">
+                    {{currentPlay.kickingPlay.kickingPlayer.firstName}}
+                  </div>
+                  <div class="row text-center">
+                    {{currentPlay.kickingPlay.kickingPlayer.lastName}}
+                  </div>
+                  <div class="row text-center">
+                    (No Image)
+                  </div>
+                </div> -->
+              </div>
+              <!-- Add returner in future -->
+            </div>
+            <div *ngIf="currentPlay.playType === 1" class="container row current-play">
+              <!-- Rusher -->
+              <div class="player-image">
+                <img *ngIf="!currentPlay.rushingPlay.rushingPlayer.noImageUrl" src={{currentPlay.rushingPlay.rushingPlayer.officialImageSrc}}
+                  class="rounded d-inline" />
+                <!-- <div *ngIf="currentPlay.rushingPlay.rushingPlayer.noImageUrl" class="ml-3">
+                  <div class="row text-center">
+                    {{currentPlay.rushingPlay.rushingPlayer.firstName}}
+                  </div>
+                  <div class="row text-center">
+                    {{currentPlay.rushingPlay.rushingPlayer.lastName}}
+                  </div>
+                  <div class="row text-center">
+                    (No Image)
+                  </div>
+                </div> -->
+              </div>
+              <div class="player-data">
+                <div class="row">
+                  {{currentPlay.rushingPlay.rushingPlayer.firstName}} {{currentPlay.rushingPlay.rushingPlayer.lastName}}
+                </div>
+                <div class="row">
+                  <strong>{{currentPlay.rushingPlay.yardsRushed}}</strong>&nbsp;rushing yards
+                </div>
+                <div *ngIf="currentPlay.rushingPlay.isEndedWithTouchdown" class="row">
+                  <strong class="alert alert-success">TOUCHDOWN!</strong>
+                </div>
+                <div *ngIf="currentPlay.rushingPlay.isTwoPointConversion" class="row">
+                  <strong class="alert alert-success">2 pt conversion</strong>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="currentPlay.playType === 2" class="container row current-play">
+              <!-- Passer -->
+              <div class="player-image">
+                <img *ngIf="!currentPlay.passingPlay.passingPlayer.noImageUrl" src={{currentPlay.passingPlay.passingPlayer.officialImageSrc}}
+                  class="rounded" />
+                <!-- <div *ngIf="currentPlay.passingPlay.passingPlayer.noImageUrl">
+                  <div class="row text-center">
+                    {{currentPlay.passingPlay.passingPlayer.firstName}}
+                  </div>
+                  <div class="row text-center">
+                    {{currentPlay.passingPlay.passingPlayer.lastName}}
+                  </div>
+                  <div class="row text-center">
+                    (No Image)
+                  </div>
+                </div> -->
+              </div>
+              <div class="player-data">
+                <div class="row">
+                  {{currentPlay.passingPlay.passingPlayer.firstName}} {{currentPlay.passingPlay.passingPlayer.lastName}}
+                </div>
+                <div *ngIf="!currentPlay.passingPlay.isCompleted" class="row">
+                  <strong class="alert alert-danger">Incomplete</strong>
+                </div>
+                <div *ngIf="currentPlay.passingPlay.isCompleted" class="row">
+                  <strong>{{currentPlay.passingPlay.totalYardsGained}}</strong>&nbsp;passing yards
+                </div>
+                <div *ngIf="currentPlay.passingPlay.isEndedWithTouchdown" class="row">
+                  <strong class="alert alert-success">TOUCHDOWN!</strong>
+                </div>
+                <div *ngIf="currentPlay.passingPlay.isTwoPointConversion" class="row">
+                  <strong class="alert alert-success">2 pt conversion</strong>
+                </div>
+              </div>
+              <!-- Receiver -->
+              <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-image-2">
+                <img *ngIf="!currentPlay.passingPlay.receivingPlayer.noImageUrl" src={{currentPlay.passingPlay.receivingPlayer.officialImageSrc}}
+                  class="rounded" />
+                <!-- <div *ngIf="currentPlay.passingPlay.receivingPlayer.noImageUrl" class="ml-6">
+                  <div class="row text-center">
+                    {{currentPlay.passingPlay.receivingPlayer.firstName}}
+                  </div>
+                  <div class="row text-center">
+                    {{currentPlay.passingPlay.receivingPlayer.lastName}}
+                  </div>
+                  <div class="row text-center">
+                    (No Image)
+                  </div>
+                </div> -->
+              </div>
+              <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-data d-inline">
+                <div>{{currentPlay.passingPlay.receivingPlayer.firstName}} {{currentPlay.passingPlay.receivingPlayer.lastName}}</div>
+                <div *ngIf="currentPlay.passingPlay.isCompleted">
+                  <strong>{{currentPlay.passingPlay.totalYardsGained}}</strong>&nbsp;receiving yards
+                </div>
+              </div>
+            </div>
+            <div *ngIf="currentPlay.playType === 3" class="container row current-play">
+              <!-- Kicker -->
+              <div class="player-image">
+                <img src={{currentPlay.kickAttempt.kickingPlayer.officialImageSrc}} class="rounded" />
+              </div>
+              <div *ngIf="currentPlay.kickAttempt.kickingPlayer.noImageUrl" class="ml-3">
                 <div class="row text-center">
-                  {{currentPlay.kickingPlay.kickingPlayer.firstName}}
+                  {{currentPlay.kickAttempt.kickingPlayer.firstName}}
                 </div>
                 <div class="row text-center">
-                  {{currentPlay.kickingPlay.kickingPlayer.lastName}}
+                  {{currentPlay.kickAttempt.kickingPlayer.lastName}}
                 </div>
                 <div class="row text-center">
                   (No Image)
                 </div>
-              </div> -->
+              </div>
+              <div class="player-data">
+                <div class="row">
+                  {{currentPlay.kickAttempt.kickingPlayer.firstName}} {{currentPlay.kickAttempt.kickingPlayer.lastName}}
+                </div>
+                <div *ngIf="currentPlay.kickAttempt.isFieldGoal" class="row">
+                    <strong *ngIf="currentPlay.kickAttempt.isGood" class="alert alert-success">{{currentPlay.kickAttempt.yardsKicked}} yard FG is good!</strong>
+                    <strong *ngIf="!currentPlay.kickAttempt.isGood" class="alert alert-danger">{{currentPlay.kickAttempt.yardsKicked}} yard FG is NO good</strong>
+                </div>
+                <div *ngIf="currentPlay.kickAttempt.isExtraPoint" class="row">
+                    <strong *ngIf="currentPlay.kickAttempt.isGood" class="alert alert-success">Extra point is good!</strong>
+                    <strong *ngIf="!currentPlay.kickAttempt.isGood" class="alert alert-danger">Extra point is NO good</strong>
+                </div>
+              </div>
             </div>
-            <!-- Add returner in future -->
+            <div class="mt-3">{{currentPlay.description}}</div>
           </div>
-          <div *ngIf="currentPlay.playType === 1" class="container row">
-            <!-- Rusher -->
-            <div class="player-image">
-              <img *ngIf="!currentPlay.rushingPlay.rushingPlayer.noImageUrl" src={{currentPlay.rushingPlay.rushingPlayer.officialImageSrc}}
-                class="rounded d-inline" />
-              <!-- <div *ngIf="currentPlay.rushingPlay.rushingPlayer.noImageUrl" class="ml-3">
-                <div class="row text-center">
-                  {{currentPlay.rushingPlay.rushingPlayer.firstName}}
-                </div>
-                <div class="row text-center">
-                  {{currentPlay.rushingPlay.rushingPlayer.lastName}}
-                </div>
-                <div class="row text-center">
-                  (No Image)
-                </div>
-              </div> -->
-            </div>
-            <div class="player-data">
-              <div class="row">
-                {{currentPlay.rushingPlay.rushingPlayer.firstName}} {{currentPlay.rushingPlay.rushingPlayer.lastName}}
-              </div>
-              <div class="row">
-                <strong>{{currentPlay.rushingPlay.yardsRushed}}</strong>&nbsp;rushing yards
-              </div>
-              <div *ngIf="currentPlay.rushingPlay.isEndedWithTouchdown" class="row">
-                <strong class="alert alert-success">TOUCHDOWN!</strong>
-              </div>
-              <div *ngIf="currentPlay.rushingPlay.isTwoPointConversion" class="row">
-                <strong class="alert alert-success">2 pt conversion</strong>
-              </div>
-            </div>
+        </div>
+        <!-- Previous plays -->
+        <div *ngFor="let oneAgo of [onePlayAgo]" class="container-fluid play">
+          <div *ngIf="onePlayAgo" [@flyInOut]="direction" class="list-group-item">
+            <small>
+              <div class="text-secondary">Q{{oneAgo.quarter}} {{oneAgo.clock}} {{oneAgo.downAndDistance}}</div>
+              {{oneAgo.description}}
+            </small>
           </div>
-          <div *ngIf="currentPlay.playType === 2" class="container row">
-            <!-- Passer -->
-            <div class="player-image">
-              <img *ngIf="!currentPlay.passingPlay.passingPlayer.noImageUrl" src={{currentPlay.passingPlay.passingPlayer.officialImageSrc}}
-                class="rounded" />
-              <!-- <div *ngIf="currentPlay.passingPlay.passingPlayer.noImageUrl">
-                <div class="row text-center">
-                  {{currentPlay.passingPlay.passingPlayer.firstName}}
-                </div>
-                <div class="row text-center">
-                  {{currentPlay.passingPlay.passingPlayer.lastName}}
-                </div>
-                <div class="row text-center">
-                  (No Image)
-                </div>
-              </div> -->
-            </div>
-            <div class="player-data">
-              <div class="row">
-                {{currentPlay.passingPlay.passingPlayer.firstName}} {{currentPlay.passingPlay.passingPlayer.lastName}}
-              </div>
-              <div *ngIf="!currentPlay.passingPlay.isCompleted" class="row">
-                <strong class="alert alert-danger">Incomplete</strong>
-              </div>
-              <div *ngIf="currentPlay.passingPlay.isCompleted" class="row">
-                <strong>{{currentPlay.passingPlay.totalYardsGained}}</strong>&nbsp;passing yards
-              </div>
-              <div *ngIf="currentPlay.passingPlay.isEndedWithTouchdown" class="row">
-                <strong class="alert alert-success">TOUCHDOWN!</strong>
-              </div>
-              <div *ngIf="currentPlay.passingPlay.isTwoPointConversion" class="row">
-                <strong class="alert alert-success">2 pt conversion</strong>
-              </div>
-            </div>
-            <!-- Receiver -->
-            <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-image-2">
-              <img *ngIf="!currentPlay.passingPlay.receivingPlayer.noImageUrl" src={{currentPlay.passingPlay.receivingPlayer.officialImageSrc}}
-                class="rounded" />
-              <!-- <div *ngIf="currentPlay.passingPlay.receivingPlayer.noImageUrl" class="ml-6">
-                <div class="row text-center">
-                  {{currentPlay.passingPlay.receivingPlayer.firstName}}
-                </div>
-                <div class="row text-center">
-                  {{currentPlay.passingPlay.receivingPlayer.lastName}}
-                </div>
-                <div class="row text-center">
-                  (No Image)
-                </div>
-              </div> -->
-            </div>
-            <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-data d-inline">
-              <div>{{currentPlay.passingPlay.receivingPlayer.firstName}} {{currentPlay.passingPlay.receivingPlayer.lastName}}</div>
-              <div *ngIf="currentPlay.passingPlay.isCompleted">
-                <strong>{{currentPlay.passingPlay.totalYardsGained}}</strong>&nbsp;receiving yards
-              </div>
-            </div>
+        </div>
+        <div *ngFor="let twoAgo of [twoPlaysAgo]" class="container-fluid play">
+          <div *ngIf="twoPlaysAgo" [@flyInOut]="direction" class="list-group-item">
+            <small>
+              <div class="text-secondary">Q{{twoAgo.quarter}} {{twoAgo.clock}} {{twoAgo.downAndDistance}}</div>
+              {{twoAgo.description}}
+            </small>
           </div>
-          <div *ngIf="currentPlay.playType === 3" class="container row">
-            <!-- Kicker -->
-            <div class="player-image">
-              <img src={{currentPlay.kickAttempt.kickingPlayer.officialImageSrc}} class="rounded" />
-            </div>
-            <div *ngIf="currentPlay.kickAttempt.kickingPlayer.noImageUrl" class="ml-3">
-              <div class="row text-center">
-                {{currentPlay.kickAttempt.kickingPlayer.firstName}}
-              </div>
-              <div class="row text-center">
-                {{currentPlay.kickAttempt.kickingPlayer.lastName}}
-              </div>
-              <div class="row text-center">
-                (No Image)
-              </div>
-            </div>
-            <div class="player-data">
-              <div class="row">
-                {{currentPlay.kickAttempt.kickingPlayer.firstName}} {{currentPlay.kickAttempt.kickingPlayer.lastName}}
-              </div>
-              <div *ngIf="currentPlay.kickAttempt.isFieldGoal" class="row">
-                  <strong *ngIf="currentPlay.kickAttempt.isGood" class="alert alert-success">{{currentPlay.kickAttempt.yardsKicked}} yard FG is good!</strong>
-                  <strong *ngIf="!currentPlay.kickAttempt.isGood" class="alert alert-danger">{{currentPlay.kickAttempt.yardsKicked}} yard FG is NO good</strong>
-              </div>
-              <div *ngIf="currentPlay.kickAttempt.isExtraPoint" class="row">
-                  <strong *ngIf="currentPlay.kickAttempt.isGood" class="alert alert-success">Extra point is good!</strong>
-                  <strong *ngIf="!currentPlay.kickAttempt.isGood" class="alert alert-danger">Extra point is NO good</strong>
-              </div>
-            </div>
+        </div>
+        <div *ngFor="let threeAgo of [threePlaysAgo]" class="container-fluid play">
+          <div *ngIf="threePlaysAgo" [@flyInOut]="direction" class="list-group-item">
+            <small>
+              <div class="text-secondary">Q{{threeAgo.quarter}} {{threeAgo.clock}} {{threeAgo.downAndDistance}}</div>
+              {{threeAgo.description}}
+            </small>
           </div>
-          <div class="mt-3">{{currentPlay.description}}</div>
+        </div>
+        <div *ngFor="let fourAgo of [fourPlaysAgo]" class="container-fluid play">
+          <div *ngIf="fourPlaysAgo" [@flyInOut]="direction" class="list-group-item">
+            <small>
+              <div class="text-secondary">Q{{fourAgo.quarter}} {{fourAgo.clock}} {{fourAgo.downAndDistance}}</div>
+              {{fourAgo.description}}
+            </small>
+          </div>
         </div>
       </div>
-      <!-- Previous plays -->
-      <div *ngFor="let oneAgo of [onePlayAgo]" class="container-fluid">
-        <div *ngIf="onePlayAgo" [@flyInOut]="direction" class="list-group-item">
-          <small>
-            <div class="text-secondary">Q{{oneAgo.quarter}} {{oneAgo.clock}} {{oneAgo.downAndDistance}}</div>
-            {{oneAgo.description}}
-          </small>
-        </div>
+      <div class="col-2">
+          <div *ngIf="hasPlayersStats">
+            <table>
+              <thead>
+                <th>Player</th>
+                <th>Pass</th>
+                <th>Rush</th>
+                <th>Rec</th>
+              </thead>
+              <tr *ngFor="let playerStat of newCurrentPlayersStats.awayTeamPlayersStats" >
+                <td>{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.passingYards}}</td>
+                <td>{{playerStat.rushingYards}}</td>
+                <td>{{playerStat.receivingYards}}</td>
+              </tr>
+            </table>
+          </div>
       </div>
-      <div *ngFor="let twoAgo of [twoPlaysAgo]" class="container-fluid">
-        <div *ngIf="twoPlaysAgo" [@flyInOut]="direction" class="list-group-item">
-          <small>
-            <div class="text-secondary">Q{{twoAgo.quarter}} {{twoAgo.clock}} {{twoAgo.downAndDistance}}</div>
-            {{twoAgo.description}}
-          </small>
-        </div>
-      </div>
-      <div *ngFor="let threeAgo of [threePlaysAgo]" class="container-fluid">
-        <div *ngIf="threePlaysAgo" [@flyInOut]="direction" class="list-group-item">
-          <small>
-            <div class="text-secondary">Q{{threeAgo.quarter}} {{threeAgo.clock}} {{threeAgo.downAndDistance}}</div>
-            {{threeAgo.description}}
-          </small>
-        </div>
-      </div>
-      <div *ngFor="let fourAgo of [fourPlaysAgo]" class="container-fluid">
-        <div *ngIf="fourPlaysAgo" [@flyInOut]="direction" class="list-group-item">
-          <small>
-            <div class="text-secondary">Q{{fourAgo.quarter}} {{fourAgo.clock}} {{fourAgo.downAndDistance}}</div>
-            {{fourAgo.description}}
-          </small>
-        </div>
+      <div class="col-2">
+          <div *ngIf="hasPlayersStats">
+            <table>
+              <thead>
+                <th>Player</th>
+                <th>Pass</th>
+                <th>Rush</th>
+                <th>Rec</th>
+              </thead>
+              <tr *ngFor="let playerStat of newCurrentPlayersStats.homeTeamPlayersStats" >
+                <td>{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.passingYards}}</td>
+                <td>{{playerStat.rushingYards}}</td>
+                <td>{{playerStat.receivingYards}}</td>
+              </tr>
+            </table>
+          </div>
       </div>
     </div>
   </div>

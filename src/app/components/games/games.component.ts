@@ -11,6 +11,8 @@ import { Player } from '../../model/Player';
 
 import { Input } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { PlayerStats } from '../../model/PlayerStats';
+import { PlayersStats } from '../../model/PlayersStats';
 
 @Component({
   selector: 'app-games',
@@ -42,6 +44,9 @@ export class GamesComponent implements OnInit {
   plays: Array<Play> = [];
   currentPlayIndex = -1;
   direction: string;
+  playersStats: Set<PlayerStats> = new Set<PlayerStats>();
+  // passingPlayersStats: Set<PlayerStats> = new Set<PlayerStats>();
+  newPlayersStats: PlayersStats;
 
   constructor(private gamesService: RegularSeasonGames2017Service,
     private playsService: RegularSeasonPlays2017Service,
@@ -228,6 +233,7 @@ export class GamesComponent implements OnInit {
   }
 
   get currentPlay(): Play {
+    // console.log('this.currentPlayIndex ' + this.currentPlayIndex);
     if (this._currentPlay !== undefined) {
       return this._currentPlay;
     }
@@ -245,6 +251,33 @@ export class GamesComponent implements OnInit {
         case PlayType.PassingPlay:
           const passingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
           this._currentPlay.passingPlay.passingPlayer = passingPlayer;
+          // // Find player in set
+          // let existingPlayerStats: PlayerStats;
+          // this.playersStats.forEach(function(ps: PlayerStats) {
+          //       if (ps.player.id === passingPlayer.id) {
+          //         existingPlayerStats = ps;
+          //       }
+          //     }
+          //   );
+          // // Add player to set if not found
+          // if (existingPlayerStats === undefined) {
+          //   existingPlayerStats = new PlayerStats(passingPlayer);
+          //   this.playersStats.add(existingPlayerStats);
+          // }
+          // // Update stats
+          
+          // if (this.direction === 'forward') {
+          //   existingPlayerStats.passingYards += +this._currentPlay.passingPlay.totalYardsGained;
+          // } else {
+          //   if (this.direction === 'backward') {
+          //     // console.log(this.plays[this.plays.length - this.currentPlayIndex - 2].passingPlay.totalYardsGained);
+          //     console.log(this.onePlayAhead.playType);
+          //     if (this.onePlayAhead.playType === PlayType.PassingPlay) {
+          //       console.log(this.onePlayAhead.passingPlay.totalYardsGained);
+          //       existingPlayerStats.passingYards -= +this.onePlayAhead.passingPlay.totalYardsGained;
+          //     }
+          //   }
+          // }
           if (this._currentPlay.json.passingPlay.receivingPlayer) {
             const receivingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.receivingPlayer.ID);
             this._currentPlay.passingPlay.receivingPlayer = receivingPlayer;
@@ -270,6 +303,53 @@ export class GamesComponent implements OnInit {
 
   get playsToShow(): Array<Play> {
     return this.plays.slice(this.plays.length - this.currentPlayIndex, this.plays.length - this.currentPlayIndex + 4);
+  }
+
+  get currentPlayersStats(): Set<PlayerStats> {
+    const playersStatsSet: Set<PlayerStats> = new Set<PlayerStats>();
+    if (this.currentPlayIndex >= 0) {
+      const playsWatched = this.plays.slice(this.plays.length - this.currentPlayIndex - 1, this.plays.length);
+      playsWatched.forEach(function(p) {
+        switch (p.playType) {
+          case PlayType.PassingPlay:
+            // Find player in set
+            let findPlayerStats: PlayerStats;
+            playersStatsSet.forEach(function(ps: PlayerStats) {
+                  if (ps.player.id === p.passingPlay.passingPlayer.id) {
+                    findPlayerStats = ps;
+                  }
+                }
+              );
+            // Add player to set if not found
+            if (findPlayerStats === undefined) {
+              findPlayerStats = new PlayerStats(p.passingPlay.passingPlayer, p.passingPlay.teamAbbreviation);
+              playersStatsSet.add(findPlayerStats);
+            }
+            // Update stats
+            findPlayerStats.passingYards += +p.passingPlay.totalYardsGained;
+            break;
+          case PlayType.RushingPlay:
+            
+        }
+      });
+    }
+    return playersStatsSet;
+  }
+
+  get newCurrentPlayersStats(): PlayersStats {
+    if (this.currentPlayIndex >= 0) {
+      const playsWatched = this.plays.slice(this.plays.length - this.currentPlayIndex - 1, this.plays.length);
+      return new PlayersStats(playsWatched, this.selectedGame.awayTeam.Abbreviation, this.selectedGame.homeTeam.Abbreviation);
+    }
+    return null;
+  }
+
+  get hasPlayersStats(): boolean {
+    return (this.newCurrentPlayersStats != null);
+  }
+
+  get onePlayAhead(): Play {
+    return this.plays[this.plays.length - this.currentPlayIndex - 2];
   }
 
   get onePlayAgo(): Play {
