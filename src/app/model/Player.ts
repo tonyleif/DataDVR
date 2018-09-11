@@ -3,6 +3,7 @@ export class Player {
     officialImageSrc: string;
     lastName: string;
     firstName: string;
+    position: string;
 
     constructor(json: any) {
         this.id = json.ID;
@@ -11,6 +12,7 @@ export class Player {
         }
         this.lastName = json.LastName;
         this.firstName = json.FirstName;
+        this.position = json.Position;
     }
 
     get noImageUrl(): boolean {

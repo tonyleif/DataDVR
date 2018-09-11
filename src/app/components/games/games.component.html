@@ -29,8 +29,12 @@
         Loading...
       </span>
       <div class="col-4 d-inline">
-        <button (click)="previousPlay()" *ngIf="showPlays" [disabled]="currentPlayIndex < 0" class="btn btn-default">Previous Play</button>
-        <button (click)="nextPlay()" *ngIf="showPlays" [disabled]="this.currentPlayIndex == this.plays.length - 1" class="btn btn-success ml-1">Next Play</button>
+        <button (click)="previousPlay()" *ngIf="showPlays" [disabled]="currentPlayIndex < 0" class="btn btn-default">Previous
+          Play
+        </button>
+        <button (click)="nextPlay()" *ngIf="showPlays" [disabled]="this.currentPlayIndex == this.plays.length - 1" class="btn btn-success ml-1">Next
+          Play
+        </button>
       </div>
       <div id="gameHeader" class="d-inline col-8 float-right">
         <div class="crop d-inline">
@@ -43,13 +47,15 @@
         {{selectedGame.homeTeam.City}}
       </div>
       <!-- This button was here for testing end of game -->
-       <!-- <button (click)="goToLastPlay()">Go to last play</button>  -->
+      <!-- <button (click)="goToLastPlay()">Go to last play</button>  -->
     </div>
     <div class="row">
       <!-- Plays -->
-      <div class="col-8">
+      <div>
         <div class="container-fluid mb-0 mt-2 ml-0 pl-0">
-          <div *ngIf="(showPlays && this.currentPlayIndex == this.plays.length - 1)" class="alert alert-success mb-0">Game Over</div>
+          <div *ngIf="(showPlays && this.currentPlayIndex == this.plays.length - 1)" class="alert alert-success mb-0">Game
+            Over
+          </div>
         </div>
         <!-- Current Play -->
         <!-- Needed to make these single play objects into a single object array to make the animations work -->
@@ -61,7 +67,7 @@
               <div class="player-image">
                 <img *ngIf="!currentPlay.kickingPlay.kickingPlayer.noImageUrl" src={{currentPlay.kickingPlay.kickingPlayer.officialImageSrc}}
                   class="rounded" />
-                  <!-- I initially created this to show the players name when there is no image url 
+                <!-- I initially created this to show the players name when there is no image url 
                   but now I show the name anyway. I'm keeping this here to show work and in case
                   I need it later -->
                 <!-- <div *ngIf="currentPlay.kickingPlay.kickingPlayer.noImageUrl" class="ml-3">
@@ -188,12 +194,14 @@
                   {{currentPlay.kickAttempt.kickingPlayer.firstName}} {{currentPlay.kickAttempt.kickingPlayer.lastName}}
                 </div>
                 <div *ngIf="currentPlay.kickAttempt.isFieldGoal" class="row">
-                    <strong *ngIf="currentPlay.kickAttempt.isGood" class="alert alert-success">{{currentPlay.kickAttempt.yardsKicked}} yard FG is good!</strong>
-                    <strong *ngIf="!currentPlay.kickAttempt.isGood" class="alert alert-danger">{{currentPlay.kickAttempt.yardsKicked}} yard FG is NO good</strong>
+                  <strong *ngIf="currentPlay.kickAttempt.isGood" class="alert alert-success">{{currentPlay.kickAttempt.yardsKicked}}
+                    yard FG is good!</strong>
+                  <strong *ngIf="!currentPlay.kickAttempt.isGood" class="alert alert-danger">{{currentPlay.kickAttempt.yardsKicked}}
+                    yard FG is NO good</strong>
                 </div>
                 <div *ngIf="currentPlay.kickAttempt.isExtraPoint" class="row">
-                    <strong *ngIf="currentPlay.kickAttempt.isGood" class="alert alert-success">Extra point is good!</strong>
-                    <strong *ngIf="!currentPlay.kickAttempt.isGood" class="alert alert-danger">Extra point is NO good</strong>
+                  <strong *ngIf="currentPlay.kickAttempt.isGood" class="alert alert-success">Extra point is good!</strong>
+                  <strong *ngIf="!currentPlay.kickAttempt.isGood" class="alert alert-danger">Extra point is NO good</strong>
                 </div>
               </div>
             </div>
@@ -234,41 +242,115 @@
           </div>
         </div>
       </div>
-      <div class="col-2">
-          <div *ngIf="hasPlayersStats">
-            <table>
-              <thead>
-                <th>Player</th>
-                <th>Pass</th>
-                <th>Rush</th>
-                <th>Rec</th>
-              </thead>
-              <tr *ngFor="let playerStat of newCurrentPlayersStats.awayTeamPlayersStats" >
-                <td>{{playerStat.player.lastName}}</td>
-                <td>{{playerStat.passingYards}}</td>
-                <td>{{playerStat.rushingYards}}</td>
-                <td>{{playerStat.receivingYards}}</td>
-              </tr>
-            </table>
-          </div>
+      <!-- Away Stats -->
+      <div>
+        <div *ngIf="hasPlayersStats">
+          <table class="table-sm">
+            <thead class="thead-light">
+              <th>QB</th>
+              <th>Pass</th>
+              <th>Rush</th>
+              <th>Rec</th>
+            </thead>
+            <tr *ngFor="let playerStat of newCurrentPlayersStats.awayTeamQBsStats">
+              <td>{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.passingYards}}</td>
+              <td>{{playerStat.rushingYards}}</td>
+              <td>{{playerStat.receivingYards}}</td>
+            </tr>
+            <thead class="thead-light">
+              <th>RB</th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </thead>
+            <tr *ngFor="let playerStat of newCurrentPlayersStats.awayTeamRBsStats">
+              <td>{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.passingYards}}</td>
+              <td>{{playerStat.rushingYards}}</td>
+              <td>{{playerStat.receivingYards}}</td>
+            </tr>
+            <thead class="thead-light">
+              <th>WR</th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </thead>
+            <tr *ngFor="let playerStat of newCurrentPlayersStats.awayTeamWRsStats">
+              <td>{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.passingYards}}</td>
+              <td>{{playerStat.rushingYards}}</td>
+              <td>{{playerStat.receivingYards}}</td>
+            </tr>
+            <thead class="thead-light">
+              <th>TE</th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </thead>
+            <tr *ngFor="let playerStat of newCurrentPlayersStats.awayTeamTEsStats">
+              <td>{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.passingYards}}</td>
+              <td>{{playerStat.rushingYards}}</td>
+              <td>{{playerStat.receivingYards}}</td>
+            </tr>
+          </table>
+        </div>
       </div>
-      <div class="col-2">
-          <div *ngIf="hasPlayersStats">
-            <table>
-              <thead>
-                <th>Player</th>
-                <th>Pass</th>
-                <th>Rush</th>
-                <th>Rec</th>
-              </thead>
-              <tr *ngFor="let playerStat of newCurrentPlayersStats.homeTeamPlayersStats" >
-                <td>{{playerStat.player.lastName}}</td>
-                <td>{{playerStat.passingYards}}</td>
-                <td>{{playerStat.rushingYards}}</td>
-                <td>{{playerStat.receivingYards}}</td>
-              </tr>
-            </table>
-          </div>
+      <!-- Home Stats -->
+      <div>
+        <div *ngIf="hasPlayersStats">
+          <table class="table-sm">
+            <thead class="thead-light">
+              <th>QB</th>
+              <th>Pass</th>
+              <th>Rush</th>
+              <th>Rec</th>
+            </thead>
+            <tr *ngFor="let playerStat of newCurrentPlayersStats.homeTeamQBsStats">
+              <td>{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.passingYards}}</td>
+              <td>{{playerStat.rushingYards}}</td>
+              <td>{{playerStat.receivingYards}}</td>
+            </tr>
+            <thead class="thead-light">
+              <th>RB</th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </thead>
+            <tr *ngFor="let playerStat of newCurrentPlayersStats.homeTeamRBsStats">
+              <td>{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.passingYards}}</td>
+              <td>{{playerStat.rushingYards}}</td>
+              <td>{{playerStat.receivingYards}}</td>
+            </tr>
+            <thead class="thead-light">
+              <th>WR</th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </thead>
+            <tr *ngFor="let playerStat of newCurrentPlayersStats.homeTeamWRsStats">
+              <td>{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.passingYards}}</td>
+              <td>{{playerStat.rushingYards}}</td>
+              <td>{{playerStat.receivingYards}}</td>
+            </tr>
+            <thead class="thead-light">
+              <th>TE</th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </thead>
+            <tr *ngFor="let playerStat of newCurrentPlayersStats.homeTeamTEsStats">
+              <td>{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.passingYards}}</td>
+              <td>{{playerStat.rushingYards}}</td>
+              <td>{{playerStat.receivingYards}}</td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
   </div>

@@ -7,6 +7,30 @@ export class PlayersStats {
     awayTeamAbbreviation: string;
     homeTeamAbbreviation: string;
 
+    static findPlayerStats(player: Player, teamAbbr: string, playerStatsSet: Set<PlayerStats>): PlayerStats {
+        if (player == null) {
+            return null;
+        }
+        // Find player in set
+        // const test = Math.floor(Math.random() * Math.floor(100));
+        let newPlayerStats: PlayerStats;
+        if (playerStatsSet.size > 0) {
+            playerStatsSet.forEach(function (ps: PlayerStats) {
+                if (ps.player.id === player.id) {
+                    newPlayerStats = ps;
+                    return ps;
+                }
+            });
+        }
+        if (newPlayerStats != null) {
+            return newPlayerStats;
+        }
+        // Add player to set if not found
+        newPlayerStats = new PlayerStats(player, teamAbbr);
+        playerStatsSet.add(newPlayerStats);
+        return newPlayerStats;
+    }
+
     constructor(playsWatched, awayTeamAbbr: string, homeTeamAbbr: string) {
         const tempPlayersStats = new Set<PlayerStats>();
         this.awayTeamAbbreviation = awayTeamAbbr;
@@ -66,12 +90,44 @@ export class PlayersStats {
         return sortedArray;
     }
 
+    get awayTeamPlayersStats(): PlayerStats[] {
+        return this.getTeamPlayersStats(this.awayTeamAbbreviation);
+    }
+
     get homeTeamPlayersStats(): PlayerStats[] {
         return this.getTeamPlayersStats(this.homeTeamAbbreviation);
     }
 
-    get awayTeamPlayersStats(): PlayerStats[] {
-        return this.getTeamPlayersStats(this.awayTeamAbbreviation);
+    get awayTeamQBsStats(): PlayerStats[] {
+        return this.awayTeamPlayersStats.filter((ps) => ps.player.position === 'QB');
+    }
+
+    get homeTeamQBsStats(): PlayerStats[] {
+        return this.homeTeamPlayersStats.filter((ps) => ps.player.position === 'QB');
+    }
+
+    get awayTeamRBsStats(): PlayerStats[] {
+        return this.awayTeamPlayersStats.filter((ps) => ps.player.position === 'RB');
+    }
+
+    get homeTeamRBsStats(): PlayerStats[] {
+        return this.homeTeamPlayersStats.filter((ps) => ps.player.position === 'RB');
+    }
+
+    get awayTeamWRsStats(): PlayerStats[] {
+        return this.awayTeamPlayersStats.filter((ps) => ps.player.position === 'WR');
+    }
+
+    get homeTeamWRsStats(): PlayerStats[] {
+        return this.homeTeamPlayersStats.filter((ps) => ps.player.position === 'WR');
+    }
+
+    get awayTeamTEsStats(): PlayerStats[] {
+        return this.awayTeamPlayersStats.filter((ps) => ps.player.position === 'TE');
+    }
+
+    get homeTeamTEsStats(): PlayerStats[] {
+        return this.homeTeamPlayersStats.filter((ps) => ps.player.position === 'TE');
     }
 
     getTeamPlayersStats(teamAbbr: string) {
@@ -106,29 +162,8 @@ export class PlayersStats {
         // return filteredArray;
     }
 
-    static findPlayerStats(player: Player, teamAbbr: string, playerStatsSet: Set<PlayerStats>): PlayerStats {
-        if (player == null) {
-            return null;
-        }
-        // Find player in set
-        // const test = Math.floor(Math.random() * Math.floor(100));
-        let newPlayerStats: PlayerStats;
-        if (playerStatsSet.size > 0) {
-            playerStatsSet.forEach(function (ps: PlayerStats) {
-                if (ps.player.id === player.id) {
-                    newPlayerStats = ps;
-                    return ps;
-                }
-            });
-        }
-        if (newPlayerStats != null) {
-            return newPlayerStats;
-        }
-        // Add player to set if not found
-        newPlayerStats = new PlayerStats(player, teamAbbr);
-        playerStatsSet.add(newPlayerStats);
-        return newPlayerStats;
-    }
 }
+
+
 
 
