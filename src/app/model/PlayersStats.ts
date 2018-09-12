@@ -37,26 +37,31 @@ export class PlayersStats {
         this.homeTeamAbbreviation = homeTeamAbbr;        // console.log(tempPlayersStats.size);
         let currentPlayerStats: PlayerStats;
         playsWatched.forEach(function (p) {
-            switch (p.playType) {
-                case PlayType.PassingPlay:
-                    // Passing player
-                    // console.log(tempPlayersStats.size);
-                    // console.log('add passer');
-                    currentPlayerStats = PlayersStats.findPlayerStats(p.passingPlay.passingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
-                    currentPlayerStats.passingYards += +p.passingPlay.totalYardsGained;
-                    // Receiving player
-                    if (p.passingPlay.receivingPlayer != null) {
-                        // console.log('add receiver');
-                        currentPlayerStats = PlayersStats.findPlayerStats(p.passingPlay.receivingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
-                        currentPlayerStats.receivingYards += +p.passingPlay.totalYardsGained;
-                    }
-                    break;
-                case PlayType.RushingPlay:
-                    // Rushing player
-                    // console.log('add rusher');
-                    currentPlayerStats = PlayersStats.findPlayerStats(p.rushingPlay.rushingPlayer, p.rushingPlay.teamAbbreviation, tempPlayersStats);
-                    currentPlayerStats.rushingYards += +p.rushingPlay.yardsRushed;
-                    break;
+            if (!p.isCancelsPlay) {
+                switch (p.playType) {
+                    case PlayType.PassingPlay:
+                        // Passing player
+                        if (p.passingPlay.isCompleted) {
+                            currentPlayerStats = PlayersStats.findPlayerStats(
+                                p.passingPlay.passingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
+                            currentPlayerStats.passingYards += +p.passingPlay.totalYardsGained;
+                            // Receiving player
+                            if (p.passingPlay.receivingPlayer != null) {
+                                // console.log('add receiver');
+                                currentPlayerStats = PlayersStats.findPlayerStats(
+                                    p.passingPlay.receivingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
+                                currentPlayerStats.receivingYards += +p.passingPlay.totalYardsGained;
+                            }
+                        }
+                        break;
+                    case PlayType.RushingPlay:
+                        // Rushing player
+                        // console.log('add rusher');
+                        currentPlayerStats = PlayersStats.findPlayerStats(
+                            p.rushingPlay.rushingPlayer, p.rushingPlay.teamAbbreviation, tempPlayersStats);
+                        currentPlayerStats.rushingYards += +p.rushingPlay.yardsRushed;
+                        break;
+                }
             }
         });
         this.playersStats = tempPlayersStats;
@@ -136,29 +141,30 @@ export class PlayersStats {
         this.playersStats.forEach((ps) => {
             if (ps.teamAbbreviation === teamAbbr) {
                 filteredArray.push(ps);
-            }});
-            const sortedArray = filteredArray.sort((ps1, ps2) => {
-                if (ps1.passingYards < ps2.passingYards) {
-                    return 1;
-                }
-                if (ps1.passingYards > ps2.passingYards) {
-                    return -1;
-                }
-                if (ps1.rushingYards < ps2.rushingYards) {
-                    return 1;
-                }
-                if (ps1.rushingYards > ps2.rushingYards) {
-                    return -1;
-                }
-                if (ps1.receivingYards < ps2.receivingYards) {
-                    return 1;
-                }
-                if (ps1.receivingYards > ps2.receivingYards) {
-                    return -1;
-                }
-                return 0;
-            });
-            return sortedArray;
+            }
+        });
+        const sortedArray = filteredArray.sort((ps1, ps2) => {
+            if (ps1.passingYards < ps2.passingYards) {
+                return 1;
+            }
+            if (ps1.passingYards > ps2.passingYards) {
+                return -1;
+            }
+            if (ps1.rushingYards < ps2.rushingYards) {
+                return 1;
+            }
+            if (ps1.rushingYards > ps2.rushingYards) {
+                return -1;
+            }
+            if (ps1.receivingYards < ps2.receivingYards) {
+                return 1;
+            }
+            if (ps1.receivingYards > ps2.receivingYards) {
+                return -1;
+            }
+            return 0;
+        });
+        return sortedArray;
         // return filteredArray;
     }
 
