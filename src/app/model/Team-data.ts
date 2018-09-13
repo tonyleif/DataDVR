@@ -34,7 +34,7 @@ export const TEAMS: Team[] = [
 {'ID': 63, 'City': 'Minnesota', 'Name': 'Vikings', 'Abbreviation': 'MIN',
     'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/MIN.svg'},
 {'ID': 64, 'City': 'Houston', 'Name': 'Texans', 'Abbreviation': 'HOU',
-    'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/IND.svg'},
+    'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/HOU.svg'},
 {'ID': 65, 'City': 'Indianapolis', 'Name': 'Colts', 'Abbreviation': 'IND',
     'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/IND.svg'},
 {'ID': 66, 'City': 'Jacksonville', 'Name': 'Jaguars', 'Abbreviation': 'JAX',

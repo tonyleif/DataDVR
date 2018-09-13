@@ -124,3 +124,25 @@ select.btn-primary option {
 #playHeader {
     padding-bottom: .8em;
 }
+
+.stat-table {
+    float: left;
+}
+
+.stat-table thead > tr {
+    height: 2.1em;
+    background-color: #e9ecef;
+    border-radius: 5px !important;
+}
+
+.stat-table tr > td,
+.stat-table tr > th {
+    width: 2.9em;
+    text-align: right;
+}
+
+.stat-table tr > td:first-child,
+.stat-table tr > th:first-child {
+    width: 5em;
+    text-align: left;
+}

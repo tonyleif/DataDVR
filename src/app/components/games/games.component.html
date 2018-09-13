@@ -242,8 +242,166 @@
           </div>
         </div>
       </div>
+      <!-- Side by side -->
+      <div *ngIf="hasPlayersStats" class="ml-1">
+        <div class="row">
+          <table class="table-sm stat-table">
+            <thead class="thead-light">
+              <tr>
+                <th>QB</th>
+                <th>Pass</th>
+                <th>Rush</th>
+                <th>Rec</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of newCurrentPlayersStats.awayTeamQBsStats">
+                <td>{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.passingYards}}</td>
+                <td>{{playerStat.rushingYards}}</td>
+                <td>{{playerStat.receivingYards}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table-sm stat-table">
+            <thead class="thead-light">
+              <tr>
+                <th></th>
+                <th>Pass</th>
+                <th>Rush</th>
+                <th>Rec</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of newCurrentPlayersStats.homeTeamQBsStats">
+                <td>{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.passingYards}}</td>
+                <td>{{playerStat.rushingYards}}</td>
+                <td>{{playerStat.receivingYards}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- <h6>RB</h6> -->
+        <div class="row">
+          <table class="table-sm stat-table">
+            <thead class="thead-light">
+              <tr>
+                <th>RB</th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of newCurrentPlayersStats.awayTeamRBsStats">
+                <td>{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.passingYards}}</td>
+                <td>{{playerStat.rushingYards}}</td>
+                <td>{{playerStat.receivingYards}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table-sm stat-table">
+            <thead class="thead-light">
+              <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of newCurrentPlayersStats.homeTeamRBsStats">
+                <td>{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.passingYards}}</td>
+                <td>{{playerStat.rushingYards}}</td>
+                <td>{{playerStat.receivingYards}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- <h6>WR</h6> -->
+        <div class="row">
+          <table class="table-sm stat-table">
+            <thead class="thead-light">
+              <tr>
+                <th>WR</th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of newCurrentPlayersStats.awayTeamWRsStats">
+                <td>{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.passingYards}}</td>
+                <td>{{playerStat.rushingYards}}</td>
+                <td>{{playerStat.receivingYards}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table-sm stat-table">
+            <thead class="thead-light">
+              <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of newCurrentPlayersStats.homeTeamWRsStats">
+                <td>{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.passingYards}}</td>
+                <td>{{playerStat.rushingYards}}</td>
+                <td>{{playerStat.receivingYards}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- <h6>TE</h6> -->
+        <div class="row">
+          <table class="table-sm stat-table">
+            <thead class="thead-light">
+              <tr>
+                <th>TE</th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of newCurrentPlayersStats.awayTeamTEsStats">
+                <td>{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.passingYards}}</td>
+                <td>{{playerStat.rushingYards}}</td>
+                <td>{{playerStat.receivingYards}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table-sm stat-table">
+            <thead class="thead-light">
+              <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of newCurrentPlayersStats.homeTeamTEsStats">
+                <td>{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.passingYards}}</td>
+                <td>{{playerStat.rushingYards}}</td>
+                <td>{{playerStat.receivingYards}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
       <!-- Away Stats -->
-      <div>
+      <!-- <div>
         <div *ngIf="hasPlayersStats">
           <table class="table-sm">
             <thead class="thead-light">
@@ -296,9 +454,9 @@
             </tr>
           </table>
         </div>
-      </div>
+      </div> -->
       <!-- Home Stats -->
-      <div>
+      <!-- <div>
         <div *ngIf="hasPlayersStats">
           <table class="table-sm">
             <thead class="thead-light">
@@ -351,7 +509,7 @@
             </tr>
           </table>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>
