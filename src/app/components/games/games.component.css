@@ -127,12 +127,19 @@ select.btn-primary option {
 
 .stat-table {
     float: left;
+    border-radius: 5px;
+    padding-left: .25em;
+}
+
+.stat-table thead {
+    border-radius: 5px;
 }
 
 .stat-table thead > tr {
-    height: 2.1em;
+    height: 2.2em;
     background-color: #e9ecef;
     border-radius: 5px !important;
+    border-style: solid;
 }
 
 .stat-table tr > td,
