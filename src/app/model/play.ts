@@ -149,6 +149,7 @@ class PassingPlay {
     totalYardsGained: number;
     isEndedWithTouchdown: boolean;
     isTwoPointConversion: boolean;
+    isNoPlay: boolean;
 
     constructor(json) {
         this.teamAbbreviation = json.teamAbbreviation;
@@ -156,6 +157,7 @@ class PassingPlay {
         this.totalYardsGained = json.totalYardsGained;
         this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
         this.isTwoPointConversion = (json.isTwoPointConversion === 'true');
+        this.isNoPlay = (json.isNoPlay === 'true');
     }
     get noReceivingPlayer(): boolean {
         return (this.receivingPlayer === undefined || this.receivingPlayer == null);

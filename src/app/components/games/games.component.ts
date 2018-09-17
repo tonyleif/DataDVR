@@ -44,9 +44,10 @@ export class GamesComponent implements OnInit {
   plays: Array<Play> = [];
   currentPlayIndex = -1;
   direction: string;
-  playersStats: Set<PlayerStats> = new Set<PlayerStats>();
+  // playersStats: Set<PlayerStats> = new Set<PlayerStats>();
   // passingPlayersStats: Set<PlayerStats> = new Set<PlayerStats>();
-  newPlayersStats: PlayersStats;
+  playersStats: PlayersStats;
+  updated: boolean;
 
   constructor(private gamesService: RegularSeasonGames2017Service,
     private playsService: RegularSeasonPlays2017Service,
@@ -90,6 +91,9 @@ export class GamesComponent implements OnInit {
       this.plays.length = 0;
     }
     if (weekNumber > 0) {
+      // const tempGames: Game[] = new Array<Game>();
+      // this.gamesService.getGamesByWeek(weekNumber).forEach(g => tempGames.push(new Game(g.json)));
+      // this.games = tempGames;
       this.games = this.gamesService.getGamesByWeek(weekNumber);
     } else {
       this.games = null;
@@ -131,7 +135,7 @@ export class GamesComponent implements OnInit {
 
   setGame(id: number) {
     // Don't bother doing this work if the button clicked was already selected
-    if (this.selectedGame && this.selectedGame.id != id) {
+    if (this.selectedGame && this.selectedGame.id !== id) {
       // Browsers have storage limits so clear out the data from last game
       localStorage.removeItem(this.selectedGame.gameid);
       this.selectedGame = new Game(this.gamesService.getGame(id));
@@ -305,38 +309,38 @@ export class GamesComponent implements OnInit {
     return this.plays.slice(this.plays.length - this.currentPlayIndex, this.plays.length - this.currentPlayIndex + 4);
   }
 
-  get currentPlayersStats(): Set<PlayerStats> {
-    const playersStatsSet: Set<PlayerStats> = new Set<PlayerStats>();
-    if (this.currentPlayIndex >= 0) {
-      const playsWatched = this.plays.slice(this.plays.length - this.currentPlayIndex - 1, this.plays.length);
-      playsWatched.forEach(function(p) {
-        switch (p.playType) {
-          case PlayType.PassingPlay:
-            // Find player in set
-            let findPlayerStats: PlayerStats;
-            playersStatsSet.forEach(function(ps: PlayerStats) {
-                  if (ps.player.id === p.passingPlay.passingPlayer.id) {
-                    findPlayerStats = ps;
-                  }
-                }
-              );
-            // Add player to set if not found
-            if (findPlayerStats === undefined) {
-              findPlayerStats = new PlayerStats(p.passingPlay.passingPlayer, p.passingPlay.teamAbbreviation);
-              playersStatsSet.add(findPlayerStats);
-            }
-            // Update stats
-            findPlayerStats.passingYards += +p.passingPlay.totalYardsGained;
-            break;
-          case PlayType.RushingPlay:
+  // get currentPlayersStats(): Set<PlayerStats> {
+  //   const playersStatsSet: Set<PlayerStats> = new Set<PlayerStats>();
+  //   if (this.currentPlayIndex >= 0) {
+  //     const playsWatched = this.plays.slice(this.plays.length - this.currentPlayIndex - 1, this.plays.length);
+  //     playsWatched.forEach(function(p) {
+  //       switch (p.playType) {
+  //         case PlayType.PassingPlay:
+  //           // Find player in set
+  //           let findPlayerStats: PlayerStats;
+  //           playersStatsSet.forEach(function(ps: PlayerStats) {
+  //                 if (ps.player.id === p.passingPlay.passingPlayer.id) {
+  //                   findPlayerStats = ps;
+  //                 }
+  //               }
+  //             );
+  //           // Add player to set if not found
+  //           if (findPlayerStats === undefined) {
+  //             findPlayerStats = new PlayerStats(p.passingPlay.passingPlayer, p.passingPlay.teamAbbreviation);
+  //             playersStatsSet.add(findPlayerStats);
+  //           }
+  //           // Update stats
+  //           findPlayerStats.passingYards += +p.passingPlay.totalYardsGained;
+  //           break;
+  //         case PlayType.RushingPlay:
             
-        }
-      });
-    }
-    return playersStatsSet;
-  }
+  //       }
+  //     });
+  //   }
+  //   return playersStatsSet;
+  // }
 
-  get newCurrentPlayersStats(): PlayersStats {
+  get currentPlayersStats(): PlayersStats {
     if (this.currentPlayIndex >= 0) {
       const playsWatched = this.plays.slice(this.plays.length - this.currentPlayIndex - 1, this.plays.length);
       return new PlayersStats(playsWatched, this.selectedGame.awayTeam.Abbreviation, this.selectedGame.homeTeam.Abbreviation);
@@ -345,7 +349,7 @@ export class GamesComponent implements OnInit {
   }
 
   get hasPlayersStats(): boolean {
-    return (this.newCurrentPlayersStats != null);
+    return (this.currentPlayersStats != null);
   }
 
   get onePlayAhead(): Play {
@@ -398,6 +402,11 @@ export class GamesComponent implements OnInit {
   goToLastPlay() {
     this._currentPlay = undefined;
     this.currentPlayIndex = this.plays.length - 1;
+  }
+
+  markGameAsWatched () {
+    this.selectedGame.watched = !this.selectedGame.watched;
+    this.updated = true;
   }
 
 }

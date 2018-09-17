@@ -3,6 +3,8 @@ import { Http, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
+import { Game } from './Game';
+
 @Injectable()
 export class RegularSeasonGames2017Service {
 
@@ -33,11 +35,14 @@ export class RegularSeasonGames2017Service {
   }
 
   getGamesByWeek(week: number): Array<any> {
-    const jsonObject: any = JSON.parse(localStorage.fullgameschedule); // JSON.parse(this.getGamesJSON());
+    const jsonObject: any = JSON.parse(localStorage.getItem('fullgameschedule')); // JSON.parse(this.getGamesJSON());
     const allGames: Array<string> = jsonObject.fullgameschedule.gameentry;
-    const games: Array<string> = new Array<string>();
+    const games: Game[] = new Array<Game>();
     allGames.forEach(game => {
-      const gameObject: any = game;
+      // console.log(game);
+      const gameObject: Game = new Game(game);
+      // console.log(gameObject.week);
+      console.log(gameObject.watched);
       if (gameObject.week === week) {
         games.push(gameObject);
       }
