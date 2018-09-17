@@ -14,8 +14,7 @@
     <!-- Game List -->
     <div class="row">
       <ul id="games" class="list-group">
-        <li *ngFor="let game of games" class="list-group-item btn btn-link btn-sm hoverable" 
-          [ngClass]="{'active': this.selectedGameId == game.id, 
+        <li *ngFor="let game of games" class="list-group-item btn btn-link btn-sm hoverable" [ngClass]="{'active': this.selectedGameId == game.id, 
                       'not-selected': this.selectedGameId != game.id,
                       'watched': game.watched && (this.selectedGameId != game.id)
                        }"
@@ -39,11 +38,16 @@
         <button (click)="previousPlay()" *ngIf="showPlays" [disabled]="currentPlayIndex < 0" class="btn btn-default">Previous
           Play
         </button>
-        <button (click)="nextPlay()" *ngIf="showPlays" [disabled]="this.currentPlayIndex == this.plays.length - 1" class="btn btn-success ml-1">Next
+        <button (click)="nextPlay()" *ngIf="showPlays" [disabled]="this.currentPlayIndex == this.plays.length - 1"
+          class="btn btn-success ml-1">Next
           Play
         </button>
         <button (click)="markGameAsWatched()" class="btn ml-1" [ngClass]="{ 'btn-primary': selectedGame.watched }">
           <span *ngIf="selectedGame.watched">Not </span>Done
+        </button>
+        <!-- This button was here for testing end of game -->
+        <button (click)="goToLastPlay()" class="btn btn-primary ml-1">
+          Go to last play
         </button>
       </div>
       <div id="gameHeader">
@@ -62,22 +66,21 @@
           {{selectedGame.homeTeam.City}}
         </div>
       </div>
-      <!-- This button was here for testing end of game -->
-      <!-- <button (click)="goToLastPlay()">Go to last play</button>  -->
     </div>
     <div class="row">
       <!-- Plays -->
       <div class="float-left">
-        <div class="container-fluid mb-0 mt-2 ml-0 pl-0">
-          <div *ngIf="(showPlays && this.currentPlayIndex == this.plays.length - 1)" class="alert alert-success mb-0">Game
-            Over
+        <div class="container-fluid mb-0 mt-2 ml-3 pl-0">
+          <div *ngIf="(showPlays && this.currentPlayIndex == this.plays.length - 1)" class="alert alert-success mb-0">
+            Game Over
           </div>
         </div>
         <!-- Current Play -->
         <!-- Needed to make these single play objects into a single object array to make the animations work -->
         <div *ngFor="let currentPlay of [currentPlay]" class="container-fluid play">
           <div *ngIf="currentPlayIndex > -1" [@flyInOut]="direction" class="jumbotron my-2">
-            <div id="playHeader" class="text-secondary">Q{{currentPlay.quarter}} {{currentPlay.clock}} {{currentPlay.downAndDistance}}</div>
+            <div id="playHeader" class="text-secondary">Q{{currentPlay.quarter}} {{currentPlay.clock}}
+              {{currentPlay.downAndDistance}}</div>
             <div *ngIf="currentPlay.playType === 0" class="container row current-play">
               <!-- Kicker -->
               <div class="player-image">
@@ -119,7 +122,8 @@
               </div>
               <div class="player-data">
                 <div class="row">
-                  {{currentPlay.rushingPlay.rushingPlayer.firstName}} {{currentPlay.rushingPlay.rushingPlayer.lastName}}
+                  {{currentPlay.rushingPlay.rushingPlayer.firstName}}
+                  {{currentPlay.rushingPlay.rushingPlayer.lastName}}
                 </div>
                 <div class="row">
                   <strong>{{currentPlay.rushingPlay.yardsRushed}}</strong>&nbsp;rushing yards
@@ -151,7 +155,8 @@
               </div>
               <div class="player-data">
                 <div class="row">
-                  {{currentPlay.passingPlay.passingPlayer.firstName}} {{currentPlay.passingPlay.passingPlayer.lastName}}
+                  {{currentPlay.passingPlay.passingPlayer.firstName}}
+                  {{currentPlay.passingPlay.passingPlayer.lastName}}
                 </div>
                 <div *ngIf="!currentPlay.passingPlay.isCompleted" class="row">
                   <strong class="alert alert-danger">Incomplete</strong>
@@ -183,7 +188,8 @@
                 </div> -->
               </div>
               <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-data d-inline">
-                <div>{{currentPlay.passingPlay.receivingPlayer.firstName}} {{currentPlay.passingPlay.receivingPlayer.lastName}}</div>
+                <div>{{currentPlay.passingPlay.receivingPlayer.firstName}}
+                  {{currentPlay.passingPlay.receivingPlayer.lastName}}</div>
                 <div *ngIf="currentPlay.passingPlay.isCompleted">
                   <strong>{{currentPlay.passingPlay.totalYardsGained}}</strong>&nbsp;receiving yards
                 </div>
@@ -207,7 +213,8 @@
               </div>
               <div class="player-data">
                 <div class="row">
-                  {{currentPlay.kickAttempt.kickingPlayer.firstName}} {{currentPlay.kickAttempt.kickingPlayer.lastName}}
+                  {{currentPlay.kickAttempt.kickingPlayer.firstName}}
+                  {{currentPlay.kickAttempt.kickingPlayer.lastName}}
                 </div>
                 <div *ngIf="currentPlay.kickAttempt.isFieldGoal" class="row">
                   <strong *ngIf="currentPlay.kickAttempt.isGood" class="alert alert-success">{{currentPlay.kickAttempt.yardsKicked}}

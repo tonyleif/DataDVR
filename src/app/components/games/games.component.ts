@@ -341,7 +341,10 @@ export class GamesComponent implements OnInit {
   // }
 
   get currentPlayersStats(): PlayersStats {
+    console.log('currentPlayersStats');
     if (this.currentPlayIndex >= 0) {
+      console.log('start ' + (this.plays.length - this.currentPlayIndex - 1));
+      console.log('end ' + this.plays.length);
       const playsWatched = this.plays.slice(this.plays.length - this.currentPlayIndex - 1, this.plays.length);
       return new PlayersStats(playsWatched, this.selectedGame.awayTeam.Abbreviation, this.selectedGame.homeTeam.Abbreviation);
     }
@@ -349,7 +352,7 @@ export class GamesComponent implements OnInit {
   }
 
   get hasPlayersStats(): boolean {
-    return (this.currentPlayersStats != null);
+    return (this.currentPlayIndex >= 0); //(this.currentPlayersStats != null);
   }
 
   get onePlayAhead(): Play {
@@ -373,6 +376,7 @@ export class GamesComponent implements OnInit {
   }
 
   nextPlay() {
+    console.log('nextPlay');
     // Left commented code to show work
 
     // this.direction = 'backward';
@@ -400,8 +404,12 @@ export class GamesComponent implements OnInit {
 
   // This is for a hidden button to speed up testing how the final plays of the game appears
   goToLastPlay() {
+    console.log('goToLastPlay');
+    this.direction = 'forward';
     this._currentPlay = undefined;
-    this.currentPlayIndex = this.plays.length - 1;
+    console.log('this.plays.length' + this.plays.length);
+    this.currentPlayIndex += 2; //this.plays.length - 1;
+    console.log('this.currentPlayIndex ' + this.currentPlayIndex);
   }
 
   markGameAsWatched () {

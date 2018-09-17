@@ -8,6 +8,7 @@ export class PlayersStats {
     homeTeamAbbreviation: string;
 
     static findPlayerStats(player: Player, teamAbbr: string, playerStatsSet: Set<PlayerStats>): PlayerStats {
+        console.log('findPlayerStats ' + player);
         if (player == null) {
             return null;
         }
@@ -36,19 +37,22 @@ export class PlayersStats {
         this.awayTeamAbbreviation = awayTeamAbbr;
         this.homeTeamAbbreviation = homeTeamAbbr;
         let currentPlayerStats: PlayerStats;
+        console.log('playsWatched.length ' + playsWatched.length);
         playsWatched.forEach(function (p, idx, array) {
-            // console.log(idx);
-            // console.log(array.length);
+            console.log('PlayersStats constructor ' + idx);
+            console.log('array.length ' + array.length);
             // let lastPlay = true;
             // if (idx === array.length - 1) {
             //     console.log('last play is ' + idx + ' : array.length is ' + array.length);
             //     lastPlay = true;
             // }
+            console.log(p);
             if (!p.isCancelsPlay) {
                 switch (p.playType) {
                     case PlayType.PassingPlay:
                         // Passing player
                         if (p.passingPlay.isCompleted && !p.passingPlay.isNoPlay) {
+                            console.log(p.passingPlay.passingPlayer);
                             currentPlayerStats = PlayersStats.findPlayerStats(
                                 p.passingPlay.passingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
                             currentPlayerStats.passingYards += +p.passingPlay.totalYardsGained;
@@ -140,7 +144,6 @@ export class PlayersStats {
         });
         return sortedArray;
     }
-
     get awayTeamPlayersStats(): PlayerStats[] {
         return this.getTeamPlayersStats(this.awayTeamAbbreviation);
     }
