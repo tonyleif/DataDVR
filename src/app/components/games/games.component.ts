@@ -165,47 +165,6 @@ export class GamesComponent implements OnInit {
       const jsonPlays = this.playsService.getPlaysFromLocal(this.selectedGame.gameid);
       jsonPlays.forEach(function (jsonPlay, i) {
         const play = new Play(jsonPlay, i);
-        // Left this here just to show what I tried and failed
-        // this made the page load slowly
-
-        // switch (play.playType) {
-        //   case PlayType.KickingPlay:
-        //     // console.log(jsonPlay.kickingPlay.kickingPlayer.ID);
-        //     const kickingPlayer = this.activePlayersService.getPlayer(jsonPlay.kickingPlay.kickingPlayer.ID);
-        //     // console.log(kickingPlayer);
-        //     play.kickingPlay.kickingPlayer = kickingPlayer;
-        //     break;
-        //   case PlayType.RushingPlay:
-        //     const rushingPlayer = this.activePlayersService.getPlayer(jsonPlay.rushingPlay.rushingPlayer.ID);
-        //     play.rushingPlay.rushingPlayer = rushingPlayer;
-        //     break;
-        //   case PlayType.PassingPlay:
-        //     const passingPlayer = this.activePlayersService.getPlayer(jsonPlay.passingPlay.passingPlayer.ID);
-        //     play.passingPlay.passingPlayer = passingPlayer;
-        //     if (jsonPlay.passingPlay.receivingPlayer) {
-        //       const receivingPlayer = this.activePlayersService.getPlayer(jsonPlay.passingPlay.receivingPlayer.ID);
-        //       play.passingPlay.receivingPlayer = receivingPlayer;
-        //     }
-        //     break;
-        //   case PlayType.KickAttempt:
-        //     const kicker = this.activePlayersService.getPlayer(jsonPlay.kickAttempt.kickingPlayer.ID);
-        //     play.kickAttempt.kickingPlayer = kicker;
-        //     break;
-        //   case PlayType.SackingPlay:
-        //     // const sackingPlayer = this.activePlayersService.getPlayer(jsonPlay.sackingPlay.sackingPlayer.ID);
-        //     // play.sackingPlay.sackingPlayer = sackingPlayer;
-        //     break;
-        //   case PlayType.LateralPass:
-        //     const lateralPassingPlayer = this.activePlayersService.getPlayer(jsonPlay.passingPlay.passingPlayer.ID);
-        //     play.lateralPass.passingPlayer = passingPlayer;
-        //     if (jsonPlay.passingPlay.receivingPlayer) {
-        //       const lateralReceivingPlayer = this.activePlayersService.getPlayer(jsonPlay.passingPlay.receivingPlayer.ID);
-        //       play.lateralPass.receivingPlayer = lateralReceivingPlayer;
-        //     }
-        //     break;
-        // }
-
-        // localPlayArray.push(play);
         // I want this array in reverse order and unshift pushes to the front of the array
         // https://stackoverflow.com/questions/8073673/how-can-i-add-new-array-elements-at-the-beginning-of-an-array-in-javascript
         this.plays.unshift(play);
@@ -341,10 +300,10 @@ export class GamesComponent implements OnInit {
   // }
 
   get currentPlayersStats(): PlayersStats {
-    console.log('currentPlayersStats');
+    // console.log('currentPlayersStats');
     if (this.currentPlayIndex >= 0) {
-      console.log('start ' + (this.plays.length - this.currentPlayIndex - 1));
-      console.log('end ' + this.plays.length);
+      // console.log('start ' + (this.plays.length - this.currentPlayIndex - 1));
+      // console.log('end ' + this.plays.length);
       const playsWatched = this.plays.slice(this.plays.length - this.currentPlayIndex - 1, this.plays.length);
       return new PlayersStats(playsWatched, this.selectedGame.awayTeam.Abbreviation, this.selectedGame.homeTeam.Abbreviation);
     }
@@ -376,7 +335,7 @@ export class GamesComponent implements OnInit {
   }
 
   nextPlay() {
-    console.log('nextPlay');
+    // console.log('nextPlay');
     // Left commented code to show work
 
     // this.direction = 'backward';
@@ -404,12 +363,12 @@ export class GamesComponent implements OnInit {
 
   // This is for a hidden button to speed up testing how the final plays of the game appears
   goToLastPlay() {
-    console.log('goToLastPlay');
+    // console.log('goToLastPlay');
     this.direction = 'forward';
     this._currentPlay = undefined;
-    console.log('this.plays.length' + this.plays.length);
-    this.currentPlayIndex += 2; //this.plays.length - 1;
-    console.log('this.currentPlayIndex ' + this.currentPlayIndex);
+    // console.log('this.plays.length' + this.plays.length);
+    this.currentPlayIndex = this.plays.length - 1;
+    // console.log('this.currentPlayIndex ' + this.currentPlayIndex);
   }
 
   markGameAsWatched () {

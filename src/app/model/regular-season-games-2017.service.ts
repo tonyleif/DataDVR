@@ -42,7 +42,7 @@ export class RegularSeasonGames2017Service {
       // console.log(game);
       const gameObject: Game = new Game(game);
       // console.log(gameObject.week);
-      console.log(gameObject.watched);
+      // console.log(gameObject.watched);
       if (gameObject.week === week) {
         games.push(gameObject);
       }

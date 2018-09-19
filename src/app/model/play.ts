@@ -138,6 +138,9 @@ class RushingPlay {
         this.yardsRushed = json.yardsRushed;
         this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
         this.isTwoPointConversion = (json.isTwoPointConversion === 'true');
+        // if (json.rushingPlayer) {
+            this.rushingPlayer = new Player(json.rushingPlayer);
+        // }
     }
 }
 
@@ -158,6 +161,12 @@ class PassingPlay {
         this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
         this.isTwoPointConversion = (json.isTwoPointConversion === 'true');
         this.isNoPlay = (json.isNoPlay === 'true');
+        if (json.passingPlayer != null) {
+            this.passingPlayer = new Player(json.passingPlayer);
+        }
+        if (json.receivingPlayer != null) {
+            this.receivingPlayer = new Player(json.receivingPlayer);
+        }
     }
     get noReceivingPlayer(): boolean {
         return (this.receivingPlayer === undefined || this.receivingPlayer == null);
