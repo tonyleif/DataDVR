@@ -80,6 +80,33 @@ export class PlayersStats {
                             }
                         }
                         break;
+                    case PlayType.KickAttempt:
+                        console.log('case PlayType.KickAttempt');
+                        // Kicking player
+                        if (!(p.kickAttempt.isNoPlay === 'true')) {
+                            currentPlayerStats = PlayersStats.findPlayerStats(
+                                p.kickAttempt.kickingPlayer, p.kickAttempt.teamAbbreviation, tempPlayersStats);
+                            console.log(currentPlayerStats.player.lastName);
+                            if (p.kickAttempt.isGood) {
+                                console.log('p.kickAttempt.isGood');
+                                if (p.kickAttempt.isExtraPoint) {
+                                    console.log('isExtraPoint');
+                                    currentPlayerStats.extraPoints += 1;
+                                    console.log('extra pts ' + currentPlayerStats.extraPoints);
+                                } else {
+                                    if (p.kickAttempt.isFieldGoal) {
+                                        currentPlayerStats.fieldGoals += 1;
+                                        if (p.kickAttempt.fieldGoal50Plus) {
+                                            currentPlayerStats.fieldGoals50Plus += 1;
+                                        }
+                                    }
+                                }
+                            }
+                            if (idx === 0) {
+                                currentPlayerStats.accruedStatsOnLastPlay = true;
+                            }
+                        }
+                        break;
                 }
             }
         });
@@ -149,6 +176,14 @@ export class PlayersStats {
 
     get homeTeamTEsStats(): PlayerStats[] {
         return this.homeTeamPlayersStats.filter((ps) => ps.player.position === 'TE');
+    }
+
+    get awayTeamKsStats(): PlayerStats[] {
+        return this.awayTeamPlayersStats.filter((ps) => ps.player.position === 'K');
+    }
+
+    get homeTeamKsStats(): PlayerStats[] {
+        return this.homeTeamPlayersStats.filter((ps) => ps.player.position === 'K');
     }
 
     getTeamPlayersStats(teamAbbr: string) {

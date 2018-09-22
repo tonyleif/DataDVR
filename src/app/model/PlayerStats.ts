@@ -8,6 +8,9 @@ export class PlayerStats {
     receivingYards: number;
     passingTouchdowns: number;
     touchdowns: number;
+    extraPoints: number;
+    fieldGoals: number;
+    fieldGoals50Plus: number;
     accruedStatsOnLastPlay: boolean;
 
     constructor(player: Player, teamAbbr: string) {
@@ -18,6 +21,9 @@ export class PlayerStats {
         this.receivingYards = 0;
         this.passingTouchdowns = 0;
         this.touchdowns = 0;
+        this.extraPoints = 0;
+        this.fieldGoals = 0;
+        this.fieldGoals50Plus = 0;
         this.accruedStatsOnLastPlay = false;
     }
 
@@ -52,6 +58,27 @@ export class PlayerStats {
     get touchdownsNoZero(): string {
         if (this.touchdowns !== 0) {
             return this.touchdowns.toString();
+        }
+        return '';
+    }
+
+    get extraPointsNoZero(): string {
+        if (this.extraPoints !== 0) {
+            return this.extraPoints.toString();
+        }
+        return '';
+    }
+
+    get fieldGoalsNoZero(): string {
+        if (this.fieldGoals !== 0) {
+            return this.fieldGoals.toString();
+        }
+        return '';
+    }
+
+    get fieldGoals50PlusNoZero(): string {
+        if (this.fieldGoals50Plus !== 0) {
+            return this.fieldGoals50Plus.toString();
         }
         return '';
     }

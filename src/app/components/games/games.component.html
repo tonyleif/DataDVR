@@ -455,6 +455,45 @@
             </tbody>
           </table>
         </div>
+        <!-- Kickers -->
+        <div class="row">
+          <table class="table-sm stat-table">
+            <thead class="thead-light">
+              <tr>
+                <th>K</th>
+                <th>FG</th>
+                <th>50+</th>
+                <th>XP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamKsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+                <td>{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.fieldGoalsNoZero}}</td>
+                <td>{{playerStat.fieldGoals50PlusNoZero}}</td>
+                <td>{{playerStat.extraPointsNoZero}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table-sm stat-table">
+            <thead class="thead-light">
+              <tr>
+                <th></th>
+                <th>FG</th>
+                <th>50+</th>
+                <th>XP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamKsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+                <td>{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.fieldGoalsNoZero}}</td>
+                <td>{{playerStat.fieldGoals50PlusNoZero}}</td>
+                <td>{{playerStat.extraPointsNoZero}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

@@ -179,13 +179,20 @@ class KickAttempt {
     isFieldGoal: boolean;
     isExtraPoint: boolean;
     isGood: boolean;
-    yardsKicked: boolean;
+    yardsKicked: number;
     constructor(json) {
         this.teamAbbreviation = json.teamAbbreviation;
         this.isFieldGoal = (json.isFieldGoal === 'true');
         this.isExtraPoint = (json.isExtraPoint === 'true');
         this.isGood = (json.isGood === 'true');
         this.yardsKicked = json.yardsKicked;
+        if (json.kickingPlayer != null) {
+            this.kickingPlayer = new Player(json.kickingPlayer);
+        }
+    }
+
+    get fieldGoal50Plus(): boolean {
+        return this.yardsKicked >= 50;
     }
 }
 
