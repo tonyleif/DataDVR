@@ -8,12 +8,10 @@ export class PlayersStats {
     homeTeamAbbreviation: string;
 
     static findPlayerStats(player: Player, teamAbbr: string, playerStatsSet: Set<PlayerStats>): PlayerStats {
-        // console.log('findPlayerStats ' + player.lastName);
         if (player == null) {
             return null;
         }
         // Find player in set
-        // const test = Math.floor(Math.random() * Math.floor(100));
         let newPlayerStats: PlayerStats;
         if (playerStatsSet.size > 0) {
             playerStatsSet.forEach(function (ps: PlayerStats) {
@@ -39,51 +37,37 @@ export class PlayersStats {
         let currentPlayerStats: PlayerStats;
         // console.log('playsWatched.length ' + playsWatched.length);
         playsWatched.forEach(function (p, idx, array) {
-            // console.log('PlayersStats constructor ' + idx);
-            // console.log('array.length ' + array.length);
-            // let lastPlay = true;
-            // if (idx === array.length - 1) {
-            //     console.log('last play is ' + idx + ' : array.length is ' + array.length);
-            //     lastPlay = true;
-            // }
-            // console.log(p);
+
             if (!p.isCancelsPlay) {
                 switch (p.playType) {
                     case PlayType.PassingPlay:
                         // Passing player
                         if (p.passingPlay.isCompleted && !p.passingPlay.isNoPlay) {
-                            // console.log(p.passingPlay.passingPlayer);
                             currentPlayerStats = PlayersStats.findPlayerStats(
                                 p.passingPlay.passingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
                             currentPlayerStats.passingYards += +p.passingPlay.totalYardsGained;
                             if (p.passingPlay.isEndedWithTouchdown) {
                                 currentPlayerStats.passingTouchdowns++;
                             }
-                            // console.log(currentPlayerStats.player.lastName + ': ' + currentPlayerStats.accruedStatsOnLastPlay);
-                            // if (lastPlay) {
-                            //     currentPlayerStats.accruedStatsOnLastPlay = true;
-                            //     // console.log('last player ' + currentPlayerStats.player.lastName);
-                            // }
+                            if (idx === 0) {
+                                currentPlayerStats.accruedStatsOnLastPlay = true;
+                            }
                             // Receiving player
                             if (p.passingPlay.receivingPlayer != null) {
-                                // console.log('add receiver');
                                 currentPlayerStats = PlayersStats.findPlayerStats(
                                     p.passingPlay.receivingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
                                 currentPlayerStats.receivingYards += +p.passingPlay.totalYardsGained;
                                 if (p.passingPlay.isEndedWithTouchdown) {
                                     currentPlayerStats.touchdowns++;
                                 }
-                                // console.log(currentPlayerStats.player.lastName + ': ' + currentPlayerStats.accruedStatsOnLastPlay);
-                                // if (lastPlay) {
-                                //     currentPlayerStats.accruedStatsOnLastPlay = true;
-                                //     // console.log('last player ' + currentPlayerStats.player.lastName);
-                                // }
+                                if (idx === 0) {
+                                    currentPlayerStats.accruedStatsOnLastPlay = true;
+                                }
                             }
                         }
                         break;
                     case PlayType.RushingPlay:
                         // Rushing player
-                        // console.log('add rusher');
                         if (!(p.rushingPlay.isNoPlay === 'true')) {
                             currentPlayerStats = PlayersStats.findPlayerStats(
                                 p.rushingPlay.rushingPlayer, p.rushingPlay.teamAbbreviation, tempPlayersStats);
@@ -91,35 +75,18 @@ export class PlayersStats {
                             if (p.rushingPlay.isEndedWithTouchdown) {
                                 currentPlayerStats.touchdowns++;
                             }
+                            if (idx === 0) {
+                                currentPlayerStats.accruedStatsOnLastPlay = true;
+                            }
                         }
-                        // if (lastPlay) {
-                        //     currentPlayerStats.accruedStatsOnLastPlay = true;
-                        //     // console.log(currentPlayerStats.player.lastName + ': ' + currentPlayerStats.accruedStatsOnLastPlay);
-                        //     // console.log('last player ' + currentPlayerStats.player.lastName);
-                        // }
                         break;
                 }
-                // if (currentPlayerStats != null) {
-                //     console.log(currentPlayerStats.player.lastName + ' should accrue');
-                // }
-                // if (lastPlay) {
-                //     // if ((currentPlayerStats != null)) {
-                //     //     console.log('last player ' + currentPlayerStats.player.lastName);
-                //     // }
-                //     lastPlay = false;
-                // }
             }
         });
-        // if (currentPlayerStats != null) {
-        //     // console.log(currentPlayerStats.player.lastName + ' accrued');
-        //     currentPlayerStats.accruedStatsOnLastPlay = true;
-        // }
         this.playersStats = tempPlayersStats;
     }
 
     get sortedPlayersStats(): PlayerStats[] {
-        // const nonSortedArray: PlayerStats[] = new Array<PlayerStats>();
-        // this.playersStats.forEach((ps) => nonSortedArray.push(ps));
         const nonSortedArray: PlayerStats[] = Array.from(this.playersStats);
         const sortedArray = nonSortedArray.sort((ps1, ps2) => {
             if (ps1.passingYards < ps2.passingYards) {

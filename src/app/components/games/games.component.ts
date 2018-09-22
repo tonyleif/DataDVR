@@ -1,4 +1,4 @@
-import { Component, OnInit, DefaultIterableDiffer} from '@angular/core'; // , ChangeDetectorRef
+import { Component, OnInit, DefaultIterableDiffer } from '@angular/core'; // , ChangeDetectorRef
 import { RegularSeasonGames2017Service } from '../../model/regular-season-games-2017.service';
 import { RegularSeasonPlays2017Service } from '../../model/regular-season-plays-2017.service';
 import { RegularSeasonActivePlayers2017Service } from '../../model/regular-season-active-players-2017.service';
@@ -64,7 +64,7 @@ export class GamesComponent implements OnInit {
   }
 
   loadSchedule() {
-    if (localStorage.fullgameschedule) {
+    if (localStorage.getItem('fullgameschedule')) {
       this.weeks = this.gamesService.getWeeks();
     } else {
       this.gamesService.getScheduleFromAPI().subscribe(result => {
@@ -74,13 +74,13 @@ export class GamesComponent implements OnInit {
   }
 
   loadPlayers() {
-    if (!localStorage.activeplayers) {
+    if (!localStorage.getItem('activeplayers')) {
       this.activePlayersService.getActivePlayersFromAPI().subscribe(result => result);
     }
   }
 
   get doneLoadingSchedule(): boolean {
-    return (localStorage.fullgameschedule);
+    return (localStorage.getItem('fullgameschedule') !== null);
   }
 
   set selectedWeek(weekNumber: number) {
@@ -228,7 +228,7 @@ export class GamesComponent implements OnInit {
           //   this.playersStats.add(existingPlayerStats);
           // }
           // // Update stats
-          
+
           // if (this.direction === 'forward') {
           //   existingPlayerStats.passingYards += +this._currentPlay.passingPlay.totalYardsGained;
           // } else {
@@ -292,7 +292,7 @@ export class GamesComponent implements OnInit {
   //           findPlayerStats.passingYards += +p.passingPlay.totalYardsGained;
   //           break;
   //         case PlayType.RushingPlay:
-            
+
   //       }
   //     });
   //   }
@@ -311,7 +311,7 @@ export class GamesComponent implements OnInit {
   }
 
   get hasPlayersStats(): boolean {
-    return (this.currentPlayIndex >= 0); //(this.currentPlayersStats != null);
+    return (this.currentPlayIndex >= 0); // (this.currentPlayersStats != null);
   }
 
   get onePlayAhead(): Play {
@@ -363,15 +363,26 @@ export class GamesComponent implements OnInit {
 
   // This is for a hidden button to speed up testing how the final plays of the game appears
   goToLastPlay() {
-    // console.log('goToLastPlay');
     this.direction = 'forward';
     this._currentPlay = undefined;
-    // console.log('this.plays.length' + this.plays.length);
     this.currentPlayIndex = this.plays.length - 1;
-    // console.log('this.currentPlayIndex ' + this.currentPlayIndex);
   }
 
-  markGameAsWatched () {
+  goTo(quarter) {
+    this._currentPlay = undefined;
+    if (quarter === 'End') {
+      this.currentPlayIndex = this.plays.length - 1;
+    } else {
+      for (let i = this.plays.length - 1; i > -1 ; i--) {
+        if (this.plays[i].quarter === quarter) {
+          this.currentPlayIndex = this.plays.length - i - 1;
+          break;
+        }
+      }
+    }
+  }
+
+  markGameAsWatched() {
     this.selectedGame.watched = !this.selectedGame.watched;
     this.updated = true;
   }
