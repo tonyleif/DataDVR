@@ -13,6 +13,7 @@ import { Input } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { PlayerStats } from '../../model/PlayerStats';
 import { PlayersStats } from '../../model/PlayersStats';
+import { $ } from 'protractor';
 
 @Component({
   selector: 'app-games',
@@ -48,6 +49,7 @@ export class GamesComponent implements OnInit {
   // passingPlayersStats: Set<PlayerStats> = new Set<PlayerStats>();
   playersStats: PlayersStats;
   updated: boolean;
+  _goToValue: string;
 
   constructor(private gamesService: RegularSeasonGames2017Service,
     private playsService: RegularSeasonPlays2017Service,
@@ -56,6 +58,7 @@ export class GamesComponent implements OnInit {
     // this.changeDetectorRef = changeDetectorRef;
     // this was from some testing for Angular animations. May still need this in the future
     this.direction = 'none';
+    this._goToValue = 'GoTo';
   }
 
   ngOnInit() {
@@ -268,42 +271,8 @@ export class GamesComponent implements OnInit {
     return this.plays.slice(this.plays.length - this.currentPlayIndex, this.plays.length - this.currentPlayIndex + 4);
   }
 
-  // get currentPlayersStats(): Set<PlayerStats> {
-  //   const playersStatsSet: Set<PlayerStats> = new Set<PlayerStats>();
-  //   if (this.currentPlayIndex >= 0) {
-  //     const playsWatched = this.plays.slice(this.plays.length - this.currentPlayIndex - 1, this.plays.length);
-  //     playsWatched.forEach(function(p) {
-  //       switch (p.playType) {
-  //         case PlayType.PassingPlay:
-  //           // Find player in set
-  //           let findPlayerStats: PlayerStats;
-  //           playersStatsSet.forEach(function(ps: PlayerStats) {
-  //                 if (ps.player.id === p.passingPlay.passingPlayer.id) {
-  //                   findPlayerStats = ps;
-  //                 }
-  //               }
-  //             );
-  //           // Add player to set if not found
-  //           if (findPlayerStats === undefined) {
-  //             findPlayerStats = new PlayerStats(p.passingPlay.passingPlayer, p.passingPlay.teamAbbreviation);
-  //             playersStatsSet.add(findPlayerStats);
-  //           }
-  //           // Update stats
-  //           findPlayerStats.passingYards += +p.passingPlay.totalYardsGained;
-  //           break;
-  //         case PlayType.RushingPlay:
-
-  //       }
-  //     });
-  //   }
-  //   return playersStatsSet;
-  // }
-
   get currentPlayersStats(): PlayersStats {
-    // console.log('currentPlayersStats');
     if (this.currentPlayIndex >= 0) {
-      // console.log('start ' + (this.plays.length - this.currentPlayIndex - 1));
-      // console.log('end ' + this.plays.length);
       const playsWatched = this.plays.slice(this.plays.length - this.currentPlayIndex - 1, this.plays.length);
       return new PlayersStats(playsWatched, this.selectedGame.awayTeam.Abbreviation, this.selectedGame.homeTeam.Abbreviation);
     }
@@ -346,6 +315,7 @@ export class GamesComponent implements OnInit {
     this.currentPlayIndex++;
     // this.changeDetectorRef.detectChanges();
     // this.direction = 'none';
+    this._goToValue = 'GoTo';
   }
 
   previousPlay() {
@@ -359,6 +329,7 @@ export class GamesComponent implements OnInit {
     this.currentPlayIndex--;
     // this.changeDetectorRef.detectChanges();
     // this.direction = 'none';
+    this._goToValue = 'GoTo';
   }
 
   // This is for a hidden button to speed up testing how the final plays of the game appears
@@ -369,17 +340,46 @@ export class GamesComponent implements OnInit {
   }
 
   goTo(quarter) {
+    // console.log('this.goToValue = ' + this.goToValue);
     this._currentPlay = undefined;
     if (quarter === 'End') {
       this.currentPlayIndex = this.plays.length - 1;
     } else {
-      for (let i = this.plays.length - 1; i > -1 ; i--) {
+      for (let i = this.plays.length - 1; i > -1; i--) {
         if (this.plays[i].quarter === quarter) {
           this.currentPlayIndex = this.plays.length - i - 1;
           break;
         }
       }
     }
+    // this.goToValue = 'GoTo';
+    // quarter = 'GoTo';
+    // console.log('this.goToValue = ' + this.goToValue);
+    // $('#quarter').val(false);
+    // document.getElementById('quarter').selected
+  }
+
+  set goToValue(location) {
+    if (location !== 'GoTo') {
+      this._currentPlay = undefined;
+      if (location === 'End') {
+        this.currentPlayIndex = this.plays.length - 1;
+      } else {
+        for (let i = this.plays.length - 1; i > -1; i--) {
+          if (this.plays[i].quarter.toString() === location) {
+            this.currentPlayIndex = this.plays.length - i - 1;
+            break;
+          }
+        }
+      }
+      location = 'GoTo';
+      this._goToValue = 'GoTo';
+    }
+  }
+
+  get goToValue() {
+    console.log(this._goToValue);
+    return this._goToValue;
   }
 
   markGameAsWatched() {

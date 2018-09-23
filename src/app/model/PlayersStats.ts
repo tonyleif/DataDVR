@@ -81,18 +81,13 @@ export class PlayersStats {
                         }
                         break;
                     case PlayType.KickAttempt:
-                        console.log('case PlayType.KickAttempt');
                         // Kicking player
                         if (!(p.kickAttempt.isNoPlay === 'true')) {
                             currentPlayerStats = PlayersStats.findPlayerStats(
                                 p.kickAttempt.kickingPlayer, p.kickAttempt.teamAbbreviation, tempPlayersStats);
-                            console.log(currentPlayerStats.player.lastName);
                             if (p.kickAttempt.isGood) {
-                                console.log('p.kickAttempt.isGood');
                                 if (p.kickAttempt.isExtraPoint) {
-                                    console.log('isExtraPoint');
                                     currentPlayerStats.extraPoints += 1;
-                                    console.log('extra pts ' + currentPlayerStats.extraPoints);
                                 } else {
                                     if (p.kickAttempt.isFieldGoal) {
                                         currentPlayerStats.fieldGoals += 1;
