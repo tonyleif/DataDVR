@@ -159,7 +159,7 @@ select.btn-primary option {
 }
 
 .stat-table thead > tr {
-    height: 2.2em;
+    height: 1.8em;
     background-color: #e9ecef;
     border-radius: 5px !important;
     -webkit-border-radius:5px;
@@ -173,12 +173,23 @@ select.btn-primary option {
     /* width: 2.7em; */
     text-align: right;
     font-size: .7em;
+    padding-top: .2em;
+    padding-bottom: .2em;
 }
 
 .stat-table tr > td:first-child,
 .stat-table tr > th:first-child {
     width: 7.5em;
     text-align: left;
+}
+
+/* .stat-table tr > td:first-child.dst-name,
+.stat-table tr > th:first-child.dst-name {
+    width: 3m;
+} */
+.stat-table tr > th.dst-name,
+.stat-table tr > td.dst-name {
+    width: 5.2em;
 }
 
 .stat-table tr > td:nth-child(2),

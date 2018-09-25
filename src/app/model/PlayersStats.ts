@@ -1,9 +1,12 @@
 import { Player } from './Player';
 import { PlayerStats } from './PlayerStats';
-import { PlayType } from './Play';
+import { PlayType, SackingPlay } from './Play';
+import { DefenseSepecialTeamsStats } from './DefenseSpecialTeamsStats';
 
 export class PlayersStats {
     playersStats: Set<PlayerStats>;
+    awayDSTStats: DefenseSepecialTeamsStats;
+    homeDSTStats: DefenseSepecialTeamsStats;
     awayTeamAbbreviation: string;
     homeTeamAbbreviation: string;
 
@@ -32,36 +35,75 @@ export class PlayersStats {
 
     constructor(playsWatched, awayTeamAbbr: string, homeTeamAbbr: string) {
         const tempPlayersStats = new Set<PlayerStats>();
+        this.awayDSTStats = new DefenseSepecialTeamsStats(awayTeamAbbr);
+        const awayDSTStatsLocal = this.awayDSTStats;
+        this.homeDSTStats = new DefenseSepecialTeamsStats(homeTeamAbbr);
+        const homeDSTStatsLocal = this.homeDSTStats;
         this.awayTeamAbbreviation = awayTeamAbbr;
         this.homeTeamAbbreviation = homeTeamAbbr;
         let currentPlayerStats: PlayerStats;
-        // console.log('playsWatched.length ' + playsWatched.length);
         playsWatched.forEach(function (p, idx, array) {
-
             if (!p.isCancelsPlay) {
                 switch (p.playType) {
                     case PlayType.PassingPlay:
-                        // Passing player
-                        if (p.passingPlay.isCompleted && !p.passingPlay.isNoPlay) {
-                            currentPlayerStats = PlayersStats.findPlayerStats(
-                                p.passingPlay.passingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
-                            currentPlayerStats.passingYards += +p.passingPlay.totalYardsGained;
-                            if (p.passingPlay.isEndedWithTouchdown) {
-                                currentPlayerStats.passingTouchdowns++;
-                            }
-                            if (idx === 0) {
-                                currentPlayerStats.accruedStatsOnLastPlay = true;
-                            }
-                            // Receiving player
-                            if (p.passingPlay.receivingPlayer != null) {
+                        if (!p.passingPlay.isNoPlay) {
+                            if (p.passingPlay.isCompleted) {
+                                // Passing player
                                 currentPlayerStats = PlayersStats.findPlayerStats(
-                                    p.passingPlay.receivingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
-                                currentPlayerStats.receivingYards += +p.passingPlay.totalYardsGained;
+                                    p.passingPlay.passingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
+                                currentPlayerStats.passingYards += +p.passingPlay.totalYardsGained;
                                 if (p.passingPlay.isEndedWithTouchdown) {
-                                    currentPlayerStats.touchdowns++;
+                                    currentPlayerStats.passingTouchdowns++;
                                 }
                                 if (idx === 0) {
                                     currentPlayerStats.accruedStatsOnLastPlay = true;
+                                }
+                                // Receiving player
+                                if (p.passingPlay.receivingPlayer != null) {
+                                    currentPlayerStats = PlayersStats.findPlayerStats(
+                                        p.passingPlay.receivingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
+                                    currentPlayerStats.receivingYards += +p.passingPlay.totalYardsGained;
+                                    if (p.passingPlay.isEndedWithTouchdown) {
+                                        currentPlayerStats.touchdowns++;
+                                    }
+                                    if (idx === 0) {
+                                        currentPlayerStats.accruedStatsOnLastPlay = true;
+                                    }
+                                }
+                            } else {
+                                // DST
+                                if (p.passingPlay.intercepted) {
+                                    // Passing player
+                                    currentPlayerStats = PlayersStats.findPlayerStats(
+                                        p.passingPlay.passingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
+                                    currentPlayerStats.interceptions += 1;
+                                    // console.log('this.awayDSTStats.teamAbbreviation: ' + awayDSTStatsLocal.teamAbbreviation);
+                                    // console.log('this.awayDSTStats.interceptions: ' + awayDSTStatsLocal.interceptions);
+                                    if (p.passingPlay.teamAbbreviation === awayTeamAbbr) {
+                                        homeDSTStatsLocal.interceptions += 1;
+                                        // console.log(p.passingPlay.isEndedWithTouchdown);
+                                        // console.log(('p.passingPlay.isEndedWithTouchdown === "true": '
+                                        //     + p.passingPlay.isEndedWithTouchdown === 'true'));
+                                        if (p.passingPlay.isEndedWithTouchdown === true) {
+                                            homeDSTStatsLocal.touchDowns += 1;
+                                            // console.log(homeDSTStatsLocal.touchDowns);
+                                        }
+                                        if (idx === 0) {
+                                            homeDSTStatsLocal.accruedStatsOnLastPlay = true;
+                                        }
+                                    } else {
+                                        awayDSTStatsLocal.interceptions += 1;
+                                        // console.log(p.passingPlay.isEndedWithTouchdown);
+                                        // console.log(('p.passingPlay.isEndedWithTouchdown == "true": '
+                                        //     + p.passingPlay.isEndedWithTouchdown === 'true'));
+                                        if (p.passingPlay.isEndedWithTouchdown === true) {
+                                            awayDSTStatsLocal.touchDowns += 1;
+                                            // console.log(homeDSTStatsLocal.touchDowns);
+                                        }
+                                        if (idx === 0) {
+                                            awayDSTStatsLocal.accruedStatsOnLastPlay = true;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -99,6 +141,64 @@ export class PlayersStats {
                             }
                             if (idx === 0) {
                                 currentPlayerStats.accruedStatsOnLastPlay = true;
+                            }
+                        }
+                        break;
+                    case PlayType.KickingPlay:
+                        if (!(p.kickingPlay.isNoPlay === 'true')) {
+                            // DST
+                            if (p.kickingPlay.isBlocked === 'true') {
+                                if (p.kickingPlay.teamAbbreviation === awayTeamAbbr) {
+                                    homeDSTStatsLocal.blockedKicks += 1;
+                                    if (p.kickingPlay.fumbleSubPlay.isEndedWithTouchdown) {
+                                        if (p.kickingPlay.fumbleSubPlay.recoveringTeamAbbreviation === awayTeamAbbr) {
+                                            awayDSTStatsLocal.touchDowns += 1;
+                                        } else {
+                                            homeDSTStatsLocal.touchDowns += 1;
+                                        }
+                                    }
+                                    if (idx === 0) {
+                                        homeDSTStatsLocal.accruedStatsOnLastPlay = true;
+                                    }
+                                } else {
+                                    awayDSTStatsLocal.blockedKicks += 1;
+                                    if (p.kickingPlay.fumbleSubPlay.isEndedWithTouchdown) {
+                                        if (p.kickingPlay.fumbleSubPlay.recoveringTeamAbbreviation === awayTeamAbbr) {
+                                            awayDSTStatsLocal.touchDowns += 1;
+                                        } else {
+                                            homeDSTStatsLocal.touchDowns += 1;
+                                        }
+                                    }
+                                    if (idx === 0) {
+                                        awayDSTStatsLocal.accruedStatsOnLastPlay = true;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case PlayType.SackingPlay:
+                        const sackingPlay: SackingPlay = new SackingPlay(p.sackingPlay);
+                        if (!(sackingPlay.isNoPlay)) {
+                            let sackingTeamStats: DefenseSepecialTeamsStats;
+                            if (sackingPlay.teamAbbreviation === awayTeamAbbr) {
+                                sackingTeamStats = homeDSTStatsLocal;
+                            } else {
+                                sackingTeamStats = awayDSTStatsLocal;
+                            }
+                            sackingTeamStats.sacks += 1;
+                            console.log('Fix fumble recoveries');
+                            if (sackingPlay.fumbleSubPlay != null) {
+                                console.log('fumble');
+                                if (sackingPlay.fumbleSubPlay.recoveredByOtherTeam) {
+                                    console.log('recoveredByOtherTeam');
+                                    sackingTeamStats.fumblesRecovered += 1;
+                                    if (sackingPlay.fumbleSubPlay.isEndedWithTouchdown) {
+                                        sackingTeamStats.touchDowns += 1;
+                                    }
+                                }
+                            }
+                            if (idx === 0) {
+                                sackingTeamStats.accruedStatsOnLastPlay = true;
                             }
                         }
                         break;

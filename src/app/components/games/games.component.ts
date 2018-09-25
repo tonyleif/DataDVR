@@ -119,9 +119,7 @@ export class GamesComponent implements OnInit {
       }
     }
     if (this._selectedGame) {
-      // console.log('selectedGame trying to get awayTeam');
       const team: Team = this.awayTeamObject;
-      // console.log(JSON.stringify(team));
     }
   }
 
@@ -199,7 +197,6 @@ export class GamesComponent implements OnInit {
   }
 
   get currentPlay(): Play {
-    // console.log('this.currentPlayIndex ' + this.currentPlayIndex);
     if (this._currentPlay !== undefined) {
       return this._currentPlay;
     }
@@ -217,33 +214,6 @@ export class GamesComponent implements OnInit {
         case PlayType.PassingPlay:
           const passingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
           this._currentPlay.passingPlay.passingPlayer = passingPlayer;
-          // // Find player in set
-          // let existingPlayerStats: PlayerStats;
-          // this.playersStats.forEach(function(ps: PlayerStats) {
-          //       if (ps.player.id === passingPlayer.id) {
-          //         existingPlayerStats = ps;
-          //       }
-          //     }
-          //   );
-          // // Add player to set if not found
-          // if (existingPlayerStats === undefined) {
-          //   existingPlayerStats = new PlayerStats(passingPlayer);
-          //   this.playersStats.add(existingPlayerStats);
-          // }
-          // // Update stats
-
-          // if (this.direction === 'forward') {
-          //   existingPlayerStats.passingYards += +this._currentPlay.passingPlay.totalYardsGained;
-          // } else {
-          //   if (this.direction === 'backward') {
-          //     // console.log(this.plays[this.plays.length - this.currentPlayIndex - 2].passingPlay.totalYardsGained);
-          //     console.log(this.onePlayAhead.playType);
-          //     if (this.onePlayAhead.playType === PlayType.PassingPlay) {
-          //       console.log(this.onePlayAhead.passingPlay.totalYardsGained);
-          //       existingPlayerStats.passingYards -= +this.onePlayAhead.passingPlay.totalYardsGained;
-          //     }
-          //   }
-          // }
           if (this._currentPlay.json.passingPlay.receivingPlayer) {
             const receivingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.receivingPlayer.ID);
             this._currentPlay.passingPlay.receivingPlayer = receivingPlayer;
@@ -304,9 +274,6 @@ export class GamesComponent implements OnInit {
   }
 
   nextPlay() {
-    // console.log('nextPlay');
-    // Left commented code to show work
-
     // this.direction = 'backward';
     // this.changeDetectorRef.detectChanges();
     this.direction = 'forward';
@@ -340,7 +307,6 @@ export class GamesComponent implements OnInit {
   }
 
   goTo(quarter) {
-    // console.log('this.goToValue = ' + this.goToValue);
     this._currentPlay = undefined;
     if (quarter === 'End') {
       this.currentPlayIndex = this.plays.length - 1;
@@ -378,7 +344,7 @@ export class GamesComponent implements OnInit {
   }
 
   get goToValue() {
-    console.log(this._goToValue);
+    // console.log(this._goToValue);
     return this._goToValue;
   }
 

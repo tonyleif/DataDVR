@@ -11,6 +11,7 @@ export class PlayerStats {
     extraPoints: number;
     fieldGoals: number;
     fieldGoals50Plus: number;
+    interceptions: number;
     accruedStatsOnLastPlay: boolean;
 
     constructor(player: Player, teamAbbr: string) {
@@ -24,6 +25,7 @@ export class PlayerStats {
         this.extraPoints = 0;
         this.fieldGoals = 0;
         this.fieldGoals50Plus = 0;
+        this.interceptions = 0;
         this.accruedStatsOnLastPlay = false;
     }
 
@@ -79,6 +81,13 @@ export class PlayerStats {
     get fieldGoals50PlusNoZero(): string {
         if (this.fieldGoals50Plus !== 0) {
             return this.fieldGoals50Plus.toString();
+        }
+        return '';
+    }
+
+    get interceptionsNoZero(): string {
+        if (this.interceptions !== 0) {
+            return this.interceptions.toString();
         }
         return '';
     }

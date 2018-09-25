@@ -43,7 +43,7 @@ export class Play {
         }
         if (json.kickingPlay) {
             this.playType = PlayType.KickingPlay;
-            this.kickingPlay = new KickingPlay();
+            this.kickingPlay = new KickingPlay(json.kickingPlay);
         } else if (json.rushingPlay) {
             this.playType = PlayType.RushingPlay;
             this.rushingPlay = new RushingPlay(json.rushingPlay);
@@ -55,7 +55,7 @@ export class Play {
             this.kickAttempt = new KickAttempt(json.kickAttempt);
         } else if (json.sackingPlay) {
             this.playType = PlayType.SackingPlay;
-            this.sackingPlay = new SackingPlay();
+            this.sackingPlay = new SackingPlay(json.sackingPlay);
         } else if (json.penaltyPlay) {
             this.playType = PlayType.PenatlyPlay;
         } else if (json.lateralPass) {
@@ -123,7 +123,25 @@ export class Play {
 class KickingPlay {
     teamAbbreviation: string;
     kickingPlayer: Player;
-    constructor() {
+    isBlocked: boolean;
+    subPlays: any[];
+
+    constructor(json) {
+        this.teamAbbreviation = json.kickingTeamAbbreviation;
+        this.isBlocked = json.isBlocked;
+        if (json.subPlays) {
+            this.subPlays = new Array<any>();
+            if (json.subPlays.fumble) {
+                const fum = new Fumble(json.subPlays.fumble);
+                this.subPlays.push(fum);
+            }
+        }
+    }
+
+    get fumbleSubPlay(): Fumble {
+        if (this.subPlays.length > 0) {
+            return this.subPlays[0];
+        }
     }
 }
 
@@ -138,9 +156,7 @@ class RushingPlay {
         this.yardsRushed = json.yardsRushed;
         this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
         this.isTwoPointConversion = (json.isTwoPointConversion === 'true');
-        // if (json.rushingPlayer) {
-            this.rushingPlayer = new Player(json.rushingPlayer);
-        // }
+        this.rushingPlayer = new Player(json.rushingPlayer);
     }
 }
 
@@ -153,6 +169,7 @@ class PassingPlay {
     isEndedWithTouchdown: boolean;
     isTwoPointConversion: boolean;
     isNoPlay: boolean;
+    intercepted: boolean;
 
     constructor(json) {
         this.teamAbbreviation = json.teamAbbreviation;
@@ -167,6 +184,7 @@ class PassingPlay {
         if (json.receivingPlayer != null) {
             this.receivingPlayer = new Player(json.receivingPlayer);
         }
+        this.intercepted = (json.interceptingPlayer != null);
     }
     get noReceivingPlayer(): boolean {
         return (this.receivingPlayer === undefined || this.receivingPlayer == null);
@@ -180,6 +198,7 @@ class KickAttempt {
     isExtraPoint: boolean;
     isGood: boolean;
     yardsKicked: number;
+    isNoPlay: boolean;
     constructor(json) {
         this.teamAbbreviation = json.teamAbbreviation;
         this.isFieldGoal = (json.isFieldGoal === 'true');
@@ -189,6 +208,7 @@ class KickAttempt {
         if (json.kickingPlayer != null) {
             this.kickingPlayer = new Player(json.kickingPlayer);
         }
+        this.isNoPlay = json.isNoPlay;
     }
 
     get fieldGoal50Plus(): boolean {
@@ -196,8 +216,26 @@ class KickAttempt {
     }
 }
 
-class SackingPlay {
-    constructor() {
+export class SackingPlay {
+    teamAbbreviation: string;
+    isNoPlay: boolean;
+    subPlays: any[];
+    constructor(json) {
+        this.teamAbbreviation = json.teamAbbreviation;
+        this.isNoPlay = (json.isNoPlay.toString() === 'true');
+        this.subPlays = new Array<any>();
+        if (json.subPlays) {
+            if (json.subPlays.fumble) {
+                const fum = new Fumble(json.subPlays.fumble);
+                this.subPlays.push(fum);
+            }
+        }
+    }
+
+    get fumbleSubPlay(): Fumble {
+        if (this.subPlays.length > 0) {
+            return this.subPlays[0];
+        }
     }
 }
 
@@ -209,5 +247,20 @@ class LateralPass {
     }
     get noReceivingPlayer(): boolean {
         return (this.receivingPlayer === undefined || this.receivingPlayer == null);
+    }
+}
+
+class Fumble {
+    fumblingTeamAbbreviation: string;
+    recoveringTeamAbbreviation: string;
+    isEndedWithTouchdown: boolean;
+    constructor(json) {
+        this.fumblingTeamAbbreviation = json.fumblingTeamAbbreviation;
+        this.recoveringTeamAbbreviation = json.recoveringTeamAbbreviation;
+        this.isEndedWithTouchdown = json.isEndedWithTouchdown;
+    }
+
+    get recoveredByOtherTeam(): boolean {
+        return (this.fumblingTeamAbbreviation !== this.recoveringTeamAbbreviation);
     }
 }
