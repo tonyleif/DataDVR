@@ -177,7 +177,9 @@ export class PlayersStats {
                         }
                         break;
                     case PlayType.SackingPlay:
-                        const sackingPlay: SackingPlay = new SackingPlay(p.sackingPlay);
+                        // console.log('p.json: ' + JSON.stringify(p.json));
+                        console.log(p.description);
+                        const sackingPlay: SackingPlay = new SackingPlay(p.json.sackingPlay);
                         if (!(sackingPlay.isNoPlay)) {
                             let sackingTeamStats: DefenseSepecialTeamsStats;
                             if (sackingPlay.teamAbbreviation === awayTeamAbbr) {
@@ -186,7 +188,8 @@ export class PlayersStats {
                                 sackingTeamStats = awayDSTStatsLocal;
                             }
                             sackingTeamStats.sacks += 1;
-                            console.log('Fix fumble recoveries');
+                            // console.log(sackingPlay);
+                            // console.log('json in stats ' + JSON.stringify(p.sackingPlay));
                             if (sackingPlay.fumbleSubPlay != null) {
                                 console.log('fumble');
                                 if (sackingPlay.fumbleSubPlay.recoveredByOtherTeam) {

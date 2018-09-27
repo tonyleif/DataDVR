@@ -221,10 +221,13 @@ export class SackingPlay {
     isNoPlay: boolean;
     subPlays: any[];
     constructor(json) {
+        // console.log('json.subPlays ' + JSON.stringify(json.subPlays));
         this.teamAbbreviation = json.teamAbbreviation;
         this.isNoPlay = (json.isNoPlay.toString() === 'true');
         this.subPlays = new Array<any>();
-        if (json.subPlays) {
+        // console.log('json.subPlays ' + JSON.stringify(json.subPlays));
+        if (json.subPlays) { // !== undefined && json.subPlays.length > 0
+            console.log('json.subPlays.fumble: ' + JSON.stringify(json.subPlays.fumble));
             if (json.subPlays.fumble) {
                 const fum = new Fumble(json.subPlays.fumble);
                 this.subPlays.push(fum);
@@ -233,6 +236,7 @@ export class SackingPlay {
     }
 
     get fumbleSubPlay(): Fumble {
+        console.log('this.subPlays.length: ' + this.subPlays.length);
         if (this.subPlays.length > 0) {
             return this.subPlays[0];
         }
@@ -257,7 +261,7 @@ class Fumble {
     constructor(json) {
         this.fumblingTeamAbbreviation = json.fumblingTeamAbbreviation;
         this.recoveringTeamAbbreviation = json.recoveringTeamAbbreviation;
-        this.isEndedWithTouchdown = json.isEndedWithTouchdown;
+        this.isEndedWithTouchdown = (json.isEndedWithTouchdown.toString() === 'true');
     }
 
     get recoveredByOtherTeam(): boolean {
