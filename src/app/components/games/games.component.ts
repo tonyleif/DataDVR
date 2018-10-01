@@ -45,8 +45,6 @@ export class GamesComponent implements OnInit {
   plays: Array<Play> = [];
   currentPlayIndex = -1;
   direction: string;
-  // playersStats: Set<PlayerStats> = new Set<PlayerStats>();
-  // passingPlayersStats: Set<PlayerStats> = new Set<PlayerStats>();
   playersStats: PlayersStats;
   updated: boolean;
   _goToValue: string;
@@ -135,10 +133,20 @@ export class GamesComponent implements OnInit {
   }
 
   setGame(id: number) {
+    console.log('setGame');
     // Don't bother doing this work if the button clicked was already selected
     if (this.selectedGame && this.selectedGame.id !== id) {
-      // Browsers have storage limits so clear out the data from last game
-      localStorage.removeItem(this.selectedGame.gameid);
+      // // Browsers have storage limits so clear out the data from last game
+      // localStorage.removeItem(this.selectedGame.gameid);
+      // Iterate over localStorage and remove items that start with 'watched'
+      for (let i = 0; i < localStorage.length; i++) {
+        console.log(localStorage.key(i).substring(0, 4));
+        if (localStorage.key(i).substring(0, 4) === 'game') {
+          console.log(localStorage.key(i));
+          localStorage.removeItem(localStorage.key(i));
+        }
+      }
+
       this.selectedGame = new Game(this.gamesService.getGame(id));
     } else if (!this.selectedGame) {
       this.selectedGame = new Game(this.gamesService.getGame(id));
@@ -162,8 +170,8 @@ export class GamesComponent implements OnInit {
     this.plays.length = 0; // empty the array without making a new array
     // create a local variable because this.plays can't be referenced inside
     // the observable subscription
-    if (localStorage.getItem(this.selectedGame.gameid)) {
-      const jsonPlays = this.playsService.getPlaysFromLocal(this.selectedGame.gameid);
+    if (localStorage.getItem('game' + this.selectedGame.gameid)) {
+      const jsonPlays = this.playsService.getPlaysFromLocal('game' + this.selectedGame.gameid);
       jsonPlays.forEach(function (jsonPlay, i) {
         const play = new Play(jsonPlay, i);
         // I want this array in reverse order and unshift pushes to the front of the array
@@ -172,8 +180,8 @@ export class GamesComponent implements OnInit {
       }, this); // Not sure I really like adding this reference here. It works but hard to follow.
     } else {
       this.playsService.getPlaysFromAPI(this.selectedGame.gameid).subscribe(result => {
-        localStorage.setItem(this.selectedGame.gameid, JSON.stringify(result));
-        const jsonPlays = this.playsService.getPlaysFromLocal(this.selectedGame.gameid);
+        localStorage.setItem('game' + this.selectedGame.gameid, JSON.stringify(result));
+        const jsonPlays = this.playsService.getPlaysFromLocal('game' + this.selectedGame.gameid);
         jsonPlays.forEach(function (jsonPlay, i) {
           const play = new Play(jsonPlay, i);
           // I want this array in revers order and unshift pushes to the front of the array
@@ -318,11 +326,6 @@ export class GamesComponent implements OnInit {
         }
       }
     }
-    // this.goToValue = 'GoTo';
-    // quarter = 'GoTo';
-    // console.log('this.goToValue = ' + this.goToValue);
-    // $('#quarter').val(false);
-    // document.getElementById('quarter').selected
   }
 
   set goToValue(location) {
@@ -344,7 +347,6 @@ export class GamesComponent implements OnInit {
   }
 
   get goToValue() {
-    // console.log(this._goToValue);
     return this._goToValue;
   }
 

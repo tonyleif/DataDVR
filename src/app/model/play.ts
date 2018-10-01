@@ -145,18 +145,34 @@ class KickingPlay {
     }
 }
 
-class RushingPlay {
+export class RushingPlay {
     teamAbbreviation: string;
     rushingPlayer: Player;
     yardsRushed: number;
     isEndedWithTouchdown: boolean;
     isTwoPointConversion: boolean;
+    subPlays: any[];
     constructor(json) {
         this.teamAbbreviation = json.teamAbbreviation;
         this.yardsRushed = json.yardsRushed;
         this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
         this.isTwoPointConversion = (json.isTwoPointConversion === 'true');
         this.rushingPlayer = new Player(json.rushingPlayer);
+        this.subPlays = new Array<any>();
+        if (json.subPlays) {
+            // console.log('json.subPlays.fumble: ' + JSON.stringify(json.subPlays.fumble));
+            if (json.subPlays.fumble) {
+                const fum = new Fumble(json.subPlays.fumble);
+                this.subPlays.push(fum);
+            }
+        }
+    }
+
+    get fumbleSubPlay(): Fumble {
+        console.log('this.subPlays.length: ' + this.subPlays.length);
+        if (this.subPlays.length > 0) {
+            return this.subPlays[0];
+        }
     }
 }
 

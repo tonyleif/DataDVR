@@ -1,6 +1,6 @@
 import { Player } from './Player';
 import { PlayerStats } from './PlayerStats';
-import { PlayType, SackingPlay } from './Play';
+import { PlayType, RushingPlay, SackingPlay } from './Play';
 import { DefenseSepecialTeamsStats } from './DefenseSpecialTeamsStats';
 
 export class PlayersStats {
@@ -110,12 +110,27 @@ export class PlayersStats {
                         break;
                     case PlayType.RushingPlay:
                         // Rushing player
+                        const rushingPlay: RushingPlay = new RushingPlay(p.json.rushingPlay);
                         if (!(p.rushingPlay.isNoPlay === 'true')) {
+                            let defenseTeamStats: DefenseSepecialTeamsStats;
+                            if (rushingPlay.teamAbbreviation === awayTeamAbbr) {
+                                defenseTeamStats = homeDSTStatsLocal;
+                            } else {
+                                defenseTeamStats = awayDSTStatsLocal;
+                            }
                             currentPlayerStats = PlayersStats.findPlayerStats(
                                 p.rushingPlay.rushingPlayer, p.rushingPlay.teamAbbreviation, tempPlayersStats);
                             currentPlayerStats.rushingYards += +p.rushingPlay.yardsRushed;
                             if (p.rushingPlay.isEndedWithTouchdown) {
                                 currentPlayerStats.touchdowns++;
+                            }
+                            if (rushingPlay.fumbleSubPlay != null) {
+                                if (rushingPlay.fumbleSubPlay.recoveredByOtherTeam) {
+                                    defenseTeamStats.fumblesRecovered += 1;
+                                    if (rushingPlay.fumbleSubPlay.isEndedWithTouchdown) {
+                                        defenseTeamStats.touchDowns += 1;
+                                    }
+                                }
                             }
                             if (idx === 0) {
                                 currentPlayerStats.accruedStatsOnLastPlay = true;
@@ -177,8 +192,6 @@ export class PlayersStats {
                         }
                         break;
                     case PlayType.SackingPlay:
-                        // console.log('p.json: ' + JSON.stringify(p.json));
-                        console.log(p.description);
                         const sackingPlay: SackingPlay = new SackingPlay(p.json.sackingPlay);
                         if (!(sackingPlay.isNoPlay)) {
                             let sackingTeamStats: DefenseSepecialTeamsStats;
@@ -188,12 +201,8 @@ export class PlayersStats {
                                 sackingTeamStats = awayDSTStatsLocal;
                             }
                             sackingTeamStats.sacks += 1;
-                            // console.log(sackingPlay);
-                            // console.log('json in stats ' + JSON.stringify(p.sackingPlay));
                             if (sackingPlay.fumbleSubPlay != null) {
-                                console.log('fumble');
                                 if (sackingPlay.fumbleSubPlay.recoveredByOtherTeam) {
-                                    console.log('recoveredByOtherTeam');
                                     sackingTeamStats.fumblesRecovered += 1;
                                     if (sackingPlay.fumbleSubPlay.isEndedWithTouchdown) {
                                         sackingTeamStats.touchDowns += 1;
