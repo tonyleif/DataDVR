@@ -1,6 +1,6 @@
 import { Player } from './Player';
 import { PlayerStats } from './PlayerStats';
-import { PlayType, RushingPlay, SackingPlay } from './Play';
+import { PlayType, PassingPlay, RushingPlay, SackingPlay } from './Play';
 import { DefenseSepecialTeamsStats } from './DefenseSpecialTeamsStats';
 
 export class PlayersStats {
@@ -46,6 +46,7 @@ export class PlayersStats {
             if (!p.isCancelsPlay) {
                 switch (p.playType) {
                     case PlayType.PassingPlay:
+                        const passingPlay = new PassingPlay(p.json.passingPlay);
                         if (!p.passingPlay.isNoPlay) {
                             if (p.passingPlay.isCompleted) {
                                 // Passing player
@@ -68,6 +69,25 @@ export class PlayersStats {
                                     }
                                     if (idx === 0) {
                                         currentPlayerStats.accruedStatsOnLastPlay = true;
+                                    }
+                                }
+                                if (passingPlay.fumbleSubPlay !== undefined) {
+                                    // console.log(p.description);
+                                    // console.log('passingPlay.fumbleSubPlay: ' + JSON.stringify(passingPlay.subPlays));
+                                    if (passingPlay.fumbleSubPlay.recoveredByOtherTeam) {
+                                        let defenseTeamStats: DefenseSepecialTeamsStats;
+                                        if (passingPlay.teamAbbreviation === awayTeamAbbr) {
+                                            defenseTeamStats = homeDSTStatsLocal;
+                                        } else {
+                                            defenseTeamStats = awayDSTStatsLocal;
+                                        }
+                                        defenseTeamStats.fumblesRecovered += 1;
+                                        if (passingPlay.fumbleSubPlay.isEndedWithTouchdown) {
+                                            defenseTeamStats.touchDowns += 1;
+                                        }
+                                        if (idx === 0) {
+                                            defenseTeamStats.accruedStatsOnLastPlay = true;
+                                        }
                                     }
                                 }
                             } else {
@@ -129,6 +149,9 @@ export class PlayersStats {
                                     defenseTeamStats.fumblesRecovered += 1;
                                     if (rushingPlay.fumbleSubPlay.isEndedWithTouchdown) {
                                         defenseTeamStats.touchDowns += 1;
+                                    }
+                                    if (idx === 0) {
+                                        defenseTeamStats.accruedStatsOnLastPlay = true;
                                     }
                                 }
                             }
@@ -262,11 +285,11 @@ export class PlayersStats {
     }
 
     get awayTeamRBsStats(): PlayerStats[] {
-        return this.awayTeamPlayersStats.filter((ps) => ps.player.position === 'RB');
+        return this.awayTeamPlayersStats.filter((ps) => ps.player.position === 'RB' || ps.player.position === 'FB');
     }
 
     get homeTeamRBsStats(): PlayerStats[] {
-        return this.homeTeamPlayersStats.filter((ps) => ps.player.position === 'RB');
+        return this.homeTeamPlayersStats.filter((ps) => ps.player.position === 'RB' || ps.player.position === 'FB');
     }
 
     get awayTeamWRsStats(): PlayerStats[] {

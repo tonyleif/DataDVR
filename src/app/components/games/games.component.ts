@@ -133,16 +133,16 @@ export class GamesComponent implements OnInit {
   }
 
   setGame(id: number) {
-    console.log('setGame');
+    // console.log('setGame');
     // Don't bother doing this work if the button clicked was already selected
     if (this.selectedGame && this.selectedGame.id !== id) {
       // // Browsers have storage limits so clear out the data from last game
       // localStorage.removeItem(this.selectedGame.gameid);
       // Iterate over localStorage and remove items that start with 'watched'
       for (let i = 0; i < localStorage.length; i++) {
-        console.log(localStorage.key(i).substring(0, 4));
+        // console.log(localStorage.key(i).substring(0, 4));
         if (localStorage.key(i).substring(0, 4) === 'game') {
-          console.log(localStorage.key(i));
+          // console.log(localStorage.key(i));
           localStorage.removeItem(localStorage.key(i));
         }
       }

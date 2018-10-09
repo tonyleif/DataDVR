@@ -160,7 +160,6 @@ export class RushingPlay {
         this.rushingPlayer = new Player(json.rushingPlayer);
         this.subPlays = new Array<any>();
         if (json.subPlays) {
-            // console.log('json.subPlays.fumble: ' + JSON.stringify(json.subPlays.fumble));
             if (json.subPlays.fumble) {
                 const fum = new Fumble(json.subPlays.fumble);
                 this.subPlays.push(fum);
@@ -169,14 +168,13 @@ export class RushingPlay {
     }
 
     get fumbleSubPlay(): Fumble {
-        console.log('this.subPlays.length: ' + this.subPlays.length);
         if (this.subPlays.length > 0) {
             return this.subPlays[0];
         }
     }
 }
 
-class PassingPlay {
+export class PassingPlay {
     teamAbbreviation: string;
     passingPlayer: Player;
     receivingPlayer: Player;
@@ -186,6 +184,7 @@ class PassingPlay {
     isTwoPointConversion: boolean;
     isNoPlay: boolean;
     intercepted: boolean;
+    subPlays: any[];
 
     constructor(json) {
         this.teamAbbreviation = json.teamAbbreviation;
@@ -201,9 +200,24 @@ class PassingPlay {
             this.receivingPlayer = new Player(json.receivingPlayer);
         }
         this.intercepted = (json.interceptingPlayer != null);
+        this.subPlays = new Array<any>();
+        if (json.subPlays) {
+            // console.log('json.subPlays.fumble: ' + JSON.stringify(json.subPlays.fumble));
+            if (json.subPlays.fumble) {
+                const fum = new Fumble(json.subPlays.fumble);
+                this.subPlays.push(fum);
+            }
+        }
     }
+
     get noReceivingPlayer(): boolean {
         return (this.receivingPlayer === undefined || this.receivingPlayer == null);
+    }
+
+    get fumbleSubPlay(): Fumble {
+        if (this.subPlays.length > 0) {
+            return this.subPlays[0];
+        }
     }
 }
 
@@ -243,7 +257,7 @@ export class SackingPlay {
         this.subPlays = new Array<any>();
         // console.log('json.subPlays ' + JSON.stringify(json.subPlays));
         if (json.subPlays) { // !== undefined && json.subPlays.length > 0
-            console.log('json.subPlays.fumble: ' + JSON.stringify(json.subPlays.fumble));
+            // console.log('json.subPlays.fumble: ' + JSON.stringify(json.subPlays.fumble));
             if (json.subPlays.fumble) {
                 const fum = new Fumble(json.subPlays.fumble);
                 this.subPlays.push(fum);
@@ -252,7 +266,7 @@ export class SackingPlay {
     }
 
     get fumbleSubPlay(): Fumble {
-        console.log('this.subPlays.length: ' + this.subPlays.length);
+        // console.log('this.subPlays.length: ' + this.subPlays.length);
         if (this.subPlays.length > 0) {
             return this.subPlays[0];
         }
