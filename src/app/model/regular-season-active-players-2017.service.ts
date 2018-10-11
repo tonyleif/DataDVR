@@ -32,11 +32,34 @@ export class RegularSeasonActivePlayers2017Service {
       });
   }
 
+  getActivePlayersByTeamsFromAPI(homeTeam: string, awayTeam: string): Observable<Player[]> {
+    // console.log('getActivePlayersByTeamsFromAPI');
+    const headers = new Headers();
+    this.createAuthorizationHeader(headers);
+    return this.http
+      .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/latest/active_players.json?team=' + awayTeam + ',' + homeTeam +
+        ',la&position=qb,rb,fb,wr,te,k&rosterstatus=assigned-to-roster', { headers: headers })
+      .map((res: Response) => {
+        // localStorage.activeplayers = JSON.stringify(res.json());
+        // console.log(res.json().activeplayers.playerentry);
+        const playerArray: Player[] = new Array<Player>();
+        const allPlayers: Array<string> = res.json().activeplayers.playerentry;
+        let playerObject: any;
+        for (let i = 0; i < allPlayers.length; i++) {
+          playerObject = allPlayers[i];
+          // console.log('playerObject: ' + JSON.stringify(playerObject));
+          const player = new Player(playerObject.player);
+          // console.log(player.lastName);
+          playerArray.push(player);
+          // localStorage.setItem(playerObject.player.ID + 'ap', JSON.stringify(playerObject.player));
+        }
+        // return res.json();
+        // console.log(playerArray);
+        return playerArray;
+      });
+  }
+
   getPlayer(id: number): Player {
-    // Commented out but left to show work. This way was slow
-    // const jsonObject: any = JSON.parse(localStorage.activeplayers);
-    // const allPlayers: Array<string> = jsonObject.activeplayers.playerentry;
-    // let playerObject: any;
     const playerObject = new Player(JSON.parse(localStorage.getItem(id + 'ap')));
     return playerObject;
   }

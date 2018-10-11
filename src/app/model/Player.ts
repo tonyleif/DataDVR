@@ -13,6 +13,7 @@ export class Player {
         this.lastName = json.LastName;
         this.firstName = json.FirstName;
         this.position = json.Position;
+        // console.log(JSON.stringify(this));
     }
 
     get noImageUrl(): boolean {

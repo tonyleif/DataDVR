@@ -43,6 +43,7 @@ export class GamesComponent implements OnInit {
   weeks: Set<number>;
   games: Array<Game>;
   plays: Array<Play> = [];
+  players: Array<Player> = [];
   currentPlayIndex = -1;
   direction: string;
   playersStats: PlayersStats;
@@ -113,6 +114,7 @@ export class GamesComponent implements OnInit {
       this._selectedGame = value;
       this.currentPlayIndex = -1;
       if (value !== null) {
+        this.loadPlayerArray();
         this.loadPlayArray();
       }
     }
@@ -166,6 +168,40 @@ export class GamesComponent implements OnInit {
     return this.teamService.getTeam(this.selectedGame.homeTeam.ID);
   }
 
+  loadPlayerArray() {
+    // console.log('loadPlayerArray');
+    this.players.length = 0; // empty the array without making a new array
+    // create a local variable because this.players can't be referenced inside
+    // the observable subscription
+    this.activePlayersService.getActivePlayersByTeamsFromAPI(
+      this.selectedGame.awayTeam.Abbreviation, this.selectedGame.homeTeam.Abbreviation).subscribe(result => {
+      // localStorage.setItem('game' + this.selectedGame.gameid, JSON.stringify(result));
+      // const jsonPlays = this.playsService.getPlaysFromLocal('game' + this.selectedGame.gameid);
+      // console.log(result);
+      const jsonPlayers = result;
+      let player: Player;
+      jsonPlayers.forEach(function (jsonPlayer) {
+        console.log(jsonPlayer);
+        player = new Player(jsonPlayer);
+        console.log(new Player(jsonPlayer).lastName);
+        console.log(JSON.stringify(player));
+        this.players.push(player);
+      }, this);
+      console.log(JSON.stringify(this.players));
+    });
+  }
+
+  getPlayer(id: number): Player {
+    console.log('getPlayer(' + id + ')');
+    for (let i = 0; i < this.players.length; i++) {
+      // console.log(this.players[i]);
+      if (this.players[i].id === id) {
+        return this.players[i];
+      }
+    }
+    return null;
+  }
+
   loadPlayArray() {
     this.plays.length = 0; // empty the array without making a new array
     // create a local variable because this.plays can't be referenced inside
@@ -216,7 +252,8 @@ export class GamesComponent implements OnInit {
           this._currentPlay.kickingPlay.kickingPlayer = kickingPlayer;
           break;
         case PlayType.RushingPlay:
-          const rushingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.rushingPlay.rushingPlayer.ID);
+          // const rushingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.rushingPlay.rushingPlayer.ID);
+          const rushingPlayer = this.getPlayer(this._currentPlay.json.rushingPlay.rushingPlayer.ID);
           this._currentPlay.rushingPlay.rushingPlayer = rushingPlayer;
           break;
         case PlayType.PassingPlay:
