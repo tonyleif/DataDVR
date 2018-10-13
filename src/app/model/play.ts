@@ -120,15 +120,18 @@ export class Play {
 
 }
 
-class KickingPlay {
+export class KickingPlay {
     teamAbbreviation: string;
     kickingPlayer: Player;
     isBlocked: boolean;
+    isNoPlay: boolean;
     subPlays: any[];
 
     constructor(json) {
         this.teamAbbreviation = json.kickingTeamAbbreviation;
-        this.isBlocked = json.isBlocked;
+        this.isBlocked = (json.isBlocked === 'true');
+        this.isNoPlay = (json.isNoPlay === 'true');
+        this.subPlays = new Array<any>();
         if (json.subPlays) {
             this.subPlays = new Array<any>();
             if (json.subPlays.fumble) {
@@ -151,12 +154,14 @@ export class RushingPlay {
     yardsRushed: number;
     isEndedWithTouchdown: boolean;
     isTwoPointConversion: boolean;
+    isNoPlay: boolean;
     subPlays: any[];
     constructor(json) {
         this.teamAbbreviation = json.teamAbbreviation;
         this.yardsRushed = json.yardsRushed;
         this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
         this.isTwoPointConversion = (json.isTwoPointConversion === 'true');
+        this.isNoPlay = (json.isNoPlay === 'true');
         this.rushingPlayer = new Player(json.rushingPlayer);
         this.subPlays = new Array<any>();
         if (json.subPlays) {
@@ -295,6 +300,6 @@ class Fumble {
     }
 
     get recoveredByOtherTeam(): boolean {
-        return (this.fumblingTeamAbbreviation !== this.recoveringTeamAbbreviation);
+        return (this.recoveringTeamAbbreviation !== undefined && this.fumblingTeamAbbreviation !== this.recoveringTeamAbbreviation);
     }
 }

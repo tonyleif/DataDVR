@@ -1,6 +1,6 @@
 import { Player } from './Player';
 import { PlayerStats } from './PlayerStats';
-import { PlayType, PassingPlay, RushingPlay, SackingPlay } from './Play';
+import { PlayType, PassingPlay, RushingPlay, SackingPlay, KickingPlay } from './Play';
 import { DefenseSepecialTeamsStats } from './DefenseSpecialTeamsStats';
 
 export class PlayersStats {
@@ -129,9 +129,8 @@ export class PlayersStats {
                         }
                         break;
                     case PlayType.RushingPlay:
-                        // Rushing player
                         const rushingPlay: RushingPlay = new RushingPlay(p.json.rushingPlay);
-                        if (!(p.rushingPlay.isNoPlay === 'true')) {
+                        if (!(rushingPlay.isNoPlay)) {
                             let defenseTeamStats: DefenseSepecialTeamsStats;
                             if (rushingPlay.teamAbbreviation === awayTeamAbbr) {
                                 defenseTeamStats = homeDSTStatsLocal;
@@ -139,9 +138,9 @@ export class PlayersStats {
                                 defenseTeamStats = awayDSTStatsLocal;
                             }
                             currentPlayerStats = PlayersStats.findPlayerStats(
-                                p.rushingPlay.rushingPlayer, p.rushingPlay.teamAbbreviation, tempPlayersStats);
-                            currentPlayerStats.rushingYards += +p.rushingPlay.yardsRushed;
-                            if (p.rushingPlay.isEndedWithTouchdown) {
+                                rushingPlay.rushingPlayer, rushingPlay.teamAbbreviation, tempPlayersStats);
+                            currentPlayerStats.rushingYards += +rushingPlay.yardsRushed;
+                            if (rushingPlay.isEndedWithTouchdown) {
                                 currentPlayerStats.touchdowns++;
                             }
                             if (rushingPlay.fumbleSubPlay != null) {
@@ -161,7 +160,6 @@ export class PlayersStats {
                         }
                         break;
                     case PlayType.KickAttempt:
-                        // Kicking player
                         if (!(p.kickAttempt.isNoPlay === 'true')) {
                             currentPlayerStats = PlayersStats.findPlayerStats(
                                 p.kickAttempt.kickingPlayer, p.kickAttempt.teamAbbreviation, tempPlayersStats);
@@ -183,32 +181,35 @@ export class PlayersStats {
                         }
                         break;
                     case PlayType.KickingPlay:
-                        if (!(p.kickingPlay.isNoPlay === 'true')) {
+                        const kickingPlay: KickingPlay = new KickingPlay(p.json.kickingPlay);
+                        if (!(kickingPlay.isNoPlay)) {
                             // DST
-                            if (p.kickingPlay.isBlocked === 'true') {
-                                if (p.kickingPlay.teamAbbreviation === awayTeamAbbr) {
-                                    homeDSTStatsLocal.blockedKicks += 1;
-                                    if (p.kickingPlay.fumbleSubPlay.isEndedWithTouchdown) {
-                                        if (p.kickingPlay.fumbleSubPlay.recoveringTeamAbbreviation === awayTeamAbbr) {
-                                            awayDSTStatsLocal.touchDowns += 1;
-                                        } else {
-                                            homeDSTStatsLocal.touchDowns += 1;
+                            let defenseTeamStats: DefenseSepecialTeamsStats;
+                            if (kickingPlay.teamAbbreviation === awayTeamAbbr) {
+                                defenseTeamStats = homeDSTStatsLocal;
+                            } else {
+                                defenseTeamStats = awayDSTStatsLocal;
+                            }
+                            if (kickingPlay.isBlocked) {
+                                defenseTeamStats.blockedKicks += 1;
+                                if (kickingPlay.fumbleSubPlay != null) {
+                                    if (kickingPlay.fumbleSubPlay.isEndedWithTouchdown) {
+                                        defenseTeamStats.touchDowns += 1;
+                                    }
+                                }
+                                if (idx === 0) {
+                                    defenseTeamStats.accruedStatsOnLastPlay = true;
+                                }
+                            } else {
+                                if (kickingPlay.fumbleSubPlay != null) {
+                                    if (kickingPlay.fumbleSubPlay.recoveredByOtherTeam) {
+                                        defenseTeamStats.fumblesRecovered += 1;
+                                        if (kickingPlay.fumbleSubPlay.isEndedWithTouchdown) {
+                                            defenseTeamStats.touchDowns += 1;
                                         }
-                                    }
-                                    if (idx === 0) {
-                                        homeDSTStatsLocal.accruedStatsOnLastPlay = true;
-                                    }
-                                } else {
-                                    awayDSTStatsLocal.blockedKicks += 1;
-                                    if (p.kickingPlay.fumbleSubPlay.isEndedWithTouchdown) {
-                                        if (p.kickingPlay.fumbleSubPlay.recoveringTeamAbbreviation === awayTeamAbbr) {
-                                            awayDSTStatsLocal.touchDowns += 1;
-                                        } else {
-                                            homeDSTStatsLocal.touchDowns += 1;
+                                        if (idx === 0) {
+                                            defenseTeamStats.accruedStatsOnLastPlay = true;
                                         }
-                                    }
-                                    if (idx === 0) {
-                                        awayDSTStatsLocal.accruedStatsOnLastPlay = true;
                                     }
                                 }
                             }
