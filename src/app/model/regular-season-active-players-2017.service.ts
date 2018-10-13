@@ -38,7 +38,7 @@ export class RegularSeasonActivePlayers2017Service {
     this.createAuthorizationHeader(headers);
     return this.http
       .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/latest/active_players.json?team=' + awayTeam + ',' + homeTeam +
-        ',la&position=qb,rb,fb,wr,te,k&rosterstatus=assigned-to-roster', { headers: headers })
+        ',la&position=qb,rb,fb,wr,te,k,p&rosterstatus=assigned-to-roster', { headers: headers })
       .map((res: Response) => {
         // localStorage.activeplayers = JSON.stringify(res.json());
         // console.log(res.json().activeplayers.playerentry);
@@ -47,11 +47,8 @@ export class RegularSeasonActivePlayers2017Service {
         let playerObject: any;
         for (let i = 0; i < allPlayers.length; i++) {
           playerObject = allPlayers[i];
-          // console.log('playerObject: ' + JSON.stringify(playerObject));
           const player = new Player(playerObject.player);
-          // console.log(player.lastName);
           playerArray.push(player);
-          // localStorage.setItem(playerObject.player.ID + 'ap', JSON.stringify(playerObject.player));
         }
         // return res.json();
         // console.log(playerArray);

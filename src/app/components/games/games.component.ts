@@ -76,9 +76,9 @@ export class GamesComponent implements OnInit {
   }
 
   loadPlayers() {
-    if (!localStorage.getItem('activeplayers')) {
-      this.activePlayersService.getActivePlayersFromAPI().subscribe(result => result);
-    }
+    // if (!localStorage.getItem('activeplayers')) {
+    //   this.activePlayersService.getActivePlayersFromAPI().subscribe(result => result);
+    // }
   }
 
   get doneLoadingSchedule(): boolean {
@@ -175,24 +175,15 @@ export class GamesComponent implements OnInit {
     // the observable subscription
     this.activePlayersService.getActivePlayersByTeamsFromAPI(
       this.selectedGame.awayTeam.Abbreviation, this.selectedGame.homeTeam.Abbreviation).subscribe(result => {
-      // localStorage.setItem('game' + this.selectedGame.gameid, JSON.stringify(result));
-      // const jsonPlays = this.playsService.getPlaysFromLocal('game' + this.selectedGame.gameid);
-      // console.log(result);
-      const jsonPlayers = result;
-      let player: Player;
-      jsonPlayers.forEach(function (jsonPlayer) {
-        console.log(jsonPlayer);
-        player = new Player(jsonPlayer);
-        console.log(new Player(jsonPlayer).lastName);
-        console.log(JSON.stringify(player));
-        this.players.push(player);
-      }, this);
-      console.log(JSON.stringify(this.players));
+      const playerArray = result;
+      for (let i = 0; i < playerArray.length; i++) {
+        this.players.push(playerArray[i]);
+      }
     });
   }
 
   getPlayer(id: number): Player {
-    console.log('getPlayer(' + id + ')');
+    // console.log('getPlayer(' + id + ')');
     for (let i = 0; i < this.players.length; i++) {
       // console.log(this.players[i]);
       if (this.players[i].id === id) {
@@ -248,7 +239,7 @@ export class GamesComponent implements OnInit {
     if (this._currentPlay) {
       switch (this._currentPlay.playType) {
         case PlayType.KickingPlay:
-          const kickingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.kickingPlay.kickingPlayer.ID);
+          const kickingPlayer = this.getPlayer(this._currentPlay.json.kickingPlay.kickingPlayer.ID);
           this._currentPlay.kickingPlay.kickingPlayer = kickingPlayer;
           break;
         case PlayType.RushingPlay:
@@ -257,22 +248,22 @@ export class GamesComponent implements OnInit {
           this._currentPlay.rushingPlay.rushingPlayer = rushingPlayer;
           break;
         case PlayType.PassingPlay:
-          const passingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
+          const passingPlayer = this.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
           this._currentPlay.passingPlay.passingPlayer = passingPlayer;
           if (this._currentPlay.json.passingPlay.receivingPlayer) {
-            const receivingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.receivingPlayer.ID);
+            const receivingPlayer = this.getPlayer(this._currentPlay.json.passingPlay.receivingPlayer.ID);
             this._currentPlay.passingPlay.receivingPlayer = receivingPlayer;
           }
           break;
         case PlayType.KickAttempt:
-          const kicker = this.activePlayersService.getPlayer(this._currentPlay.json.kickAttempt.kickingPlayer.ID);
+          const kicker = this.getPlayer(this._currentPlay.json.kickAttempt.kickingPlayer.ID);
           this._currentPlay.kickAttempt.kickingPlayer = kicker;
           break;
         case PlayType.LateralPass:
-          const lateralPassingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
+          const lateralPassingPlayer = this.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
           this._currentPlay.lateralPass.passingPlayer = passingPlayer;
           if (this._currentPlay.json.passingPlay.receivingPlayer) {
-            const lateralReceivingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.passingPlay.receivingPlayer.ID);
+            const lateralReceivingPlayer = this.getPlayer(this._currentPlay.json.passingPlay.receivingPlayer.ID);
             this._currentPlay.lateralPass.receivingPlayer = lateralReceivingPlayer;
           }
           break;
