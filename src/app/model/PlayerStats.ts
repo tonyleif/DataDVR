@@ -8,6 +8,7 @@ export class PlayerStats {
     receivingYards: number;
     passingTouchdowns: number;
     touchdowns: number;
+    twoPointConversions: number;
     extraPoints: number;
     fieldGoals: number;
     fieldGoals50Plus: number;
@@ -22,6 +23,7 @@ export class PlayerStats {
         this.receivingYards = 0;
         this.passingTouchdowns = 0;
         this.touchdowns = 0;
+        this.twoPointConversions = 0;
         this.extraPoints = 0;
         this.fieldGoals = 0;
         this.fieldGoals50Plus = 0;
