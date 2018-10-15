@@ -46,13 +46,13 @@ export class PlayersStats {
             if (!p.isCancelsPlay) {
                 switch (p.playType) {
                     case PlayType.PassingPlay:
-                        const passingPlay = new PassingPlay(p.json.passingPlay);
+                        const passingPlay = new PassingPlay(p.json.passingPlay, p.lineOfScrimmage);
                         if (!p.passingPlay.isNoPlay) {
                             if (p.passingPlay.isCompleted) {
                                 // Passing player
                                 currentPlayerStats = PlayersStats.findPlayerStats(
                                     p.passingPlay.passingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
-                                currentPlayerStats.passingYards += +p.passingPlay.totalYardsGained;
+                                currentPlayerStats.passingYards += +passingPlay.statYards; // +p.passingPlay.totalYardsGained;
                                 if (p.passingPlay.isEndedWithTouchdown) {
                                     if (passingPlay.isTwoPointConversion) {
                                         currentPlayerStats.twoPointConversions++;
@@ -67,7 +67,7 @@ export class PlayersStats {
                                 if (p.passingPlay.receivingPlayer != null) {
                                     currentPlayerStats = PlayersStats.findPlayerStats(
                                         p.passingPlay.receivingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
-                                    currentPlayerStats.receivingYards += +p.passingPlay.totalYardsGained;
+                                    currentPlayerStats.receivingYards += +passingPlay.statYards; // +p.passingPlay.totalYardsGained;
                                     if (p.passingPlay.isEndedWithTouchdown) {
                                         if (passingPlay.isTwoPointConversion) {
                                             currentPlayerStats.twoPointConversions++;

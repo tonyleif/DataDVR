@@ -21,7 +21,7 @@ export class Play {
     time: string;
     currentDown: number;
     yardsRemaining: number;
-    lineOfScrimmage: LineOfScrimmage;
+    lineOfScrimmage: FieldPosition; // LineOfScrimmage todo: remove LineOfScrimmage class
     playType: PlayType;
     kickingPlay: KickingPlay;
     rushingPlay: RushingPlay;
@@ -39,7 +39,7 @@ export class Play {
         this.currentDown = json.currentDown;
         this.yardsRemaining = json.yardsRemaining;
         if (json.lineOfScrimmage) {
-            this.lineOfScrimmage = new LineOfScrimmage(json.lineOfScrimmage);
+            this.lineOfScrimmage = new FieldPosition(json.lineOfScrimmage);
         }
         if (json.kickingPlay) {
             this.playType = PlayType.KickingPlay;
@@ -49,7 +49,7 @@ export class Play {
             this.rushingPlay = new RushingPlay(json.rushingPlay);
         } else if (json.passingPlay) {
             this.playType = PlayType.PassingPlay;
-            this.passingPlay = new PassingPlay(json.passingPlay);
+            this.passingPlay = new PassingPlay(json.passingPlay, this.lineOfScrimmage);
         } else if (json.kickAttempt) {
             this.playType = PlayType.KickAttempt;
             this.kickAttempt = new KickAttempt(json.kickAttempt);
@@ -190,8 +190,11 @@ export class PassingPlay {
     isNoPlay: boolean;
     intercepted: boolean;
     subPlays: any[];
+    penalties: Penalty[];
+    receivedAtPosition: FieldPosition;
+    lineOfScrimmage: FieldPosition;
 
-    constructor(json) {
+    constructor(json, lineOfScrim: FieldPosition) {
         this.teamAbbreviation = json.teamAbbreviation;
         this.isCompleted = (json.isCompleted === 'true');
         this.totalYardsGained = json.totalYardsGained;
@@ -207,12 +210,27 @@ export class PassingPlay {
         this.intercepted = (json.interceptingPlayer != null);
         this.subPlays = new Array<any>();
         if (json.subPlays) {
-            // console.log('json.subPlays.fumble: ' + JSON.stringify(json.subPlays.fumble));
             if (json.subPlays.fumble) {
                 const fum = new Fumble(json.subPlays.fumble);
                 this.subPlays.push(fum);
             }
         }
+        this.penalties = new Array<Penalty>();
+        if (json.penalties) {
+            const penaltiesRef: Penalty[] = this.penalties;
+            // json.penalties.forEach(penalty => {
+            //     const pen = new Penalty(penalty);
+            //     penaltiesRef.push(pen);
+            // });
+            Array.prototype.forEach.call(json.penalties, penalty => {
+                const pen = new Penalty(penalty);
+                penaltiesRef.push(pen);
+            });
+        }
+        if (json.receivedAtPosition) {
+            this.receivedAtPosition = new FieldPosition(json.receivedAtPosition);
+        }
+        this.lineOfScrimmage = lineOfScrim;
     }
 
     get noReceivingPlayer(): boolean {
@@ -222,6 +240,35 @@ export class PassingPlay {
     get fumbleSubPlay(): Fumble {
         if (this.subPlays.length > 0) {
             return this.subPlays[0];
+        }
+    }
+
+    get holdingSpotFoul(): Penalty {
+        if (this.penalties.length > 0) {
+            console.log('at least one penalty');
+        }
+        this.penalties.forEach(penalty => {
+            if (penalty.description === 'Offensive Holding' && penalty.isCancelsPlay && penalty.yardsPenalized > 0) {
+                return penalty;
+            }
+        });
+        // Array.prototype.forEach.call(this.penalties, penalty => {
+        //     if (penalty.description === 'Offensive Holding' && penalty.isCancelsPlay && penalty.yardsPenalized > 0) {
+        //         return penalty;
+        //     }
+        // });
+        return null;
+    }
+
+    get statYards(): number {
+        if (this.holdingSpotFoul) {
+            if (this.holdingSpotFoul.enforcedAtPosition.team === this.lineOfScrimmage.team) {
+                return +this.holdingSpotFoul.enforcedAtPosition.yardLine - +this.lineOfScrimmage.yardLine;
+            } else {
+                return 100 - +this.holdingSpotFoul.enforcedAtPosition.yardLine - +this.lineOfScrimmage.yardLine;
+            }
+        } else {
+            return this.totalYardsGained;
         }
     }
 }
@@ -301,5 +348,30 @@ class Fumble {
 
     get recoveredByOtherTeam(): boolean {
         return (this.recoveringTeamAbbreviation !== undefined && this.fumblingTeamAbbreviation !== this.recoveringTeamAbbreviation);
+    }
+}
+
+class Penalty {
+    enforcedAtPosition: FieldPosition;
+    description: string;
+    isCancelsPlay: boolean;
+    yardsPenalized: number;
+
+    constructor(json) {
+        this.enforcedAtPosition = new FieldPosition(json.enforcedAtPosition);
+        this.description = json.description;
+        this.isCancelsPlay = (json.isCancelsPlay === 'true');
+        this.yardsPenalized = json.yardsPenalized;
+    }
+
+}
+
+class FieldPosition {
+    team: string;
+    yardLine: number;
+
+    constructor(json) {
+        this.team = json.team;
+        this.yardLine = json.yardLine;
     }
 }

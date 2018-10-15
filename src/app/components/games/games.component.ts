@@ -183,9 +183,7 @@ export class GamesComponent implements OnInit {
   }
 
   getPlayer(id: number): Player {
-    // console.log('getPlayer(' + id + ')');
     for (let i = 0; i < this.players.length; i++) {
-      // console.log(this.players[i]);
       if (this.players[i].id === id) {
         return this.players[i];
       }
