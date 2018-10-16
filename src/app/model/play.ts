@@ -222,10 +222,24 @@ export class PassingPlay {
             //     const pen = new Penalty(penalty);
             //     penaltiesRef.push(pen);
             // });
-            Array.prototype.forEach.call(json.penalties, penalty => {
-                const pen = new Penalty(penalty);
-                penaltiesRef.push(pen);
-            });
+            // Array.prototype.forEach.call(json.penalties, p => {
+            //     const pen = new Penalty(p);
+            //     penaltiesRef.push(pen);
+            // });
+            // Object.keys(json.penalties).forEach(function (key) {
+            //     console.log(JSON.stringify(json.penalties[key]));
+            //     const pen = new Penalty(JSON.stringify(json.penalties[key]));
+            //     penaltiesRef.push(pen);
+            // });
+            // json.penalties.forEach(function(value, index, array) {
+            //     // The callback is executed for each element in the array.
+            //     // `value` is the element itself (equivalent to `array[index]`)
+            //     // `index` will be the index of the element in the array
+            //     // `array` is a reference to the array itself (i.e. `data.items` in this case)
+            //     const pen = new Penalty(value);
+            //     penaltiesRef.push(pen);
+
+            // });
         }
         if (json.receivedAtPosition) {
             this.receivedAtPosition = new FieldPosition(json.receivedAtPosition);
