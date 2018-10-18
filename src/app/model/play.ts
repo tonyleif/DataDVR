@@ -1,6 +1,7 @@
 import { LineOfScrimmage } from '../model/LineOfScrimmage';
 import { Player } from '../model/Player';
 import { RegularSeasonActivePlayers2017Service } from './regular-season-active-players-2017.service';
+import { UnhandledAlertError } from 'selenium-webdriver';
 // import { Http } from '@angular/http';
 
 export enum PlayType {
@@ -218,28 +219,10 @@ export class PassingPlay {
         this.penalties = new Array<Penalty>();
         if (json.penalties) {
             const penaltiesRef: Penalty[] = this.penalties;
-            // json.penalties.forEach(penalty => {
-            //     const pen = new Penalty(penalty);
-            //     penaltiesRef.push(pen);
-            // });
-            // Array.prototype.forEach.call(json.penalties, p => {
-            //     const pen = new Penalty(p);
-            //     penaltiesRef.push(pen);
-            // });
-            // Object.keys(json.penalties).forEach(function (key) {
-            //     console.log(JSON.stringify(json.penalties[key]));
-            //     const pen = new Penalty(JSON.stringify(json.penalties[key]));
-            //     penaltiesRef.push(pen);
-            // });
-            // json.penalties.forEach(function(value, index, array) {
-            //     // The callback is executed for each element in the array.
-            //     // `value` is the element itself (equivalent to `array[index]`)
-            //     // `index` will be the index of the element in the array
-            //     // `array` is a reference to the array itself (i.e. `data.items` in this case)
-            //     const pen = new Penalty(value);
-            //     penaltiesRef.push(pen);
-
-            // });
+            json.penalties.penalty.forEach(penalty => {
+                const pen = new Penalty(penalty);
+                penaltiesRef.push(pen);
+            });
         }
         if (json.receivedAtPosition) {
             this.receivedAtPosition = new FieldPosition(json.receivedAtPosition);
@@ -258,24 +241,21 @@ export class PassingPlay {
     }
 
     get holdingSpotFoul(): Penalty {
-        if (this.penalties.length > 0) {
-            console.log('at least one penalty');
-        }
+        let pen: Penalty = null;
         this.penalties.forEach(penalty => {
-            if (penalty.description === 'Offensive Holding' && penalty.isCancelsPlay && penalty.yardsPenalized > 0) {
+            if (penalty.description === 'Offensive Holding' && !penalty.isCancelsPlay
+                && penalty.yardsPenalized > 0 && penalty.enforcedAtPosition !== null) {
+                // console.log('holding penalty spot foul, penalty.enforcedAtPosition: ' + JSON.stringify(penalty.enforcedAtPosition));
+                pen = penalty;
                 return penalty;
             }
         });
-        // Array.prototype.forEach.call(this.penalties, penalty => {
-        //     if (penalty.description === 'Offensive Holding' && penalty.isCancelsPlay && penalty.yardsPenalized > 0) {
-        //         return penalty;
-        //     }
-        // });
-        return null;
+        return pen;
     }
 
     get statYards(): number {
-        if (this.holdingSpotFoul) {
+        if (this.holdingSpotFoul != null) {
+            console.log(this.holdingSpotFoul.description);
             if (this.holdingSpotFoul.enforcedAtPosition.team === this.lineOfScrimmage.team) {
                 return +this.holdingSpotFoul.enforcedAtPosition.yardLine - +this.lineOfScrimmage.yardLine;
             } else {
@@ -372,7 +352,9 @@ class Penalty {
     yardsPenalized: number;
 
     constructor(json) {
-        this.enforcedAtPosition = new FieldPosition(json.enforcedAtPosition);
+        if (json.enforcedAtPosition) {
+            this.enforcedAtPosition = new FieldPosition(json.enforcedAtPosition);
+        }
         this.description = json.description;
         this.isCancelsPlay = (json.isCancelsPlay === 'true');
         this.yardsPenalized = json.yardsPenalized;
@@ -385,6 +367,7 @@ class FieldPosition {
     yardLine: number;
 
     constructor(json) {
+        // console.log(json);
         this.team = json.team;
         this.yardLine = json.yardLine;
     }
