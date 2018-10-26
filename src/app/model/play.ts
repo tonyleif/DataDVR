@@ -202,8 +202,14 @@ export class PassingPlay {
         this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
         this.isTwoPointConversion = (json.isTwoPointConversion === 'true');
         this.isNoPlay = (json.isNoPlay === 'true');
+        // console.log(this.teamAbbreviation);
+        // if (this.teamAbbreviation === 'BUF') {
+        //     console.log(json);
+        // }
         if (json.passingPlayer != null) {
+            // console.log(json.passingPlayer);
             this.passingPlayer = new Player(json.passingPlayer);
+            // console.log(JSON.stringify(this.passingPlayer));
         }
         if (json.receivingPlayer != null) {
             this.receivingPlayer = new Player(json.receivingPlayer);
@@ -255,7 +261,7 @@ export class PassingPlay {
 
     get statYards(): number {
         if (this.holdingSpotFoul != null) {
-            console.log(this.holdingSpotFoul.description);
+            // console.log(this.holdingSpotFoul.description);
             if (this.holdingSpotFoul.enforcedAtPosition.team === this.lineOfScrimmage.team) {
                 return +this.holdingSpotFoul.enforcedAtPosition.yardLine - +this.lineOfScrimmage.yardLine;
             } else {

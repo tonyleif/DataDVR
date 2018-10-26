@@ -14,6 +14,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import { PlayerStats } from '../../model/PlayerStats';
 import { PlayersStats } from '../../model/PlayersStats';
 import { $ } from 'protractor';
+import { jsonpFactory } from '@angular/http/src/http_module';
 
 @Component({
   selector: 'app-games',
@@ -176,6 +177,7 @@ export class GamesComponent implements OnInit {
     this.activePlayersService.getActivePlayersByTeamsFromAPI(
       this.selectedGame.awayTeam.Abbreviation, this.selectedGame.homeTeam.Abbreviation).subscribe(result => {
       const playerArray = result;
+      // console.log(JSON.stringify(playerArray));
       for (let i = 0; i < playerArray.length; i++) {
         this.players.push(playerArray[i]);
       }
@@ -184,6 +186,7 @@ export class GamesComponent implements OnInit {
 
   getPlayer(id: number): Player {
     for (let i = 0; i < this.players.length; i++) {
+      // console.log(JSON.stringify(this.players[i]));
       if (this.players[i].id === id) {
         return this.players[i];
       }
@@ -241,7 +244,6 @@ export class GamesComponent implements OnInit {
           this._currentPlay.kickingPlay.kickingPlayer = kickingPlayer;
           break;
         case PlayType.RushingPlay:
-          // const rushingPlayer = this.activePlayersService.getPlayer(this._currentPlay.json.rushingPlay.rushingPlayer.ID);
           const rushingPlayer = this.getPlayer(this._currentPlay.json.rushingPlay.rushingPlayer.ID);
           this._currentPlay.rushingPlay.rushingPlayer = rushingPlayer;
           break;

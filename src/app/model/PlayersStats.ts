@@ -183,6 +183,7 @@ export class PlayersStats {
                         break;
                     case PlayType.KickingPlay:
                         const kickingPlay: KickingPlay = new KickingPlay(p.json.kickingPlay);
+                        // console.log(kickingPlay.teamAbbreviation + ': ' + p.description);
                         if (!(kickingPlay.isNoPlay)) {
                             // DST
                             let defenseTeamStats: DefenseSepecialTeamsStats;
@@ -204,6 +205,11 @@ export class PlayersStats {
                             } else {
                                 if (kickingPlay.fumbleSubPlay != null) {
                                     if (kickingPlay.fumbleSubPlay.recoveredByOtherTeam) {
+                                        if (kickingPlay.fumbleSubPlay.recoveringTeamAbbreviation === awayTeamAbbr) {
+                                            defenseTeamStats = awayDSTStatsLocal;
+                                        } else {
+                                            defenseTeamStats = homeDSTStatsLocal;
+                                        }
                                         defenseTeamStats.fumblesRecovered += 1;
                                         if (kickingPlay.fumbleSubPlay.isEndedWithTouchdown) {
                                             defenseTeamStats.touchDowns += 1;

@@ -17,6 +17,11 @@ export class Player {
     }
 
     get noImageUrl(): boolean {
+        // if (this.officialImageSrc == null) {
+        //     console.log('no image for ' + this.lastName);
+        // } else {
+        //     console.log('got image for ' + this.lastName);
+        // }
         return (this.officialImageSrc == null);
     }
 }
