@@ -123,16 +123,26 @@ export class Play {
 
 export class KickingPlay {
     teamAbbreviation: string;
+    retrievingTeamAbbreviation: string;
     kickingPlayer: Player;
+    retrievingPlayer: Player;
     isBlocked: boolean;
     isNoPlay: boolean;
+    isTouchdown: boolean;
     subPlays: any[];
 
     constructor(json) {
         this.teamAbbreviation = json.kickingTeamAbbreviation;
+        this.retrievingTeamAbbreviation = json.retrievingTeamAbbreviation;
         this.isBlocked = (json.isBlocked === 'true');
         this.isNoPlay = (json.isNoPlay === 'true');
+        this.isTouchdown = (json.isTouchdown === 'true');
         this.subPlays = new Array<any>();
+        if (json.retrievingPlayer != null) {
+            // console.log(json.passingPlayer);
+            this.retrievingPlayer = new Player(json.retrievingPlayer);
+            // console.log(JSON.stringify(this.passingPlayer));
+        }
         if (json.subPlays) {
             this.subPlays = new Array<any>();
             if (json.subPlays.fumble) {

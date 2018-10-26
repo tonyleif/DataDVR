@@ -220,6 +220,16 @@ export class PlayersStats {
                                     }
                                 }
                             }
+                            if (kickingPlay.isTouchdown) {
+                                defenseTeamStats.touchDowns += 1;
+                                currentPlayerStats = PlayersStats.findPlayerStats(
+                                    kickingPlay.retrievingPlayer, kickingPlay.retrievingTeamAbbreviation, tempPlayersStats);
+                                currentPlayerStats.touchdowns += 1;
+                                if (idx === 0) {
+                                    defenseTeamStats.accruedStatsOnLastPlay = true;
+                                    currentPlayerStats.accruedStatsOnLastPlay = true;
+                                }
+                            }
                         }
                         break;
                     case PlayType.SackingPlay:
