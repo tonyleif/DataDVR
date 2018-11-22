@@ -2,6 +2,7 @@ import { LineOfScrimmage } from '../model/LineOfScrimmage';
 import { Player } from '../model/Player';
 import { RegularSeasonActivePlayers2017Service } from './regular-season-active-players-2017.service';
 import { UnhandledAlertError } from 'selenium-webdriver';
+import { jsonpFactory } from '@angular/http/src/http_module';
 // import { Http } from '@angular/http';
 
 export enum PlayType {
@@ -47,7 +48,7 @@ export class Play {
             this.kickingPlay = new KickingPlay(json.kickingPlay);
         } else if (json.rushingPlay) {
             this.playType = PlayType.RushingPlay;
-            this.rushingPlay = new RushingPlay(json.rushingPlay);
+            this.rushingPlay = new RushingPlay(json.rushingPlay, this.lineOfScrimmage);
         } else if (json.passingPlay) {
             this.playType = PlayType.PassingPlay;
             this.passingPlay = new PassingPlay(json.passingPlay, this.lineOfScrimmage);
@@ -167,7 +168,8 @@ export class RushingPlay {
     isTwoPointConversion: boolean;
     isNoPlay: boolean;
     subPlays: any[];
-    constructor(json) {
+
+    constructor(json, lineOfScrimmage: FieldPosition) {
         this.teamAbbreviation = json.teamAbbreviation;
         this.yardsRushed = json.yardsRushed;
         this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
@@ -176,21 +178,46 @@ export class RushingPlay {
         this.rushingPlayer = new Player(json.rushingPlayer);
         this.subPlays = new Array<any>();
         if (json.subPlays) {
+            // console.log('json.subPlays: ' + JSON.stringify(json.subPlays));
             if (json.subPlays.fumble) {
                 const fum = new Fumble(json.subPlays.fumble);
                 this.subPlays.push(fum);
             }
+            if (json.subPlays.passingPlay) {
+                const pass = new PassingPlay(json.subPlays.passingPlay, lineOfScrimmage);
+                this.subPlays.push(pass);
+            }
         }
     }
 
+    // get fumbleSubPlay(): Fumble {
+    //     if (this.subPlays.length > 0) {
+    //         return this.subPlays[0];
+    //     }
+    // }
     get fumbleSubPlay(): Fumble {
-        if (this.subPlays.length > 0) {
-            return this.subPlays[0];
+        for (let i = 0; i++; i < this.subPlays.length) {
+            console.log('looking for fumble: ' + this.subPlays[i]);
+            if (this.subPlays[i] instanceof Fumble) {
+                return this.subPlays[i];
+            }
         }
+        return null;
     }
+
+    get passingSubPlay(): PassingPlay {
+        for (let i = 0; i++; i < this.subPlays.length) {
+            if (this.subPlays[i] instanceof PassingPlay) {
+                return this.subPlays[i];
+            }
+        }
+        return null;
+    }
+
 }
 
 export class PassingPlay {
+    json: any;
     teamAbbreviation: string;
     passingPlayer: Player;
     receivingPlayer: Player;
@@ -206,6 +233,7 @@ export class PassingPlay {
     lineOfScrimmage: FieldPosition;
 
     constructor(json, lineOfScrim: FieldPosition) {
+        this.json = json;
         this.teamAbbreviation = json.teamAbbreviation;
         this.isCompleted = (json.isCompleted === 'true');
         this.totalYardsGained = json.totalYardsGained;
@@ -222,6 +250,10 @@ export class PassingPlay {
             // console.log(JSON.stringify(this.passingPlayer));
         }
         if (json.receivingPlayer != null) {
+            // console.log(json.receivingPlayer);
+            if (json.receivingPlayer.FirstName === 'Deontay') {
+                console.log('making Deontay');
+            }
             this.receivingPlayer = new Player(json.receivingPlayer);
         }
         this.intercepted = (json.interceptingPlayer != null);
@@ -247,6 +279,9 @@ export class PassingPlay {
     }
 
     get noReceivingPlayer(): boolean {
+        if (this.receivingPlayer === undefined || this.receivingPlayer == null) {
+            console.log('noReceivingPlayer ' + JSON.stringify(this.json.receivingPlayer));
+        }
         return (this.receivingPlayer === undefined || this.receivingPlayer == null);
     }
 

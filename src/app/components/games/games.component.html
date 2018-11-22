@@ -177,17 +177,6 @@
               <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-image-2">
                 <img *ngIf="!currentPlay.passingPlay.receivingPlayer.noImageUrl" src={{currentPlay.passingPlay.receivingPlayer.officialImageSrc}}
                   class="rounded" />
-                <!-- <div *ngIf="currentPlay.passingPlay.receivingPlayer.noImageUrl" class="ml-6">
-                  <div class="row text-center">
-                    {{currentPlay.passingPlay.receivingPlayer.firstName}}
-                  </div>
-                  <div class="row text-center">
-                    {{currentPlay.passingPlay.receivingPlayer.lastName}}
-                  </div>
-                  <div class="row text-center">
-                    (No Image)
-                  </div>
-                </div> -->
               </div>
               <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-data d-inline">
                 <div>{{currentPlay.passingPlay.receivingPlayer.firstName}} {{currentPlay.passingPlay.receivingPlayer.lastName}}
@@ -265,6 +254,9 @@
             </small>
           </div>
         </div> -->
+        <div>
+          <a href={{selectGameAPIURL}} target="_blank" class="btn">Play JSON</a>
+        </div>
       </div>
       <!-- Stats -->
       <div *ngIf="hasPlayersStats" class="ml-1 pt-2">

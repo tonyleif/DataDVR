@@ -32,15 +32,17 @@ export class RegularSeasonActivePlayers2017Service {
       });
   }
 
-  getActivePlayersByTeamsFromAPI(homeTeam: string, awayTeam: string): Observable<Player[]> {
+  getActivePlayersByTeamsFromAPI(awayTeam: string, homeTeam: string
+    ): Observable<Player[]> {
     // console.log('getActivePlayersByTeamsFromAPI');
     const headers = new Headers();
-    this.createAuthorizationHeader(headers);
+    this.createAuthorizationHeader(headers); // &position=qb,rb,fb,wr,te,k,p
     return this.http
       .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/latest/active_players.json?team=' + awayTeam + ',' + homeTeam +
-        ',la&position=qb,rb,fb,wr,te,k,p', { headers: headers })
+        ',la', { headers: headers })
       .map((res: Response) => {
         // localStorage.activeplayers = JSON.stringify(res.json());
+        localStorage.setItem('activeplayers' + awayTeam + '-' + homeTeam, JSON.stringify(res.json()));
         // console.log(res.json().activeplayers.playerentry);
         const playerArray: Player[] = new Array<Player>();
         const allPlayers: Array<string> = res.json().activeplayers.playerentry;

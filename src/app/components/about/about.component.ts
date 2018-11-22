@@ -7,9 +7,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AboutComponent implements OnInit {
 
-  constructor() { }
+  offlineMode: boolean;
+
+  constructor() {
+    this.offlineMode = false;
+    if (localStorage.getItem('offlineMode') === 'true') {
+      this.offlineMode = true;
+    }
+  }
 
   ngOnInit() {
+  }
+
+  toggleOfflineMode() {
+    this.offlineMode = !this.offlineMode;
+    localStorage.setItem('offlineMode', this.offlineMode.toString());
   }
 
 }

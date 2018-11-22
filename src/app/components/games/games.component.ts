@@ -136,17 +136,15 @@ export class GamesComponent implements OnInit {
   }
 
   setGame(id: number) {
-    // console.log('setGame');
     // Don't bother doing this work if the button clicked was already selected
     if (this.selectedGame && this.selectedGame.id !== id) {
-      // // Browsers have storage limits so clear out the data from last game
-      // localStorage.removeItem(this.selectedGame.gameid);
+      // Browsers have storage limits so clear out the data from last game
       // Iterate over localStorage and remove items that start with 'watched'
-      for (let i = 0; i < localStorage.length; i++) {
-        // console.log(localStorage.key(i).substring(0, 4));
-        if (localStorage.key(i).substring(0, 4) === 'game') {
-          // console.log(localStorage.key(i));
-          localStorage.removeItem(localStorage.key(i));
+      if (!this.offlineMode) {
+        for (let i = 0; i < localStorage.length; i++) {
+          if (localStorage.key(i).substring(0, 4) === 'game' || localStorage.key(i).substring(0, 13) === 'activeplayers') {
+            localStorage.removeItem(localStorage.key(i));
+          }
         }
       }
 
@@ -174,14 +172,27 @@ export class GamesComponent implements OnInit {
     this.players.length = 0; // empty the array without making a new array
     // create a local variable because this.players can't be referenced inside
     // the observable subscription
-    this.activePlayersService.getActivePlayersByTeamsFromAPI(
-      this.selectedGame.awayTeam.Abbreviation, this.selectedGame.homeTeam.Abbreviation).subscribe(result => {
-      const playerArray = result;
+    if (this.offlineMode) {
+      // console.log(this.offlineMode);
+      const playerArray = JSON.parse(localStorage.getItem(
+        'activeplayers' + this.awayTeamObject.Abbreviation + '-' + this.homeTeamObject.Abbreviation));
       // console.log(JSON.stringify(playerArray));
       for (let i = 0; i < playerArray.length; i++) {
-        this.players.push(playerArray[i]);
+        const player = new Player(playerArray[i]);
+        this.players.push(player);
       }
-    });
+    } else {
+      // console.log('should not run offline');
+      this.activePlayersService.getActivePlayersByTeamsFromAPI(
+        this.selectedGame.awayTeam.Abbreviation, this.selectedGame.homeTeam.Abbreviation).subscribe(result => {
+          const playerArray = result;
+          // console.log(JSON.stringify(playerArray));
+          for (let i = 0; i < playerArray.length; i++) {
+            this.players.push(playerArray[i]);
+          }
+        });
+    }
+
   }
 
   getPlayer(id: number): Player {
@@ -199,6 +210,7 @@ export class GamesComponent implements OnInit {
     // create a local variable because this.plays can't be referenced inside
     // the observable subscription
     if (localStorage.getItem('game' + this.selectedGame.gameid)) {
+      // console.log('get plays local');
       const jsonPlays = this.playsService.getPlaysFromLocal('game' + this.selectedGame.gameid);
       jsonPlays.forEach(function (jsonPlay, i) {
         const play = new Play(jsonPlay, i);
@@ -207,6 +219,7 @@ export class GamesComponent implements OnInit {
         this.plays.unshift(play);
       }, this); // Not sure I really like adding this reference here. It works but hard to follow.
     } else {
+      // console.log('getting plays from service');
       this.playsService.getPlaysFromAPI(this.selectedGame.gameid).subscribe(result => {
         localStorage.setItem('game' + this.selectedGame.gameid, JSON.stringify(result));
         const jsonPlays = this.playsService.getPlaysFromLocal('game' + this.selectedGame.gameid);
@@ -383,4 +396,11 @@ export class GamesComponent implements OnInit {
     this.updated = true;
   }
 
+  get offlineMode() {
+    return (localStorage.getItem('offlineMode') === 'true');
+  }
+
+  get selectGameAPIURL() {
+    return 'https://api.mysportsfeeds.com/v1.2/pull/nfl/2018-regular/game_playbyplay.json?gameid=' + this._selectedGame.gameid;
+  }
 }

@@ -40,5 +40,7 @@
       <li>Click <button class="btn btn-success ml-1">Next Play</button> and 
         <button class="btn btn-default">Previous Play</button> as you watch the game</li>
     </ol>
+    <h3>Configure</h3>
+    <button (click)="toggleOfflineMode()" class="btn btn-default" [ngClass]="{ 'btn-primary': offlineMode }">Offline mode</button>
   </div>
 </div>

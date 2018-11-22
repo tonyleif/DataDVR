@@ -38,6 +38,7 @@ export class RegularSeasonPlays2017Service {
       // localStorage.fullgameschedule = JSON.stringify(this.getGamesFromAPI().subscribe());
       this.getPlaysFromAPI(gameid).subscribe(result => {
         // console.log(result);
+        // console.log('')
         localStorage.setItem(gameid, JSON.stringify(result));
       });
     } else {

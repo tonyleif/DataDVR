@@ -7,4 +7,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Data DVR';
+  // offlineMode: boolean;
+
+  // constructor() {
+  //   this.offlineMode = false;
+  //   if (localStorage.getItem('offlineMode') === 'true') {
+  //     this.offlineMode = true;
+  //   }
+  //  }
 }
