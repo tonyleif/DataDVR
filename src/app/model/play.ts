@@ -190,14 +190,8 @@ export class RushingPlay {
         }
     }
 
-    // get fumbleSubPlay(): Fumble {
-    //     if (this.subPlays.length > 0) {
-    //         return this.subPlays[0];
-    //     }
-    // }
     get fumbleSubPlay(): Fumble {
-        for (let i = 0; i++; i < this.subPlays.length) {
-            console.log('looking for fumble: ' + this.subPlays[i]);
+        for (let i = 0; i < this.subPlays.length; i++) {
             if (this.subPlays[i] instanceof Fumble) {
                 return this.subPlays[i];
             }
@@ -206,14 +200,18 @@ export class RushingPlay {
     }
 
     get passingSubPlay(): PassingPlay {
-        for (let i = 0; i++; i < this.subPlays.length) {
+        for (let i = 0; i < this.subPlays.length; i++) {
             if (this.subPlays[i] instanceof PassingPlay) {
+                console.log(JSON.stringify(this.subPlays[i]));
                 return this.subPlays[i];
             }
         }
         return null;
     }
 
+    get hasPassingSubPlay(): boolean {
+        return this.passingSubPlay != null;
+    }
 }
 
 export class PassingPlay {
@@ -287,9 +285,16 @@ export class PassingPlay {
 
     get fumbleSubPlay(): Fumble {
         if (this.subPlays.length > 0) {
-            return this.subPlays[0];
+            let i = 0;
+            for (i = 0; i < this.subPlays.length; i++) {
+                if (this.subPlays[i] instanceof Fumble) {
+                    return this.subPlays[i];
+                }
+            }
+            return null;
         }
     }
+
 
     get holdingSpotFoul(): Penalty {
         let pen: Penalty = null;

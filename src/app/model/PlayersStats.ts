@@ -130,7 +130,9 @@ export class PlayersStats {
                         if (!(rushingPlay.isNoPlay)) {
                             currentPlayerStats = PlayersStats.findPlayerStats(
                                 rushingPlay.rushingPlayer, rushingPlay.teamAbbreviation, tempPlayersStats);
-                            currentPlayerStats.rushingYards += +rushingPlay.yardsRushed;
+                            if (!(rushingPlay.hasPassingSubPlay)) {
+                                currentPlayerStats.rushingYards += +rushingPlay.yardsRushed;
+                            }
                             if (rushingPlay.isEndedWithTouchdown) {
                                 if (rushingPlay.isTwoPointConversion) {
                                     currentPlayerStats.twoPointConversions++;
