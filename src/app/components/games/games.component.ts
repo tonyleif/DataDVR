@@ -15,6 +15,7 @@ import { PlayerStats } from '../../model/PlayerStats';
 import { PlayersStats } from '../../model/PlayersStats';
 import { $ } from 'protractor';
 import { jsonpFactory } from '@angular/http/src/http_module';
+import { debug } from 'util';
 
 @Component({
   selector: 'app-games',
@@ -38,7 +39,7 @@ import { jsonpFactory } from '@angular/http/src/http_module';
 export class GamesComponent implements OnInit {
   // private changeDetectorRef: ChangeDetectorRef;
   // selectedSeason: string; // future enhancement
-  private _selectedWeek;
+  private _selectedWeek: number;
   private _selectedGame: Game;
   private _currentPlay: Play;
   weeks: Set<number>;
@@ -115,6 +116,23 @@ export class GamesComponent implements OnInit {
       this._selectedGame = value;
       this.currentPlayIndex = -1;
       if (value !== null) {
+        this.loadPlayerArray();
+        this.loadPlayArray();
+      }
+    }
+    if (this._selectedGame) {
+      const team: Team = this.awayTeamObject;
+    }
+  }
+
+  set selectedGameId(id: number) {
+    console.log('selectedGameId ' + id);
+    if (!this._selectedGame || (this._selectedGame.id !== id)) {
+      // this updates the original array so the reference is not lost per
+      // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
+      this._selectedGame = new Game(this.gamesService.getGame(id));
+      this.currentPlayIndex = -1;
+      if (id !== null) {
         this.loadPlayerArray();
         this.loadPlayArray();
       }

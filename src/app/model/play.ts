@@ -202,7 +202,7 @@ export class RushingPlay {
     get passingSubPlay(): PassingPlay {
         for (let i = 0; i < this.subPlays.length; i++) {
             if (this.subPlays[i] instanceof PassingPlay) {
-                console.log(JSON.stringify(this.subPlays[i]));
+                // console.log(JSON.stringify(this.subPlays[i]));
                 return this.subPlays[i];
             }
         }
@@ -263,7 +263,7 @@ export class PassingPlay {
             }
         }
         this.penalties = new Array<Penalty>();
-        if (json.penalties) {
+        if (json.penalties && json.penalties.length > 0) {
             const penaltiesRef: Penalty[] = this.penalties;
             json.penalties.penalty.forEach(penalty => {
                 const pen = new Penalty(penalty);
