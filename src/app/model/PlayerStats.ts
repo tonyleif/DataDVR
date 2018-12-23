@@ -13,6 +13,11 @@ export class PlayerStats {
     fieldGoals: number;
     fieldGoals50Plus: number;
     interceptions: number;
+    // Not accumulating stats below yet
+    fumblesLost: number;
+    passingInterceptions: number;
+    blockedKicks: number;
+    defensiveFumbleRecoveries: number;
     accruedStatsOnLastPlay: boolean;
 
     constructor(player: Player, teamAbbr: string) {
@@ -28,7 +33,36 @@ export class PlayerStats {
         this.fieldGoals = 0;
         this.fieldGoals50Plus = 0;
         this.interceptions = 0;
+        this.fumblesLost = 0;
+        this.passingInterceptions = 0;
+        this.blockedKicks = 0;
+        this.defensiveFumbleRecoveries = 0;
         this.accruedStatsOnLastPlay = false;
+    }
+
+    get fantasyPoints(): number {
+        let fantasyPointsTally = 0;
+        // general
+        fantasyPointsTally += this.touchdowns * 6;
+        fantasyPointsTally += this.twoPointConversions * 2;
+        // passing
+        fantasyPointsTally += this.passingYards * .04;
+        fantasyPointsTally += this.passingTouchdowns * 4;
+        fantasyPointsTally += this.passingInterceptions * -2;
+        // rushing
+        fantasyPointsTally += this.rushingYards * .1;
+        // receiving
+        fantasyPointsTally += this.receivingYards * .1;
+        // kicking
+        fantasyPointsTally += this.extraPoints;
+        fantasyPointsTally += this.fieldGoals * 3;
+        fantasyPointsTally += this.fieldGoals50Plus;
+        // dst
+        fantasyPointsTally += this.interceptions * 2;
+        fantasyPointsTally += this.blockedKicks * 2;
+        fantasyPointsTally += this.defensiveFumbleRecoveries * 2;
+
+        return Math.round(fantasyPointsTally * 100) / 100 ;
     }
 
     get passYardsNoZero(): string {

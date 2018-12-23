@@ -1,16 +1,27 @@
-.left-col-btn {
+/* .left-col-btn {
     width: 112px;
+} */
+
+/* #buttonHeader,*/
+.play {
+    /* width: 35em; */
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+} 
+
+.buttonRow {
+    margin-left: 0;
 }
 
-#buttonHeader,
-.play {
-    width: 35em;
-    margin-left: .8em;
+.buttonRow > div {
     padding-left: 0;
+    padding-right: .5em;
 }
 
 .game-alert {
-    width: 34em;
+    /* width: 34em; */
     margin-left: .8em;
 }
 
@@ -129,11 +140,11 @@ select.btn-primary option {
     padding-top: .7em;
 }
 
-#buttonHeader {
-    width: 34em;
-    display: inline-block;
+/* #buttonHeader { */
+    /* width: 34em; */
+    /* display: inline-block; */
     /* float: left; */
-}
+/* } */
 
 #playHeader {
     padding-bottom: .8em;
