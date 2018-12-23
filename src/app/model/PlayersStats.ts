@@ -348,24 +348,27 @@ export class PlayersStats {
     get sortedPlayersStats(): PlayerStats[] {
         const nonSortedArray: PlayerStats[] = Array.from(this.playersStats);
         const sortedArray = nonSortedArray.sort((ps1, ps2) => {
-            if (ps1.passingYards < ps2.passingYards) {
+            if (ps1.fantasyPoints < ps2.fantasyPoints) {
                 return 1;
             }
-            if (ps1.passingYards > ps2.passingYards) {
-                return -1;
-            }
-            if (ps1.rushingYards < ps2.rushingYards) {
-                return 1;
-            }
-            if (ps1.rushingYards > ps2.rushingYards) {
-                return -1;
-            }
-            if (ps1.receivingYards < ps2.receivingYards) {
-                return 1;
-            }
-            if (ps1.receivingYards > ps2.receivingYards) {
-                return -1;
-            }
+            // if (ps1.passingYards < ps2.passingYards) {
+            //     return 1;
+            // }
+            // if (ps1.passingYards > ps2.passingYards) {
+            //     return -1;
+            // }
+            // if (ps1.rushingYards < ps2.rushingYards) {
+            //     return 1;
+            // }
+            // if (ps1.rushingYards > ps2.rushingYards) {
+            //     return -1;
+            // }
+            // if (ps1.receivingYards < ps2.receivingYards) {
+            //     return 1;
+            // }
+            // if (ps1.receivingYards > ps2.receivingYards) {
+            //     return -1;
+            // }
             return 0;
         });
         return sortedArray;
@@ -427,24 +430,30 @@ export class PlayersStats {
             }
         });
         const sortedArray = filteredArray.sort((ps1, ps2) => {
-            if (ps1.passingYards < ps2.passingYards) {
+            if (ps1.fantasyPoints < ps2.fantasyPoints) {
                 return 1;
             }
-            if (ps1.passingYards > ps2.passingYards) {
+            if (ps1.fantasyPoints > ps2.fantasyPoints) {
                 return -1;
             }
-            if (ps1.rushingYards < ps2.rushingYards) {
-                return 1;
-            }
-            if (ps1.rushingYards > ps2.rushingYards) {
-                return -1;
-            }
-            if (ps1.receivingYards < ps2.receivingYards) {
-                return 1;
-            }
-            if (ps1.receivingYards > ps2.receivingYards) {
-                return -1;
-            }
+            // if (ps1.passingYards < ps2.passingYards) {
+            //     return 1;
+            // }
+            // if (ps1.passingYards > ps2.passingYards) {
+            //     return -1;
+            // }
+            // if (ps1.rushingYards < ps2.rushingYards) {
+            //     return 1;
+            // }
+            // if (ps1.rushingYards > ps2.rushingYards) {
+            //     return -1;
+            // }
+            // if (ps1.receivingYards < ps2.receivingYards) {
+            //     return 1;
+            // }
+            // if (ps1.receivingYards > ps2.receivingYards) {
+            //     return -1;
+            // }
             return 0;
         });
         return sortedArray;

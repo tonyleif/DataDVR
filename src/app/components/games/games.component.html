@@ -74,9 +74,9 @@
         </button>
       </div>
       <div class="col-4">
-        <select #quarter class="btn btn-primary w-100" [(ngModel)]="goToValue">
+        <select #quarter class="btn btn-secondary w-100" [(ngModel)]="goToValue">
           <!-- (change)="goTo(quarter.value)" value={{this.goToValue}}  -->
-          <option value="GoTo">Go to...</option><!-- selected -->
+          <option value="GoTo">Go to...</option>
           <option value="1">Q1</option>
           <option value="2">Q2</option>
           <option value="3">Q3</option>
@@ -87,7 +87,7 @@
     </div>
     <!-- Plays -->
     <div class="float-left ml-0 pr-0">
-      <div class="container-fluid mb-0 mt-2">
+      <div class="container-fluid mb-0 mt-2 w-100 px-0">
         <div *ngIf="(showPlays && this.currentPlayIndex == this.plays.length - 1)" class="alert alert-success game-alert mb-0">
           Game Over
         </div>
@@ -263,7 +263,7 @@
       </div>
     </div>
   </div>
-  <div id="stats" class="col-7">
+  <div id="stats" class="col-7 pr-0">
     <!-- Game Header -->
     <div id="gameHeader" *ngIf="selectedGame" style="display: inline">
       <div id="awayTeam" class="team-header ">
@@ -283,286 +283,324 @@
     <div *ngIf="hasPlayersStats" class="ml-1 pt-2">
       <!-- QBs -->
       <div class="row">
-        <table class="table-sm stat-table">
+        <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr style="border-radius: 5px;">
               <th colspan="2">QB</th>
+              <th title="Pass Attempts/Completions">PA/C</th>
               <th>Pass</th>
               <th>Rush</th>
               <th>PaTD</th>
               <th>TD</th>
+              <th>TO</th>
               <th>FPts</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let playerStat of currentPlayersStats.awayTeamQBsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
               <td colspan="2">{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.passAttemptsCompletionsNoZero}}</td>
               <td>{{playerStat.passYardsNoZero}}</td>
               <td>{{playerStat.rushYardsNoZero}}</td>
               <td>{{playerStat.passingTouchdownsNoZero}}</td>
               <td>{{playerStat.touchdownsNoZero}}</td>
-              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.turnoversNoZero}}</td>
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
             </tr>
           </tbody>
         </table>
-        <table class="table-sm stat-table">
+        <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr>
               <th colspan="2"></th>
+              <th title="Pass Attempts/Completions">PA/C</th>
               <th>Pass</th>
               <th>Rush</th>
               <th>PaTD</th>
               <th>TD</th>
+              <th>TO</th>
               <th>FPts</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let playerStat of currentPlayersStats.homeTeamQBsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
               <td colspan="2">{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.passAttemptsCompletionsNoZero}}</td>
               <td>{{playerStat.passYardsNoZero}}</td>
               <td>{{playerStat.rushYardsNoZero}}</td>
               <td>{{playerStat.passingTouchdownsNoZero}}</td>
               <td>{{playerStat.touchdownsNoZero}}</td>
-              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.turnoversNoZero}}</td>
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
             </tr>
           </tbody>
         </table>
       </div>
       <!-- RBs -->
       <div class="row">
-        <table class="table-sm stat-table">
+        <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr>
               <th colspan="2">RB</th>
+              <th>RuAtt</th>
               <th>Rush</th>
+              <th title="Receptions/Targets">R/T</th>
               <th>Rec</th>
               <th>TD</th>
-              <th></th>
+              <th>TO</th>
               <th>FPts</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let playerStat of currentPlayersStats.awayTeamRBsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
               <td colspan="2">{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.rushAttemptsNoZero}}</td>
               <td>{{playerStat.rushYardsNoZero}}</td>
+              <td>{{playerStat.receptionsTargetsNoZero}}</td>
               <td>{{playerStat.recYardsNoZero}}</td>
               <td>{{playerStat.touchdownsNoZero}}</td>
-              <td></td>
-              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.turnoversNoZero}}</td>
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
             </tr>
           </tbody>
         </table>
-        <table class="table-sm stat-table">
+        <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr>
               <th colspan="2"></th>
+              <th>RuAtt</th>
               <th>Rush</th>
+              <th title="Receptions/Targets">R/T</th>
               <th>Rec</th>
               <th>TD</th>
-              <th></th>
+              <th>TO</th>
               <th>FPts</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let playerStat of currentPlayersStats.homeTeamRBsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
               <td colspan="2">{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.rushAttemptsNoZero}}</td>
               <td>{{playerStat.rushYardsNoZero}}</td>
+              <td>{{playerStat.receptionsTargetsNoZero}}</td>
               <td>{{playerStat.recYardsNoZero}}</td>
               <td>{{playerStat.touchdownsNoZero}}</td>
-              <td></td>
-              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.turnoversNoZero}}</td>
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
             </tr>
           </tbody>
         </table>
       </div>
       <!-- WRs -->
       <div class="row">
-        <table class="table-sm stat-table">
+        <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr>
               <th colspan="2">WR</th>
+              <th title="Receptions/Targets">R/T</th>
               <th>Rec</th>
+              <th>RuAtt</th>
               <th>Rush</th>
               <th>TD</th>
-              <th></th>
+              <th>TO</th>
               <th>FPts</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let playerStat of currentPlayersStats.awayTeamWRsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
               <td colspan="2">{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.receptionsTargetsNoZero}}</td>
               <td>{{playerStat.recYardsNoZero}}</td>
+              <td>{{playerStat.rushAttemptsNoZero}}</td>
               <td>{{playerStat.rushYardsNoZero}}</td>
               <td>{{playerStat.touchdownsNoZero}}</td>
-              <td></td>
-              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.turnoversNoZero}}</td>
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
             </tr>
           </tbody>
         </table>
-        <table class="table-sm stat-table">
+        <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr>
               <th colspan="2"></th>
+              <th title="Receptions/Targets">R/T</th>
               <th>Rec</th>
+              <th>RuAtt</th>
               <th>Rush</th>
               <th>TD</th>
-              <th></th>
+              <th>TO</th>
               <th>FPts</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let playerStat of currentPlayersStats.homeTeamWRsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
               <td colspan="2">{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.receptionsTargetsNoZero}}</td>
               <td>{{playerStat.recYardsNoZero}}</td>
+              <td>{{playerStat.rushAttemptsNoZero}}</td>
               <td>{{playerStat.rushYardsNoZero}}</td>
               <td>{{playerStat.touchdownsNoZero}}</td>
-              <td></td>
-              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.turnoversNoZero}}</td>
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
             </tr>
           </tbody>
         </table>
       </div>
       <!-- TEs -->
       <div class="row">
-        <table class="table-sm stat-table">
+        <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr>
               <th colspan="2">TE</th>
+              <th title="Receptions/Targets">R/T</th>
               <th>Rec</th>
+              <th>RuAtt</th>
               <th>Rush</th>
               <th>TD</th>
-              <th></th>
+              <th>TO</th>
               <th>FPts</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let playerStat of currentPlayersStats.awayTeamTEsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
               <td colspan="2">{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.receptionsTargetsNoZero}}</td>
               <td>{{playerStat.recYardsNoZero}}</td>
+              <td>{{playerStat.rushAttemptsNoZero}}</td>
               <td>{{playerStat.rushYardsNoZero}}</td>
               <td>{{playerStat.touchdownsNoZero}}</td>
-              <td></td>
-              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.turnoversNoZero}}</td>
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
             </tr>
           </tbody>
         </table>
-        <table class="table-sm stat-table">
+        <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr>
               <th colspan="2"></th>
+              <th title="Receptions/Targets">R/T</th>
               <th>Rec</th>
+              <th>RuAtt</th>
               <th>Rush</th>
               <th>TD</th>
-              <th></th>
+              <th>TO</th>
               <th>FPts</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let playerStat of currentPlayersStats.homeTeamTEsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
               <td colspan="2">{{playerStat.player.lastName}}</td>
+              <td>{{playerStat.receptionsTargetsNoZero}}</td>
               <td>{{playerStat.recYardsNoZero}}</td>
+              <td>{{playerStat.rushAttemptsNoZero}}</td>
               <td>{{playerStat.rushYardsNoZero}}</td>
               <td>{{playerStat.touchdownsNoZero}}</td>
-              <td></td>
-              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.turnoversNoZero}}</td>
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
             </tr>
           </tbody>
         </table>
       </div>
       <!-- Kickers -->
       <div class="row">
-        <table class="table-sm stat-table">
+        <!-- Away -->
+        <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr>
-              <th colspan="2">K</th>
-              <th>FG</th>
-              <th>50+</th>
-              <th>XP</th>
-              <th></th>
+              <th colspan="5">K</th>
+              <th class="one-dig">FG</th>
+              <th class="one-dig">50+</th>
+              <th class="one-dig">XP</th>
               <th>FPts</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let playerStat of currentPlayersStats.awayTeamKsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
-              <td colspan="2">{{playerStat.player.lastName}}</td>
-              <td>{{playerStat.fieldGoalsNoZero}}</td>
-              <td>{{playerStat.fieldGoals50PlusNoZero}}</td>
-              <td>{{playerStat.extraPointsNoZero}}</td>
-              <td></td>
-              <td>{{playerStat.fantasyPoints}}</td>
+              <td colspan="5">{{playerStat.player.lastName}}</td>
+              <td class="one-dig">{{playerStat.fieldGoalsNoZero}}</td>
+              <td class="one-dig">{{playerStat.fieldGoals50PlusNoZero}}</td>
+              <td class="one-dig">{{playerStat.extraPointsNoZero}}</td>
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
             </tr>
           </tbody>
         </table>
-        <table class="table-sm stat-table">
+        <!-- Home -->
+        <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr>
-              <th colspan="2"></th>
-              <th>FG</th>
-              <th>50+</th>
-              <th>XP</th>
-              <th></th>
+              <th colspan="4"></th>
+              <th class="one-dig">FG</th>
+              <th class="one-dig">50+</th>
+              <th class="one-dig">XP</th>
               <th>FPts</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let playerStat of currentPlayersStats.homeTeamKsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
-              <td colspan="2">{{playerStat.player.lastName}}</td>
-              <td>{{playerStat.fieldGoalsNoZero}}</td>
-              <td>{{playerStat.fieldGoals50PlusNoZero}}</td>
-              <td>{{playerStat.extraPointsNoZero}}</td>
-              <td></td>
-              <td>{{playerStat.fantasyPoints}}</td>
+              <td colspan="4">{{playerStat.player.lastName}}</td>
+              <td class="one-dig">{{playerStat.fieldGoalsNoZero}}</td>
+              <td class="one-dig">{{playerStat.fieldGoals50PlusNoZero}}</td>
+              <td class="one-dig">{{playerStat.extraPointsNoZero}}</td>
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
             </tr>
           </tbody>
         </table>
       </div>
       <!-- DSTs -->
       <div class="row">
-        <table class="table-sm stat-table">
+        <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr>
-              <th class="dst-name">DST</th>
-              <th>Sack</th>
-              <th>Int</th>
-              <th title="Blocked Kicks">BK</th>
-              <th title="Fumbles Recovered">FR</th>
-              <th>TD</th>
+              <th class="dst-name"></th>
+              <th title="Sacks" class="one-dig">Sk</th>
+              <th title="Fumbles Recovered" class="one-dig">FR</th>
+              <th class="one-dig">Int</th>
+              <th class="one-dig">TD</th>
+              <th title="Blocked Kicks" class="one-dig">BK</th>
+              <th title="Safeties" class="one-dig">STY</th>
+              <th title="Conversion Returns for Two-points" class="one-dig">Ret2P</th>
               <th>FPts</th>
             </tr>
           </thead>
           <tbody>
             <tr [ngClass]="{ 'last-play-stat': this.currentPlayersStats.awayDSTStats.accruedStatsOnLastPlay }">
               <td class="dst-name">{{this.currentPlayersStats.awayDSTStats.teamAbbreviation}}</td>
-              <td>{{this.currentPlayersStats.awayDSTStats.sacksNoZero}}</td>
-              <td>{{this.currentPlayersStats.awayDSTStats.interceptionsNoZero}}</td>
-              <td>{{this.currentPlayersStats.awayDSTStats.blockedKicksNoZero}}</td>
-              <td>{{this.currentPlayersStats.awayDSTStats.fumblesRecoveredNoZero}}</td>
-              <td>{{this.currentPlayersStats.awayDSTStats.touchDownsNoZero}}</td>
-              <td>{{this.currentPlayersStats.awayDSTStats.fantasyPoints}}</td>
+              <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.sacksNoZero}}</td>
+              <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.fumblesRecoveredNoZero}}</td>
+              <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.interceptionsNoZero}}</td>
+              <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.touchDownsNoZero}}</td>
+              <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.blockedKicksNoZero}}</td>
+              <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.safetieNoZero}}</td>
+              <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.twoPointConversionReturnsNoZero}}</td>
+              <td class="one-dig" [ngClass]="{ 'text-success': !this.currentPlayersStats.awayDSTStats.accruedStatsOnLastPlay }">{{this.currentPlayersStats.awayDSTStats.fantasyPoints}}</td>
             </tr>
           </tbody>
         </table>
-        <table class="table-sm stat-table">
+        <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr>
               <th class="dst-name"></th>
-              <th>Sack</th>
-              <th>Int</th>
-              <th title="Blocked Kicks">BK</th>
-              <th title="Fumbles Recovered">FR</th>
-              <th>TD</th>
+              <th title="Sacks" class="one-dig">Sk</th>
+              <th title="Fumbles Recovered" class="one-dig">FR</th>
+              <th class="one-dig">Int</th>
+              <th class="one-dig">TD</th>
+              <th title="Blocked Kicks" class="one-dig">BK</th>
+              <th title="Safeties" class="one-dig">STY</th>
+              <th title="Conversion Returns for Two-points" class="one-dig">Ret2P</th>
               <th>FPts</th>
             </tr>
           </thead>
           <tbody>
             <tr [ngClass]="{ 'last-play-stat': this.currentPlayersStats.homeDSTStats.accruedStatsOnLastPlay }">
               <td class="dst-name">{{this.currentPlayersStats.homeDSTStats.teamAbbreviation}}</td>
-              <td>{{this.currentPlayersStats.homeDSTStats.sacksNoZero}}</td>
-              <td>{{this.currentPlayersStats.homeDSTStats.interceptionsNoZero}}</td>
-              <td>{{this.currentPlayersStats.homeDSTStats.blockedKicksNoZero}}</td>
-              <td>{{this.currentPlayersStats.homeDSTStats.fumblesRecoveredNoZero}}</td>
-              <td>{{this.currentPlayersStats.homeDSTStats.touchDownsNoZero}}</td>
-              <td>{{this.currentPlayersStats.homeDSTStats.fantasyPoints}}</td>
+              <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.sacksNoZero}}</td>
+              <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.fumblesRecoveredNoZero}}</td>
+              <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.interceptionsNoZero}}</td>
+              <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.touchDownsNoZero}}</td>
+              <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.blockedKicksNoZero}}</td>
+              <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.safetieNoZero}}</td>
+              <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.twoPointConversionReturnsNoZero}}</td>
+              <td class="one-dig" [ngClass]="{ 'text-success': !this.currentPlayersStats.homeDSTStats.accruedStatsOnLastPlay }">{{this.currentPlayersStats.homeDSTStats.fantasyPoints}}</td>
             </tr>
           </tbody>
         </table>

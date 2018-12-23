@@ -20,10 +20,10 @@
     padding-right: .5em;
 }
 
-.game-alert {
-    /* width: 34em; */
+/* .game-alert {
+    width: 34em;
     margin-left: .8em;
-}
+} */
 
 .current-play {
     padding-right: 0;
@@ -200,28 +200,32 @@ select.btn-primary option {
 } */
 .stat-table tr > th.dst-name,
 .stat-table tr > td.dst-name {
-    width: 5.2em;
+    width: 2em;
 }
 
-.stat-table tr > td:nth-child(2),
+.one-dig {
+    width: 2em;
+}
+
+/* .stat-table tr > td:nth-child(2),
 .stat-table tr > th:nth-child(2){
     width: 3.3em;
-}
+} */
 
-.stat-table tr > td:nth-child(3),
+/* .stat-table tr > td:nth-child(3),
 .stat-table tr > th:nth-child(3){
     width: 3.3em;
-}
+} */
 
-.stat-table tr > td:nth-child(4),
+/* .stat-table tr > td:nth-child(4),
 .stat-table tr > th:nth-child(4){
     width: 3.3em;
-}
+} */
 
-.stat-table tr > td:nth-child(5),
+/* .stat-table tr > td:nth-child(5),
 .stat-table tr > th:nth-child(5){
     width: 2.1em;
-}
+} */
 
 /* .stat-table tr > td:nth-child(6),
 .stat-table tr > th:nth-child(6) {
@@ -237,4 +241,8 @@ select.btn-primary option {
     animation: highlight 1s ease-out;
     color: white;
     background-color: #45B85E;
+}
+
+.last-play-stat.text-success {
+    color: white !important;
 }

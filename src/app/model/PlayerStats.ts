@@ -14,10 +14,17 @@ export class PlayerStats {
     fieldGoals50Plus: number;
     interceptions: number;
     // Not accumulating stats below yet
+    passAttempts: number;
+    passCompletions: number;
+    rushAttempts: number;
+    targets: number;
+    receptions: number;
     fumblesLost: number;
     passingInterceptions: number;
     blockedKicks: number;
     defensiveFumbleRecoveries: number;
+    safeties: number;
+    twoPointConversionReturns: number;
     accruedStatsOnLastPlay: boolean;
 
     constructor(player: Player, teamAbbr: string) {
@@ -33,10 +40,17 @@ export class PlayerStats {
         this.fieldGoals = 0;
         this.fieldGoals50Plus = 0;
         this.interceptions = 0;
+        this.passAttempts = 0;
+        this.passCompletions = 0;
+        this.rushAttempts = 0;
+        this.targets = 0;
+        this.receptions = 0;
         this.fumblesLost = 0;
         this.passingInterceptions = 0;
         this.blockedKicks = 0;
         this.defensiveFumbleRecoveries = 0;
+        this.safeties = 0;
+        this.twoPointConversionReturns = 0;
         this.accruedStatsOnLastPlay = false;
     }
 
@@ -61,6 +75,7 @@ export class PlayerStats {
         fantasyPointsTally += this.interceptions * 2;
         fantasyPointsTally += this.blockedKicks * 2;
         fantasyPointsTally += this.defensiveFumbleRecoveries * 2;
+        fantasyPointsTally += this.safeties * 2;
 
         return Math.round(fantasyPointsTally * 100) / 100 ;
     }
@@ -127,4 +142,47 @@ export class PlayerStats {
         }
         return '';
     }
+
+    get safetiesNoZero(): string {
+        if (this.safeties !== 0) {
+            return this.safeties.toString();
+        }
+        return '';
+    }
+
+    get twoPointConversionReturnsNoZero(): string {
+        if (this.safeties !== 0) {
+            return this.twoPointConversionReturns.toString();
+        }
+        return '';
+    }
+
+    get passAttemptsCompletionsNoZero(): string {
+        if (this.passAttempts !== 0) {
+            return this.passCompletions.toString() + '/' + this.passAttempts.toString();
+        }
+        return '';
+    }
+
+    get rushAttemptsNoZero(): string {
+        if (this.targets !== 0) {
+            return this.rushAttempts.toString();
+        }
+        return '';
+    }
+
+    get receptionsTargetsNoZero(): string {
+        if (this.targets !== 0) {
+            return this.receptions.toString() + '/' + this.targets.toString();
+        }
+        return '';
+    }
+
+    get turnOversNoZero(): string {
+        if (this.interceptions !== 0 || this.fumblesLost !== 0) {
+            return (this.interceptions + this.fumblesLost).toString();
+        }
+        return '';
+    }
+
 }
