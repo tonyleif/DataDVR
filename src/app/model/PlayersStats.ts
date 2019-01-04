@@ -103,7 +103,7 @@ export class PlayersStats {
                                     // Passing player
                                     currentPlayerStats = PlayersStats.findPlayerStats(
                                         p.passingPlay.passingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
-                                    currentPlayerStats.interceptions += 1;
+                                    currentPlayerStats.passingInterceptions += 1;
                                     if (p.passingPlay.teamAbbreviation === awayTeamAbbr) {
                                         homeDSTStatsLocal.interceptions += 1;
                                         if (p.passingPlay.isEndedWithTouchdown === true) {
@@ -373,6 +373,7 @@ export class PlayersStats {
         });
         return sortedArray;
     }
+
     get awayTeamPlayersStats(): PlayerStats[] {
         return this.getTeamPlayersStats(this.awayTeamAbbreviation);
     }
@@ -423,7 +424,6 @@ export class PlayersStats {
 
     getTeamPlayersStats(teamAbbr: string) {
         const filteredArray: PlayerStats[] = new Array<PlayerStats>();
-        // const homeTeamAbbr = this.homeTeamAbbreviation;
         this.playersStats.forEach((ps) => {
             if (ps.teamAbbreviation === teamAbbr) {
                 filteredArray.push(ps);
@@ -436,28 +436,9 @@ export class PlayersStats {
             if (ps1.fantasyPoints > ps2.fantasyPoints) {
                 return -1;
             }
-            // if (ps1.passingYards < ps2.passingYards) {
-            //     return 1;
-            // }
-            // if (ps1.passingYards > ps2.passingYards) {
-            //     return -1;
-            // }
-            // if (ps1.rushingYards < ps2.rushingYards) {
-            //     return 1;
-            // }
-            // if (ps1.rushingYards > ps2.rushingYards) {
-            //     return -1;
-            // }
-            // if (ps1.receivingYards < ps2.receivingYards) {
-            //     return 1;
-            // }
-            // if (ps1.receivingYards > ps2.receivingYards) {
-            //     return -1;
-            // }
             return 0;
         });
         return sortedArray;
-        // return filteredArray;
     }
 
 }

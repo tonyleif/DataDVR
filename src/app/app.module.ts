@@ -15,6 +15,7 @@ import { ContactComponent } from './components/contact/contact.component';
 import { AboutComponent } from './components/about/about.component';
 import { Route } from '@angular/compiler/src/core';
 import { RouterLinkActive } from '@angular/router';
+import { GameBoxScoreService } from './model/game-box-score.service';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/games', pathMatch: 'full'},
@@ -37,7 +38,8 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     RouterModule.forRoot(appRoutes)
   ], // CommonModule
-  providers: [RegularSeasonGames2017Service, RegularSeasonPlays2017Service, RegularSeasonActivePlayers2017Service, TeamService],
+  providers: [RegularSeasonGames2017Service, RegularSeasonPlays2017Service,
+    RegularSeasonActivePlayers2017Service, TeamService, GameBoxScoreService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -25,6 +25,8 @@ export class PlayerStats {
     defensiveFumbleRecoveries: number;
     safeties: number;
     twoPointConversionReturns: number;
+    fieldGoalAttempts: number;
+    extraPointAttempts: number;
     accruedStatsOnLastPlay: boolean;
 
     constructor(player: Player, teamAbbr: string) {
@@ -62,7 +64,7 @@ export class PlayerStats {
         // passing
         fantasyPointsTally += this.passingYards * .04;
         fantasyPointsTally += this.passingTouchdowns * 4;
-        fantasyPointsTally += this.passingInterceptions * -2;
+        fantasyPointsTally += this.passingInterceptions * -1;
         // rushing
         fantasyPointsTally += this.rushingYards * .1;
         // receiving
@@ -165,7 +167,7 @@ export class PlayerStats {
     }
 
     get rushAttemptsNoZero(): string {
-        if (this.targets !== 0) {
+        if (this.rushAttempts !== 0) {
             return this.rushAttempts.toString();
         }
         return '';
@@ -178,9 +180,9 @@ export class PlayerStats {
         return '';
     }
 
-    get turnOversNoZero(): string {
-        if (this.interceptions !== 0 || this.fumblesLost !== 0) {
-            return (this.interceptions + this.fumblesLost).toString();
+    get turnoversNoZero(): string {
+        if (this.passingInterceptions !== 0 || this.fumblesLost !== 0) {
+            return (this.passingInterceptions + this.fumblesLost).toString();
         }
         return '';
     }

@@ -13,15 +13,9 @@ export class Player {
         this.lastName = json.LastName;
         this.firstName = json.FirstName;
         this.position = json.Position;
-        // console.log(JSON.stringify(this));
     }
 
     get noImageUrl(): boolean {
-        // if (this.officialImageSrc == null) {
-        //     console.log('no image for ' + this.lastName);
-        // } else {
-        //     console.log('got image for ' + this.lastName);
-        // }
         return (this.officialImageSrc == null);
     }
 }

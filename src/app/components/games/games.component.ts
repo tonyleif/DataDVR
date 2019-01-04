@@ -2,12 +2,15 @@ import { Component, OnInit, DefaultIterableDiffer } from '@angular/core'; // , C
 import { RegularSeasonGames2017Service } from '../../model/regular-season-games-2017.service';
 import { RegularSeasonPlays2017Service } from '../../model/regular-season-plays-2017.service';
 import { RegularSeasonActivePlayers2017Service } from '../../model/regular-season-active-players-2017.service';
-import { Season } from '../../model/Season';
 import { TeamService } from '../../model/team.service';
+import { GameBoxScoreService } from '../../model/game-box-score.service';
+
+import { Season } from '../../model/Season';
 import { Game } from '../../model/Game';
 import { Team } from '../../model/Team';
 import { Play, PlayType } from '../../model/Play';
 import { Player } from '../../model/Player';
+import { GameBoxScore } from '../../model/GameBoxScore';
 
 import { Input } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
@@ -49,13 +52,15 @@ export class GamesComponent implements OnInit {
   currentPlayIndex = -1;
   direction: string;
   playersStats: PlayersStats;
+  boxScore: GameBoxScore;
   updated: boolean;
   _goToValue: string;
 
   constructor(private gamesService: RegularSeasonGames2017Service,
     private playsService: RegularSeasonPlays2017Service,
     private activePlayersService: RegularSeasonActivePlayers2017Service,
-    private teamService: TeamService) { // , changeDetectorRef: ChangeDetectorRef
+    private teamService: TeamService,
+    private gameBoxScoreService: GameBoxScoreService) { // , changeDetectorRef: ChangeDetectorRef
     // this.changeDetectorRef = changeDetectorRef;
     // this was from some testing for Angular animations. May still need this in the future
     this.direction = 'none';
@@ -118,6 +123,7 @@ export class GamesComponent implements OnInit {
       if (value !== null) {
         this.loadPlayerArray();
         this.loadPlayArray();
+        this.loadBoxScore();
       }
     }
     if (this._selectedGame) {
@@ -126,7 +132,7 @@ export class GamesComponent implements OnInit {
   }
 
   set selectedGameId(id: number) {
-    console.log('selectedGameId ' + id);
+    // console.log('selectedGameId ' + id);
     if (!this._selectedGame || (this._selectedGame.id !== id)) {
       // this updates the original array so the reference is not lost per
       // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
@@ -135,6 +141,7 @@ export class GamesComponent implements OnInit {
       if (id !== null) {
         this.loadPlayerArray();
         this.loadPlayArray();
+        this.loadBoxScore();
       }
     }
     if (this._selectedGame) {
@@ -249,6 +256,18 @@ export class GamesComponent implements OnInit {
         }, this);
       });
     }
+  }
+
+  loadBoxScore() {
+    if (localStorage.getItem('game' + this.selectedGame.gameid)) {
+      this.boxScore = this.gameBoxScoreService.getBoxScoreFromLocal(this.selectedGame.gameid);
+    } else {
+      this.gameBoxScoreService.getBoxScoreFromAPI(this.selectedGame.gameid).subscribe(result => {
+        localStorage.setItem('boxscore-' + this.selectedGame.gameid, JSON.stringify(result));
+        this.boxScore = this.gameBoxScoreService.getBoxScoreFromLocal(this.selectedGame.gameid);
+      });
+    }
+
   }
 
   get playList(): Array<Play> {
