@@ -6,10 +6,15 @@ export class GameBoxScore {
     json: string;
     awayPlayerStatsSet: Set<PlayerStats>;
     homePlayerStatsSet: Set<PlayerStats>;
+    awayTeamAbbr: string;
+    homeTeamAbbr: string;
 
     constructor(json: any) {
         this.json = JSON.stringify(json);
         const jsonObject: any = json;
+        // Teams
+        this.awayTeamAbbr = jsonObject.gameboxscore.game.awayTeam.Abbreviation;
+        this.homeTeamAbbr = jsonObject.gameboxscore.game.homeTeam.Abbreviation;
         // Away players
         const awayPlayersStatsJson = jsonObject.gameboxscore.awayTeam.awayPlayers.playerEntry;
         this.awayPlayerStatsSet = new Set<PlayerStats>();
@@ -62,7 +67,7 @@ export class GameBoxScore {
             if (playerEntry.stats.XpAtt) {
                 playerStats.extraPointAttempts += Number(playerEntry.stats.XpAtt['#text']);
             }
-            // console.log(this.playerStatsSet.size);
+
             this.awayPlayerStatsSet.add(playerStats);
         });
         // Home players
@@ -224,5 +229,32 @@ export class GameBoxScore {
             }
         });
         return playerStatsSet;
+    }
+
+    public findPlayerStats(player: Player, teamAbbr: string): PlayerStats {
+        if (player == null) {
+            return null;
+        }
+        // Which team?
+        let boxScorePlayerStats: Set<PlayerStats>;
+        if (teamAbbr === this.awayTeamAbbr) {
+            boxScorePlayerStats = this.awayPlayerStatsSet;
+        } else {
+            boxScorePlayerStats = this.homePlayerStatsSet;
+        }
+        // Find player in set
+        let newPlayerStats: PlayerStats;
+        if (boxScorePlayerStats.size > 0) {
+            boxScorePlayerStats.forEach(function (ps: PlayerStats) {
+                if (ps.player.id === player.id) {
+                    newPlayerStats = ps;
+                    return ps;
+                }
+            });
+        }
+        if (newPlayerStats != null) {
+            return newPlayerStats;
+        }
+        return null;
     }
 }

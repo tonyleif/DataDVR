@@ -134,6 +134,14 @@ export class GamesComponent implements OnInit {
   set selectedGameId(id: number) {
     // console.log('selectedGameId ' + id);
     if (!this._selectedGame || (this._selectedGame.id !== id)) {
+      // Clean out old games from LocalStorage
+      if (!this.offlineMode) {
+        for (let i = 0; i < localStorage.length; i++) {
+          if (localStorage.key(i).substring(0, 4) === 'game' || localStorage.key(i).substring(0, 13) === 'activeplayers') {
+            localStorage.removeItem(localStorage.key(i));
+          }
+        }
+      }
       // this updates the original array so the reference is not lost per
       // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
       this._selectedGame = new Game(this.gamesService.getGame(id));
@@ -172,7 +180,6 @@ export class GamesComponent implements OnInit {
           }
         }
       }
-
       this.selectedGame = new Game(this.gamesService.getGame(id));
     } else if (!this.selectedGame) {
       this.selectedGame = new Game(this.gamesService.getGame(id));

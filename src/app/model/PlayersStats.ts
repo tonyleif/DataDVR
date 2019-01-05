@@ -2,6 +2,7 @@ import { Player } from './Player';
 import { PlayerStats } from './PlayerStats';
 import { PlayType, PassingPlay, RushingPlay, SackingPlay, KickingPlay } from './Play';
 import { DefenseSepecialTeamsStats } from './DefenseSpecialTeamsStats';
+import { GameBoxScore } from './GameBoxScore';
 
 export class PlayersStats {
     playersStats: Set<PlayerStats>;
@@ -10,7 +11,8 @@ export class PlayersStats {
     awayTeamAbbreviation: string;
     homeTeamAbbreviation: string;
 
-    static findPlayerStats(player: Player, teamAbbr: string, playerStatsSet: Set<PlayerStats>): PlayerStats {
+    static findPlayerStats(player: Player, teamAbbr: string, playerStatsSet: Set<PlayerStats>,
+        boxScorePlayerStats?: PlayerStats): PlayerStats {
         if (player == null) {
             return null;
         }
