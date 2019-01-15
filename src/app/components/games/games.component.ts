@@ -55,6 +55,12 @@ export class GamesComponent implements OnInit {
   boxScore: GameBoxScore;
   updated: boolean;
   _goToValue: string;
+  currentPlayersStats: PlayersStats;
+  // qbsWatchedStats: Array<PlayerStats> = [];
+  qbsWatchedThisWeekStats: Array<PlayerStats> = [];
+  rbsWatchedThisWeekStats: Array<PlayerStats> = [];
+  wrsWatchedThisWeekStats: Array<PlayerStats> = [];
+  tesWatchedThisWeekStats: Array<PlayerStats> = [];
 
   constructor(private gamesService: RegularSeasonGames2017Service,
     private playsService: RegularSeasonPlays2017Service,
@@ -67,9 +73,19 @@ export class GamesComponent implements OnInit {
     this._goToValue = 'GoTo';
   }
 
+  static sortByFantasyPoints(playerStats: Array<PlayerStats>) {
+    playerStats.sort(function (ps1, ps2) {
+      if (ps1.fantasyPoints > ps2.fantasyPoints) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+  }
+
   ngOnInit() {
     this.loadSchedule();
-    this.loadPlayers();
+    // this.loadPlayers();
   }
 
   loadSchedule() {
@@ -82,11 +98,11 @@ export class GamesComponent implements OnInit {
     }
   }
 
-  loadPlayers() {
-    // if (!localStorage.getItem('activeplayers')) {
-    //   this.activePlayersService.getActivePlayersFromAPI().subscribe(result => result);
-    // }
-  }
+  // loadPlayers() {
+  // if (!localStorage.getItem('activeplayers')) {
+  //   this.activePlayersService.getActivePlayersFromAPI().subscribe(result => result);
+  // }
+  // }
 
   get doneLoadingSchedule(): boolean {
     return (localStorage.getItem('fullgameschedule') !== null);
@@ -108,6 +124,69 @@ export class GamesComponent implements OnInit {
       this.games = null;
     }
     this._selectedWeek = weekNumber;
+    this.loadWatchedBoxScores();
+  }
+
+  loadWatchedBoxScores() {
+    this.qbsWatchedThisWeekStats = [];
+    this.rbsWatchedThisWeekStats = [];
+    this.wrsWatchedThisWeekStats = [];
+    this.tesWatchedThisWeekStats = [];
+    this.games.forEach(g => {
+      if (g.watched) {
+        const box: GameBoxScore = this.getBoxScore(g.gameid);
+        box.awayPlayerStatsSet.forEach(playerStats => {
+          if (playerStats.fantasyPoints > 0) {
+            switch (playerStats.player.position) {
+              case 'QB':
+                this.qbsWatchedThisWeekStats.push(playerStats);
+                break;
+              case 'RB':
+              case 'FB':
+                this.rbsWatchedThisWeekStats.push(playerStats);
+                break;
+              case 'WR':
+                this.wrsWatchedThisWeekStats.push(playerStats);
+                break;
+              case 'TE':
+                this.tesWatchedThisWeekStats.push(playerStats);
+                break;
+            }
+          }
+        });
+        box.homePlayerStatsSet.forEach(playerStats => {
+          if (playerStats.fantasyPoints > 0) {
+            switch (playerStats.player.position) {
+              case 'QB':
+                this.qbsWatchedThisWeekStats.push(playerStats);
+                break;
+              case 'RB':
+              case 'FB':
+                this.rbsWatchedThisWeekStats.push(playerStats);
+                break;
+              case 'WR':
+                this.wrsWatchedThisWeekStats.push(playerStats);
+                break;
+              case 'TE':
+                this.tesWatchedThisWeekStats.push(playerStats);
+                break;
+            }
+          }
+        });
+      }
+    });
+    this.sortByFantasyPoints(this.qbsWatchedThisWeekStats);
+    this.sortByFantasyPoints(this.rbsWatchedThisWeekStats);
+    this.sortByFantasyPoints(this.wrsWatchedThisWeekStats);
+    this.sortByFantasyPoints(this.tesWatchedThisWeekStats);
+
+    // this.qbsWatchedThisWeekStats.sort(function (ps1, ps2) {
+    //   if (ps1.fantasyPoints > ps2.fantasyPoints) {
+    //     return -1;
+    //   } else {
+    //     return 1;
+    //   }
+    // });
   }
 
   get selectedWeek() {
@@ -126,9 +205,9 @@ export class GamesComponent implements OnInit {
         this.loadBoxScore();
       }
     }
-    if (this._selectedGame) {
-      const team: Team = this.awayTeamObject;
-    }
+    // if (this._selectedGame) {
+    //   const team: Team = this.awayTeamObject;
+    // }
   }
 
   set selectedGameId(id: number) {
@@ -274,7 +353,6 @@ export class GamesComponent implements OnInit {
         this.boxScore = this.gameBoxScoreService.getBoxScoreFromLocal(this.selectedGame.gameid);
       });
     }
-
   }
 
   get playList(): Array<Play> {
@@ -334,14 +412,6 @@ export class GamesComponent implements OnInit {
     return this.plays.slice(this.plays.length - this.currentPlayIndex, this.plays.length - this.currentPlayIndex + 4);
   }
 
-  get currentPlayersStats(): PlayersStats {
-    if (this.currentPlayIndex >= 0) {
-      const playsWatched = this.plays.slice(this.plays.length - this.currentPlayIndex - 1, this.plays.length);
-      return new PlayersStats(playsWatched, this.selectedGame.awayTeam.Abbreviation, this.selectedGame.homeTeam.Abbreviation);
-    }
-    return null;
-  }
-
   get hasPlayersStats(): boolean {
     return (this.currentPlayIndex >= 0); // (this.currentPlayersStats != null);
   }
@@ -366,6 +436,91 @@ export class GamesComponent implements OnInit {
     return this.plays[this.plays.length - this.currentPlayIndex + 3];
   }
 
+  getCurrentPlayersStats(): PlayersStats {
+    if (this.currentPlayIndex >= 0) {
+      const playsWatched = this.plays.slice(this.plays.length - this.currentPlayIndex - 1, this.plays.length);
+      const playersStats = new PlayersStats(playsWatched, this.selectedGame.awayTeam.Abbreviation, this.selectedGame.homeTeam.Abbreviation);
+      const qbsWatchedThisWeekStatsLocal = this.qbsWatchedThisWeekStats;
+      const rbsWatchedThisWeekStatsLocal = this.rbsWatchedThisWeekStats;
+      const wrsWatchedThisWeekStatsLocal = this.wrsWatchedThisWeekStats;
+      const tesWatchedThisWeekStatsLocal = this.tesWatchedThisWeekStats;
+      playersStats.playersStats.forEach(ps => {
+        let playerRankingStats: PlayerStats;
+        switch (ps.player.position) {
+          case 'QB':
+            playerRankingStats = PlayersStats.findPlayerStatsInArray(ps.player, ps.teamAbbreviation, qbsWatchedThisWeekStatsLocal);
+            ps.currentGame = true;
+            Object.assign(playerRankingStats, ps);
+            break;
+          case 'RB':
+          case 'FB':
+            playerRankingStats = PlayersStats.findPlayerStatsInArray(ps.player, ps.teamAbbreviation, rbsWatchedThisWeekStatsLocal);
+            ps.currentGame = true;
+            Object.assign(playerRankingStats, ps);
+            break;
+          case 'WR':
+            playerRankingStats = PlayersStats.findPlayerStatsInArray(ps.player, ps.teamAbbreviation, wrsWatchedThisWeekStatsLocal);
+            ps.currentGame = true;
+            Object.assign(playerRankingStats, ps);
+            break;
+          case 'TE':
+            playerRankingStats = PlayersStats.findPlayerStatsInArray(ps.player, ps.teamAbbreviation, tesWatchedThisWeekStatsLocal);
+            ps.currentGame = true;
+            Object.assign(playerRankingStats, ps);
+            break;
+        }
+      });
+      // Clear out players that don't have stats
+      this.qbsWatchedThisWeekStats.forEach(ps => {
+        if (ps.currentGame) {
+          const playerStatsArray = Array.from(playersStats.playersStats);
+          const currentGamePlayerStats = PlayersStats.findPlayerStatsInArray(ps.player, ps.teamAbbreviation, playerStatsArray);
+          if (currentGamePlayerStats.newToSet || currentGamePlayerStats.fantasyPoints === 0) {
+            const index = qbsWatchedThisWeekStatsLocal.indexOf(ps);
+            qbsWatchedThisWeekStatsLocal.splice(index, 1);
+          }
+        }
+      });
+      this.rbsWatchedThisWeekStats.forEach(ps => {
+        if (ps.currentGame) {
+          const playerStatsArray = Array.from(playersStats.playersStats);
+          const currentGamePlayerStats = PlayersStats.findPlayerStatsInArray(ps.player, ps.teamAbbreviation, playerStatsArray);
+          if (currentGamePlayerStats.newToSet || currentGamePlayerStats.fantasyPoints === 0) {
+            const index = rbsWatchedThisWeekStatsLocal.indexOf(ps);
+            rbsWatchedThisWeekStatsLocal.splice(index, 1);
+          }
+        }
+      });
+      this.wrsWatchedThisWeekStats.forEach(ps => {
+        if (ps.currentGame) {
+          const playerStatsArray = Array.from(playersStats.playersStats);
+          const currentGamePlayerStats = PlayersStats.findPlayerStatsInArray(ps.player, ps.teamAbbreviation, playerStatsArray);
+          if (currentGamePlayerStats.newToSet || currentGamePlayerStats.fantasyPoints === 0) {
+            const index = wrsWatchedThisWeekStatsLocal.indexOf(ps);
+            wrsWatchedThisWeekStatsLocal.splice(index, 1);
+          }
+        }
+      });
+      this.tesWatchedThisWeekStats.forEach(ps => {
+        if (ps.currentGame) {
+          const playerStatsArray = Array.from(playersStats.playersStats);
+          const currentGamePlayerStats = PlayersStats.findPlayerStatsInArray(ps.player, ps.teamAbbreviation, playerStatsArray);
+          if (currentGamePlayerStats.newToSet || currentGamePlayerStats.fantasyPoints === 0) {
+            const index = tesWatchedThisWeekStatsLocal.indexOf(ps);
+            tesWatchedThisWeekStatsLocal.splice(index, 1);
+          }
+        }
+      });
+      GamesComponent.sortByFantasyPoints(this.qbsWatchedThisWeekStats);
+      GamesComponent.sortByFantasyPoints(this.rbsWatchedThisWeekStats);
+      GamesComponent.sortByFantasyPoints(this.wrsWatchedThisWeekStats);
+      GamesComponent.sortByFantasyPoints(this.tesWatchedThisWeekStats);
+      return playersStats;
+      // return new PlayersStats(playsWatched, this.selectedGame.awayTeam.Abbreviation, this.selectedGame.homeTeam.Abbreviation);
+    }
+    return null;
+  }
+
   nextPlay() {
     // this.direction = 'backward';
     // this.changeDetectorRef.detectChanges();
@@ -376,6 +531,7 @@ export class GamesComponent implements OnInit {
     // this.changeDetectorRef.detectChanges();
     // this.direction = 'none';
     this._goToValue = 'GoTo';
+    this.currentPlayersStats = this.getCurrentPlayersStats();
   }
 
   previousPlay() {
@@ -390,6 +546,7 @@ export class GamesComponent implements OnInit {
     // this.changeDetectorRef.detectChanges();
     // this.direction = 'none';
     this._goToValue = 'GoTo';
+    this.currentPlayersStats = this.getCurrentPlayersStats();
   }
 
   // This is for a hidden button to speed up testing how the final plays of the game appears
@@ -397,8 +554,10 @@ export class GamesComponent implements OnInit {
     this.direction = 'forward';
     this._currentPlay = undefined;
     this.currentPlayIndex = this.plays.length - 1;
+    this.currentPlayersStats = this.getCurrentPlayersStats();
   }
 
+  // Not used??
   goTo(quarter) {
     this._currentPlay = undefined;
     if (quarter === 'End') {
@@ -429,6 +588,7 @@ export class GamesComponent implements OnInit {
       location = 'GoTo';
       this._goToValue = 'GoTo';
     }
+    this.currentPlayersStats = this.getCurrentPlayersStats();
   }
 
   get goToValue() {
@@ -438,6 +598,7 @@ export class GamesComponent implements OnInit {
   markGameAsWatched() {
     this.selectedGame.watched = !this.selectedGame.watched;
     this.updated = true;
+    this.loadWatchedBoxScores();
   }
 
   get offlineMode() {
@@ -447,4 +608,29 @@ export class GamesComponent implements OnInit {
   get selectGameAPIURL() {
     return 'https://api.mysportsfeeds.com/v1.2/pull/nfl/2018-regular/game_playbyplay.json?gameid=' + this._selectedGame.gameid;
   }
+
+  playerStatsCheckOut(player: Player, teamAbbr: string): boolean {
+    const playerBox: PlayerStats = this.boxScore.findPlayerStats(player, teamAbbr);
+    const playerStats = PlayersStats.findPlayerStats(player, teamAbbr, this.currentPlayersStats.playersStats);
+    if (playerBox.fantasyPoints === playerStats.fantasyPoints) {
+      return true;
+    }
+    return false;
+  }
+
+  get gameOver(): boolean {
+    return this.currentPlayIndex === (this.plays.length - 1);
+  }
+
+  getBoxScore(gameid): GameBoxScore {
+    if (localStorage.getItem('boxscore-' + gameid)) {
+      return this.gameBoxScoreService.getBoxScoreFromLocal(gameid);
+    } else {
+      this.gameBoxScoreService.getBoxScoreFromAPI(gameid).subscribe(result => {
+        localStorage.setItem('boxscore-' + gameid, JSON.stringify(result));
+        return this.gameBoxScoreService.getBoxScoreFromLocal(gameid);
+      });
+    }
+  }
+
 }

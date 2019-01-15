@@ -246,3 +246,13 @@ select.btn-primary option {
 .last-play-stat.text-success {
     color: white !important;
 }
+
+.stat-error {
+    color: white;
+    background-color: red;
+}
+
+th.player-name,
+td.player-name {
+    text-align: left !important;
+}

@@ -28,6 +28,8 @@ export class PlayerStats {
     fieldGoalAttempts: number;
     extraPointAttempts: number;
     accruedStatsOnLastPlay: boolean;
+    newToSet: boolean;
+    currentGame: boolean;
 
     constructor(player: Player, teamAbbr: string) {
         this.player = player;
@@ -54,6 +56,8 @@ export class PlayerStats {
         this.safeties = 0;
         this.twoPointConversionReturns = 0;
         this.accruedStatsOnLastPlay = false;
+        this.newToSet = false;
+        this.currentGame = false;
     }
 
     get fantasyPoints(): number {

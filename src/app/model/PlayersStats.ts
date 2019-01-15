@@ -10,28 +10,57 @@ export class PlayersStats {
     homeDSTStats: DefenseSepecialTeamsStats;
     awayTeamAbbreviation: string;
     homeTeamAbbreviation: string;
+    lastPlayPlayerStats: Set<PlayerStats>;
 
-    static findPlayerStats(player: Player, teamAbbr: string, playerStatsSet: Set<PlayerStats>,
-        boxScorePlayerStats?: PlayerStats): PlayerStats {
+    static findPlayerStats(player: Player, teamAbbr: string, playerStatsSet?: Set<PlayerStats>): PlayerStats {
         if (player == null) {
             return null;
         }
         // Find player in set
         let newPlayerStats: PlayerStats;
-        if (playerStatsSet.size > 0) {
+        if (playerStatsSet && playerStatsSet.size > 0) {
             playerStatsSet.forEach(function (ps: PlayerStats) {
                 if (ps.player.id === player.id) {
                     newPlayerStats = ps;
+                    ps.newToSet = false;
                     return ps;
                 }
             });
         }
         if (newPlayerStats != null) {
+            newPlayerStats.newToSet = false;
             return newPlayerStats;
         }
         // Add player to set if not found
         newPlayerStats = new PlayerStats(player, teamAbbr);
+        newPlayerStats.newToSet = true;
         playerStatsSet.add(newPlayerStats);
+        return newPlayerStats;
+    }
+
+    static findPlayerStatsInArray(player: Player, teamAbbr: string, playerStatsSet?: Array<PlayerStats>): PlayerStats {
+        if (player == null) {
+            return null;
+        }
+        // Find player in set
+        let newPlayerStats: PlayerStats;
+        if (playerStatsSet && playerStatsSet.length > 0) {
+            playerStatsSet.forEach(function (ps: PlayerStats) {
+                if (ps.player.id === player.id) {
+                    newPlayerStats = ps;
+                    ps.newToSet = false;
+                    return ps;
+                }
+            });
+        }
+        if (newPlayerStats != null) {
+            newPlayerStats.newToSet = false;
+            return newPlayerStats;
+        }
+        // Add player to set if not found
+        newPlayerStats = new PlayerStats(player, teamAbbr);
+        newPlayerStats.newToSet = true;
+        playerStatsSet.push(newPlayerStats);
         return newPlayerStats;
     }
 
@@ -43,6 +72,7 @@ export class PlayersStats {
         const homeDSTStatsLocal = this.homeDSTStats;
         this.awayTeamAbbreviation = awayTeamAbbr;
         this.homeTeamAbbreviation = homeTeamAbbr;
+        const tempLastPlayPlayerStats = new Set<PlayerStats>();
         let currentPlayerStats: PlayerStats;
         playsWatched.forEach(function (p, idx, array) {
             if (!p.isCancelsPlay) {
@@ -64,6 +94,7 @@ export class PlayersStats {
                                 }
                                 if (idx === 0) {
                                     currentPlayerStats.accruedStatsOnLastPlay = true;
+                                    tempLastPlayPlayerStats.add(currentPlayerStats);
                                 }
                                 // Receiving player
                                 if (p.passingPlay.receivingPlayer != null) {
@@ -79,6 +110,7 @@ export class PlayersStats {
                                     }
                                     if (idx === 0) {
                                         currentPlayerStats.accruedStatsOnLastPlay = true;
+                                        tempLastPlayPlayerStats.add(currentPlayerStats);
                                     }
                                 }
                                 // DST
@@ -177,6 +209,7 @@ export class PlayersStats {
                                             }
                                             if (idx === 0) {
                                                 currentPlayerStats.accruedStatsOnLastPlay = true;
+                                                tempLastPlayPlayerStats.add(currentPlayerStats);
                                             }
                                             // Receiving player
                                             if (passSubPlay.receivingPlayer != null) {
@@ -192,6 +225,7 @@ export class PlayersStats {
                                                 }
                                                 if (idx === 0) {
                                                     currentPlayerStats.accruedStatsOnLastPlay = true;
+                                                    tempLastPlayPlayerStats.add(currentPlayerStats);
                                                 }
                                             }
                                             // DST
@@ -243,6 +277,7 @@ export class PlayersStats {
                             }
                             if (idx === 0) {
                                 currentPlayerStats.accruedStatsOnLastPlay = true;
+                                tempLastPlayPlayerStats.add(currentPlayerStats);
                             }
                         }
                         break;
@@ -264,6 +299,7 @@ export class PlayersStats {
                             }
                             if (idx === 0) {
                                 currentPlayerStats.accruedStatsOnLastPlay = true;
+                                tempLastPlayPlayerStats.add(currentPlayerStats);
                             }
                         }
                         break;
@@ -313,7 +349,6 @@ export class PlayersStats {
                                 currentPlayerStats.touchdowns += 1;
                                 if (idx === 0) {
                                     defenseTeamStats.accruedStatsOnLastPlay = true;
-                                    currentPlayerStats.accruedStatsOnLastPlay = true;
                                 }
                             }
                         }
@@ -345,6 +380,7 @@ export class PlayersStats {
             }
         });
         this.playersStats = tempPlayersStats;
+        this.lastPlayPlayerStats = tempLastPlayPlayerStats;
     }
 
     get sortedPlayersStats(): PlayerStats[] {

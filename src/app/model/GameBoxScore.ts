@@ -21,54 +21,55 @@ export class GameBoxScore {
         awayPlayersStatsJson.forEach(playerEntry => {
             const player = new Player(playerEntry.player);
             const playerStats = new PlayerStats(player, jsonObject.gameboxscore.game.awayTeam.Abbreviation);
-            if (playerEntry.stats.FumOppRec) {
-                playerStats.fumblesLost = Number(playerEntry.stats.FumOppRec['#text']);
+            if (playerEntry.stats) {
+                if (playerEntry.stats.FumOppRec) {
+                    playerStats.fumblesLost = Number(playerEntry.stats.FumOppRec['#text']);
+                }
+                if (playerEntry.stats.PassInt) {
+                    playerStats.passingInterceptions = Number(playerEntry.stats.PassInt['#text']);
+                }
+                if (playerEntry.stats.KrTD) {
+                    playerStats.touchdowns += Number(playerEntry.stats.KrTD['#text']);
+                }
+                if (playerEntry.stats.KrTD) {
+                    playerStats.touchdowns += Number(playerEntry.stats.KrTD['#text']);
+                }
+                if (playerEntry.stats.PassAttempts) {
+                    playerStats.passAttempts = Number(playerEntry.stats.PassAttempts['#text']);
+                }
+                if (playerEntry.stats.PassTD) {
+                    playerStats.passingTouchdowns += Number(playerEntry.stats.PassTD['#text']);
+                }
+                if (playerEntry.stats.PassYards) {
+                    playerStats.passingYards += Number(playerEntry.stats.PassYards['#text']);
+                }
+                if (playerEntry.stats.PrTD) {
+                    playerStats.touchdowns += Number(playerEntry.stats.PrTD['#text']);
+                }
+                if (playerEntry.stats.RecTD) {
+                    playerStats.touchdowns += Number(playerEntry.stats.RecTD['#text']);
+                }
+                if (playerEntry.stats.RecYards) {
+                    playerStats.receivingYards += Number(playerEntry.stats.RecYards['#text']);
+                }
+                if (playerEntry.stats.RushAttempts) {
+                    playerStats.rushAttempts += Number(playerEntry.stats.RushAttempts['#text']);
+                }
+                if (playerEntry.stats.RushTD) {
+                    playerStats.touchdowns += Number(playerEntry.stats.RushTD['#text']);
+                }
+                if (playerEntry.stats.RushYards) {
+                    playerStats.rushingYards += Number(playerEntry.stats.RushYards['#text']);
+                }
+                // Kicking
+                if (playerEntry.stats.FgAtt) {
+                    playerStats.fieldGoalAttempts += Number(playerEntry.stats.FgAtt['#text']);
+                }
+                if (playerEntry.stats.XpAtt) {
+                    playerStats.extraPointAttempts += Number(playerEntry.stats.XpAtt['#text']);
+                }
+                this.awayPlayerStatsSet.add(playerStats);
             }
-            if (playerEntry.stats.PassInt) {
-                playerStats.passingInterceptions = Number(playerEntry.stats.PassInt['#text']);
-            }
-            if (playerEntry.stats.KrTD) {
-                playerStats.touchdowns += Number(playerEntry.stats.KrTD['#text']);
-            }
-            if (playerEntry.stats.KrTD) {
-                playerStats.touchdowns += Number(playerEntry.stats.KrTD['#text']);
-            }
-            if (playerEntry.stats.PassAttempts) {
-                playerStats.passAttempts = Number(playerEntry.stats.PassAttempts['#text']);
-            }
-            if (playerEntry.stats.PassTD) {
-                playerStats.passingTouchdowns += Number(playerEntry.stats.PassTD['#text']);
-            }
-            if (playerEntry.stats.PassYards) {
-                playerStats.passingYards += Number(playerEntry.stats.PassYards['#text']);
-            }
-            if (playerEntry.stats.PrTD) {
-                playerStats.touchdowns += Number(playerEntry.stats.PrTD['#text']);
-            }
-            if (playerEntry.stats.RecTD) {
-                playerStats.touchdowns += Number(playerEntry.stats.RecTD['#text']);
-            }
-            if (playerEntry.stats.RecYards) {
-                playerStats.receivingYards += Number(playerEntry.stats.RecYards['#text']);
-            }
-            if (playerEntry.stats.RushAttempts) {
-                playerStats.rushAttempts += Number(playerEntry.stats.RushAttempts['#text']);
-            }
-            if (playerEntry.stats.RushTD) {
-                playerStats.touchdowns += Number(playerEntry.stats.RushTD['#text']);
-            }
-            if (playerEntry.stats.RushYards) {
-                playerStats.rushingYards += Number(playerEntry.stats.RushYards['#text']);
-            }
-            // Kicking
-            if (playerEntry.stats.FgAtt) {
-                playerStats.fieldGoalAttempts += Number(playerEntry.stats.FgAtt['#text']);
-            }
-            if (playerEntry.stats.XpAtt) {
-                playerStats.extraPointAttempts += Number(playerEntry.stats.XpAtt['#text']);
-            }
-
-            this.awayPlayerStatsSet.add(playerStats);
         });
         // Home players
         const homePlayersStatsJson = jsonObject.gameboxscore.homeTeam.homePlayers.playerEntry;
@@ -76,54 +77,56 @@ export class GameBoxScore {
         homePlayersStatsJson.forEach(playerEntry => {
             const player = new Player(playerEntry.player);
             const playerStats = new PlayerStats(player, jsonObject.gameboxscore.game.homeTeam.Abbreviation);
-            if (playerEntry.stats.FumOppRec) {
-                playerStats.fumblesLost = Number(playerEntry.stats.FumOppRec['#text']);
+            if (playerEntry.stats) {
+                if (playerEntry.stats.FumOppRec) {
+                    playerStats.fumblesLost = Number(playerEntry.stats.FumOppRec['#text']);
+                }
+                if (playerEntry.stats.PassInt) {
+                    playerStats.passingInterceptions = Number(playerEntry.stats.PassInt['#text']);
+                }
+                if (playerEntry.stats.KrTD) {
+                    playerStats.touchdowns += Number(playerEntry.stats.KrTD['#text']);
+                }
+                if (playerEntry.stats.KrTD) {
+                    playerStats.touchdowns += Number(playerEntry.stats.KrTD['#text']);
+                }
+                if (playerEntry.stats.PassAttempts) {
+                    playerStats.passAttempts = Number(playerEntry.stats.PassAttempts['#text']);
+                }
+                if (playerEntry.stats.PassTD) {
+                    playerStats.passingTouchdowns += Number(playerEntry.stats.PassTD['#text']);
+                }
+                if (playerEntry.stats.PassYards) {
+                    playerStats.passingYards += Number(playerEntry.stats.PassYards['#text']);
+                }
+                if (playerEntry.stats.PrTD) {
+                    playerStats.touchdowns += Number(playerEntry.stats.PrTD['#text']);
+                }
+                if (playerEntry.stats.RecTD) {
+                    playerStats.touchdowns += Number(playerEntry.stats.RecTD['#text']);
+                }
+                if (playerEntry.stats.RecYards) {
+                    playerStats.receivingYards += Number(playerEntry.stats.RecYards['#text']);
+                }
+                if (playerEntry.stats.RushAttempts) {
+                    playerStats.rushAttempts += Number(playerEntry.stats.RushAttempts['#text']);
+                }
+                if (playerEntry.stats.RushTD) {
+                    playerStats.touchdowns += Number(playerEntry.stats.RushTD['#text']);
+                }
+                if (playerEntry.stats.RushYards) {
+                    playerStats.rushingYards += Number(playerEntry.stats.RushYards['#text']);
+                }
+                // Kicking
+                if (playerEntry.stats.FgAtt) {
+                    playerStats.fieldGoalAttempts += Number(playerEntry.stats.FgAtt['#text']);
+                }
+                if (playerEntry.stats.XpAtt) {
+                    playerStats.extraPointAttempts += Number(playerEntry.stats.XpAtt['#text']);
+                }
+                // console.log(this.playerStatsSet.size);
+                this.homePlayerStatsSet.add(playerStats);
             }
-            if (playerEntry.stats.PassInt) {
-                playerStats.passingInterceptions = Number(playerEntry.stats.PassInt['#text']);
-            }
-            if (playerEntry.stats.KrTD) {
-                playerStats.touchdowns += Number(playerEntry.stats.KrTD['#text']);
-            }
-            if (playerEntry.stats.KrTD) {
-                playerStats.touchdowns += Number(playerEntry.stats.KrTD['#text']);
-            }
-            if (playerEntry.stats.PassAttempts) {
-                playerStats.passAttempts = Number(playerEntry.stats.PassAttempts['#text']);
-            }
-            if (playerEntry.stats.PassTD) {
-                playerStats.passingTouchdowns += Number(playerEntry.stats.PassTD['#text']);
-            }
-            if (playerEntry.stats.PassYards) {
-                playerStats.passingYards += Number(playerEntry.stats.PassYards['#text']);
-            }
-            if (playerEntry.stats.PrTD) {
-                playerStats.touchdowns += Number(playerEntry.stats.PrTD['#text']);
-            }
-            if (playerEntry.stats.RecTD) {
-                playerStats.touchdowns += Number(playerEntry.stats.RecTD['#text']);
-            }
-            if (playerEntry.stats.RecYards) {
-                playerStats.receivingYards += Number(playerEntry.stats.RecYards['#text']);
-            }
-            if (playerEntry.stats.RushAttempts) {
-                playerStats.rushAttempts += Number(playerEntry.stats.RushAttempts['#text']);
-            }
-            if (playerEntry.stats.RushTD) {
-                playerStats.touchdowns += Number(playerEntry.stats.RushTD['#text']);
-            }
-            if (playerEntry.stats.RushYards) {
-                playerStats.rushingYards += Number(playerEntry.stats.RushYards['#text']);
-            }
-            // Kicking
-            if (playerEntry.stats.FgAtt) {
-                playerStats.fieldGoalAttempts += Number(playerEntry.stats.FgAtt['#text']);
-            }
-            if (playerEntry.stats.XpAtt) {
-                playerStats.extraPointAttempts += Number(playerEntry.stats.XpAtt['#text']);
-            }
-            // console.log(this.playerStatsSet.size);
-            this.homePlayerStatsSet.add(playerStats);
         });
     }
 
