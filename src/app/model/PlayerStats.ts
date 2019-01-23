@@ -14,6 +14,7 @@ export class PlayerStats {
     fieldGoals50Plus: number;
     interceptions: number;
     // Not accumulating stats below yet
+    gamesPlayed: number;
     passAttempts: number;
     passCompletions: number;
     rushAttempts: number;
@@ -34,6 +35,7 @@ export class PlayerStats {
     constructor(player: Player, teamAbbr: string) {
         this.player = player;
         this.teamAbbreviation = teamAbbr;
+        this.gamesPlayed = 0;
         this.passingYards = 0;
         this.rushingYards = 0;
         this.receivingYards = 0;
@@ -60,6 +62,89 @@ export class PlayerStats {
         this.currentGame = false;
     }
 
+    addPlayerStats(ps: PlayerStats) {
+        this.gamesPlayed += 1;
+        this.passingYards += ps.passingYards;
+        this.rushingYards += ps.rushingYards;
+        this.receivingYards += ps.receivingYards;
+        this.passingTouchdowns += ps.passingTouchdowns;
+        this.touchdowns += ps.touchdowns;
+        this.twoPointConversions += ps.twoPointConversions;
+        this.extraPoints += ps.extraPoints;
+        this.fieldGoals += ps.fieldGoals;
+        this.fieldGoals50Plus += ps.fieldGoals50Plus;
+        this.interceptions += ps.interceptions;
+        // Not accumulating stats below yet
+        this.passAttempts += ps.passAttempts;
+        this.passCompletions += ps.passCompletions;
+        this.rushAttempts += ps.rushAttempts;
+        this.targets += ps.targets;
+        this.receptions += ps.receptions;
+        this.fumblesLost += ps.fumblesLost;
+        this.passingInterceptions += ps.passingInterceptions;
+        this.blockedKicks += ps.blockedKicks;
+        this.defensiveFumbleRecoveries += ps.defensiveFumbleRecoveries;
+        this.safeties += ps.safeties;
+        this.twoPointConversionReturns += ps.twoPointConversionReturns;
+        this.fieldGoalAttempts += ps.fieldGoalAttempts;
+        this.extraPointAttempts += ps.extraPointAttempts;
+    }
+
+    subtractPlayerStats(ps: PlayerStats) {
+        this.gamesPlayed -= 1;
+        if (this.gamesPlayed > 0) {
+            this.passingYards -= ps.passingYards;
+            this.rushingYards -= ps.rushingYards;
+            this.receivingYards -= ps.receivingYards;
+            this.passingTouchdowns -= ps.passingTouchdowns;
+            this.touchdowns -= ps.touchdowns;
+            this.twoPointConversions -= ps.twoPointConversions;
+            this.extraPoints -= ps.extraPoints;
+            this.fieldGoals -= ps.fieldGoals;
+            this.fieldGoals50Plus -= ps.fieldGoals50Plus;
+            this.interceptions -= ps.interceptions;
+            // Not accumulating stats below yet
+            this.passAttempts -= ps.passAttempts;
+            this.passCompletions -= ps.passCompletions;
+            this.rushAttempts -= ps.rushAttempts;
+            this.targets -= ps.targets;
+            this.receptions -= ps.receptions;
+            this.fumblesLost -= ps.fumblesLost;
+            this.passingInterceptions -= ps.passingInterceptions;
+            this.blockedKicks -= ps.blockedKicks;
+            this.defensiveFumbleRecoveries -= ps.defensiveFumbleRecoveries;
+            this.safeties -= ps.safeties;
+            this.twoPointConversionReturns -= ps.twoPointConversionReturns;
+            this.fieldGoalAttempts -= ps.fieldGoalAttempts;
+            this.extraPointAttempts -= ps.extraPointAttempts;
+        } else {
+            this.passingYards = 0;
+            this.rushingYards = 0;
+            this.receivingYards = 0;
+            this.passingTouchdowns = 0;
+            this.touchdowns = 0;
+            this.twoPointConversions = 0;
+            this.extraPoints = 0;
+            this.fieldGoals = 0;
+            this.fieldGoals50Plus = 0;
+            this.interceptions = 0;
+            // Not accumulating stats below yet
+            this.passAttempts = 0;
+            this.passCompletions = 0;
+            this.rushAttempts = 0;
+            this.targets = 0;
+            this.receptions = 0;
+            this.fumblesLost = 0;
+            this.passingInterceptions = 0;
+            this.blockedKicks = 0;
+            this.defensiveFumbleRecoveries = 0;
+            this.safeties = 0;
+            this.twoPointConversionReturns = 0;
+            this.fieldGoalAttempts = 0;
+            this.extraPointAttempts = 0;
+        }
+    }
+
     get fantasyPoints(): number {
         let fantasyPointsTally = 0;
         // general
@@ -83,7 +168,7 @@ export class PlayerStats {
         fantasyPointsTally += this.defensiveFumbleRecoveries * 2;
         fantasyPointsTally += this.safeties * 2;
 
-        return Math.round(fantasyPointsTally * 100) / 100 ;
+        return Math.round(fantasyPointsTally * 100) / 100;
     }
 
     get passYardsNoZero(): string {

@@ -19,6 +19,7 @@ import { PlayersStats } from '../../model/PlayersStats';
 import { $ } from 'protractor';
 import { jsonpFactory } from '@angular/http/src/http_module';
 import { debug } from 'util';
+import { SeasonPlayersStats } from '../../model/SeasonPlayersStats';
 
 @Component({
   selector: 'app-games',
@@ -61,6 +62,7 @@ export class GamesComponent implements OnInit {
   rbsWatchedThisWeekStats: Array<PlayerStats> = [];
   wrsWatchedThisWeekStats: Array<PlayerStats> = [];
   tesWatchedThisWeekStats: Array<PlayerStats> = [];
+  seasonPlayersStats: SeasonPlayersStats = new SeasonPlayersStats();
 
   constructor(private gamesService: RegularSeasonGames2017Service,
     private playsService: RegularSeasonPlays2017Service,
@@ -85,6 +87,7 @@ export class GamesComponent implements OnInit {
 
   ngOnInit() {
     this.loadSchedule();
+    // this.seasonPlayersStats = new SeasonPlayersStats();
     // this.loadPlayers();
   }
 
@@ -175,18 +178,11 @@ export class GamesComponent implements OnInit {
         });
       }
     });
-    this.sortByFantasyPoints(this.qbsWatchedThisWeekStats);
-    this.sortByFantasyPoints(this.rbsWatchedThisWeekStats);
-    this.sortByFantasyPoints(this.wrsWatchedThisWeekStats);
-    this.sortByFantasyPoints(this.tesWatchedThisWeekStats);
-
-    // this.qbsWatchedThisWeekStats.sort(function (ps1, ps2) {
-    //   if (ps1.fantasyPoints > ps2.fantasyPoints) {
-    //     return -1;
-    //   } else {
-    //     return 1;
-    //   }
-    // });
+    GamesComponent.sortByFantasyPoints(this.qbsWatchedThisWeekStats);
+    GamesComponent.sortByFantasyPoints(this.rbsWatchedThisWeekStats);
+    GamesComponent.sortByFantasyPoints(this.wrsWatchedThisWeekStats);
+    GamesComponent.sortByFantasyPoints(this.tesWatchedThisWeekStats);
+    GamesComponent.sortByFantasyPoints(this.seasonPlayersStats.playersStats);
   }
 
   get selectedWeek() {
@@ -598,6 +594,11 @@ export class GamesComponent implements OnInit {
   markGameAsWatched() {
     this.selectedGame.watched = !this.selectedGame.watched;
     this.updated = true;
+    if (this.selectedGame.watched) {
+      this.seasonPlayersStats.addGameBoxScore(this.boxScore);
+    } else {
+      this.seasonPlayersStats.subtractGameBoxScore(this.boxScore);
+    }
     this.loadWatchedBoxScores();
   }
 
@@ -631,6 +632,18 @@ export class GamesComponent implements OnInit {
         return this.gameBoxScoreService.getBoxScoreFromLocal(gameid);
       });
     }
+  }
+
+  get qbsSeasonBoxWithCurrent(): Array<PlayerStats>  {
+    // const allQbsStats = new Set<PlayerStats>(this.seasonPlayersStats.playersStats);
+    // playersStats.q .forEach(allQbsStats.add, allQbsStats);
+    // if (this.selectedGame.watched) {
+    //   return this.seasonPlayersStats.qbsSeasonStats(this.currentPlayersStats, false);
+    // } else {
+    //   return this.seasonPlayersStats.qbsSeasonStats(this.currentPlayersStats, true);
+    // }
+    const allQbsStats = this.seasonPlayersStats.qbsSeasonStats(this.currentPlayersStats, !this.selectedGame.watched);
+    return allQbsStats;
   }
 
 }

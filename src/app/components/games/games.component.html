@@ -730,115 +730,316 @@
           </tbody>
         </table>
       </div>
-      <!-- Box Score -->
-      <h4>Box Score</h4>
+      <div *ngIf="gameOver">
+        <!-- Box Score -->
+        <h4>Box Score</h4>
+        <div class="row container-fluid">
+          <!-- QBs -->
+          <div class="row">
+            <!-- Away -->
+            <table class="table-sm stat-table w-50">
+              <thead class="thead-light">
+                <tr style="border-radius: 5px;">
+                  <th colspan="2">QB</th>
+                  <th title="Completions/Pass Attempts">C/PA</th>
+                  <th>Pass</th>
+                  <th>Rush</th>
+                  <th>PaTD</th>
+                  <th>TD</th>
+                  <th>TO</th>
+                  <th>FPts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let playerStat of this.boxScore.awayTeamQBs">
+                  <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                  <td>{{playerStat.passAttemptsCompletionsNoZero}}</td>
+                  <td>{{playerStat.passYardsNoZero}}</td>
+                  <td>{{playerStat.rushYardsNoZero}}</td>
+                  <td>{{playerStat.passingTouchdownsNoZero}}</td>
+                  <td>{{playerStat.touchdownsNoZero}}</td>
+                  <td>{{playerStat.turnoversNoZero}}</td>
+                  <td>{{playerStat.fantasyPoints}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- Home -->
+            <table class="table-sm stat-table w-50">
+              <thead class="thead-light">
+                <tr>
+                  <th colspan="2"></th>
+                  <th title="Completions/Pass Attempts">C/PA</th>
+                  <th>Pass</th>
+                  <th>Rush</th>
+                  <th>PaTD</th>
+                  <th>TD</th>
+                  <th>TO</th>
+                  <th>FPts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let playerStat of this.boxScore.homeTeamQBs">
+                  <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                  <td>{{playerStat.passAttemptsCompletionsNoZero}}</td>
+                  <td>{{playerStat.passYardsNoZero}}</td>
+                  <td>{{playerStat.rushYardsNoZero}}</td>
+                  <td>{{playerStat.passingTouchdownsNoZero}}</td>
+                  <td>{{playerStat.touchdownsNoZero}}</td>
+                  <td>{{playerStat.turnoversNoZero}}</td>
+                  <td>{{playerStat.fantasyPoints}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- RBs -->
+          <div class="row">
+            <!-- Away -->
+            <table class="table-sm stat-table w-50">
+              <thead class="thead-light">
+                <tr>
+                  <th colspan="2">RB</th>
+                  <th>RuAtt</th>
+                  <th>Rush</th>
+                  <th title="Receptions/Targets">R/T</th>
+                  <th>Rec</th>
+                  <th>TD</th>
+                  <th>TO</th>
+                  <th>FPts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let playerStat of this.boxScore.awayTeamRBs">
+                  <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                  <td>{{playerStat.rushAttemptsNoZero}}</td>
+                  <td>{{playerStat.rushYardsNoZero}}</td>
+                  <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                  <td>{{playerStat.recYardsNoZero}}</td>
+                  <td>{{playerStat.touchdownsNoZero}}</td>
+                  <td>{{playerStat.turnoversNoZero}}</td>
+                  <td>{{playerStat.fantasyPoints}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- Home -->
+            <table class="table-sm stat-table w-50">
+              <thead class="thead-light">
+                <tr>
+                  <th colspan="2"></th>
+                  <th>RuAtt</th>
+                  <th>Rush</th>
+                  <th title="Receptions/Targets">R/T</th>
+                  <th>Rec</th>
+                  <th>TD</th>
+                  <th>TO</th>
+                  <th>FPts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let playerStat of this.boxScore.homeTeamRBs">
+                  <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                  <td>{{playerStat.rushAttemptsNoZero}}</td>
+                  <td>{{playerStat.rushYardsNoZero}}</td>
+                  <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                  <td>{{playerStat.recYardsNoZero}}</td>
+                  <td>{{playerStat.touchdownsNoZero}}</td>
+                  <td>{{playerStat.turnoversNoZero}}</td>
+                  <td>{{playerStat.fantasyPoints}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- WRs -->
+          <div class="row">
+            <!-- Away -->
+            <table class="table-sm stat-table w-50">
+              <thead class="thead-light">
+                <tr>
+                  <th colspan="2">WR</th>
+                  <th title="Receptions/Targets">R/T</th>
+                  <th>Rec</th>
+                  <th>RuAtt</th>
+                  <th>Rush</th>
+                  <th>TD</th>
+                  <th>TO</th>
+                  <th>FPts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let playerStat of this.boxScore.awayTeamWRs" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+                  <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                  <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                  <td>{{playerStat.recYardsNoZero}}</td>
+                  <td>{{playerStat.rushAttemptsNoZero}}</td>
+                  <td>{{playerStat.rushYardsNoZero}}</td>
+                  <td>{{playerStat.touchdownsNoZero}}</td>
+                  <td>{{playerStat.turnoversNoZero}}</td>
+                  <td>{{playerStat.fantasyPoints}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- Home -->
+            <table class="table-sm stat-table w-50">
+              <thead class="thead-light">
+                <tr>
+                  <th colspan="2"></th>
+                  <th title="Receptions/Targets">R/T</th>
+                  <th>Rec</th>
+                  <th>RuAtt</th>
+                  <th>Rush</th>
+                  <th>TD</th>
+                  <th>TO</th>
+                  <th>FPts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let playerStat of this.boxScore.homeTeamWRs">
+                  <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                  <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                  <td>{{playerStat.recYardsNoZero}}</td>
+                  <td>{{playerStat.rushAttemptsNoZero}}</td>
+                  <td>{{playerStat.rushYardsNoZero}}</td>
+                  <td>{{playerStat.touchdownsNoZero}}</td>
+                  <td>{{playerStat.turnoversNoZero}}</td>
+                  <td>{{playerStat.fantasyPoints}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- TEs -->
+          <div class="row">
+            <!-- Away -->
+            <table class="table-sm stat-table w-50">
+              <thead class="thead-light">
+                <tr>
+                  <th colspan="2">TE</th>
+                  <th title="Receptions/Targets">R/T</th>
+                  <th>Rec</th>
+                  <th>RuAtt</th>
+                  <th>Rush</th>
+                  <th>TD</th>
+                  <th>TO</th>
+                  <th>FPts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let playerStat of this.boxScore.awayTeamTEs" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+                  <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                  <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                  <td>{{playerStat.recYardsNoZero}}</td>
+                  <td>{{playerStat.rushAttemptsNoZero}}</td>
+                  <td>{{playerStat.rushYardsNoZero}}</td>
+                  <td>{{playerStat.touchdownsNoZero}}</td>
+                  <td>{{playerStat.turnoversNoZero}}</td>
+                  <td>{{playerStat.fantasyPoints}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- Home -->
+            <table class="table-sm stat-table w-50">
+              <thead class="thead-light">
+                <tr>
+                  <th colspan="2"></th>
+                  <th title="Receptions/Targets">R/T</th>
+                  <th>Rec</th>
+                  <th>RuAtt</th>
+                  <th>Rush</th>
+                  <th>TD</th>
+                  <th>TO</th>
+                  <th>FPts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let playerStat of this.boxScore.homeTeamTEs">
+                  <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                  <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                  <td>{{playerStat.recYardsNoZero}}</td>
+                  <td>{{playerStat.rushAttemptsNoZero}}</td>
+                  <td>{{playerStat.rushYardsNoZero}}</td>
+                  <td>{{playerStat.touchdownsNoZero}}</td>
+                  <td>{{playerStat.turnoversNoZero}}</td>
+                  <td>{{playerStat.fantasyPoints}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Kickers -->
+          <div class="row">
+            <!-- Away -->
+            <table class="table-sm stat-table w-50">
+              <thead class="thead-light">
+                <tr>
+                  <th colspan="5">K</th>
+                  <th class="one-dig">FG</th>
+                  <th class="one-dig">50+</th>
+                  <th class="one-dig">XP</th>
+                  <th>FPts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let playerStat of this.boxScore.awayTeamKs" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+                  <td colspan="5" class="last-name">{{playerStat.player.lastName}}</td>
+                  <td class="one-dig">{{playerStat.fieldGoalsNoZero}}</td>
+                  <td class="one-dig">{{playerStat.fieldGoals50PlusNoZero}}</td>
+                  <td class="one-dig">{{playerStat.extraPointsNoZero}}</td>
+                  <td>{{playerStat.fantasyPoints}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- Home -->
+            <table class="table-sm stat-table w-50">
+              <thead class="thead-light">
+                <tr>
+                  <th colspan="4"></th>
+                  <th class="one-dig">FG</th>
+                  <th class="one-dig">50+</th>
+                  <th class="one-dig">XP</th>
+                  <th>FPts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let playerStat of this.boxScore.homeTeamKs">
+                  <td colspan="5" class="last-name">{{playerStat.player.lastName}}</td>
+                  <td class="one-dig">{{playerStat.fieldGoalsNoZero}}</td>
+                  <td class="one-dig">{{playerStat.fieldGoals50PlusNoZero}}</td>
+                  <td class="one-dig">{{playerStat.extraPointsNoZero}}</td>
+                  <td>{{playerStat.fantasyPoints}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Season Box Score -->
+      <h4>Season Box Score</h4>
       <div class="row container-fluid">
-        <!-- <div class="row col-12">
-          <span>{{this.boxScore.json}}</span><br />
-        </div> -->
-        <!-- QBs -->
         <div class="row">
-          <!-- Away -->
-          <table class="table-sm stat-table w-50">
+          <table class="table-sm stat-table w-60">
             <thead class="thead-light">
               <tr style="border-radius: 5px;">
-                <th colspan="2">QB</th>
+                <th>Rank</th>
+                <th class="full-name"></th>
+                <th>Games</th>
                 <th title="Completions/Pass Attempts">C/PA</th>
                 <th>Pass</th>
-                <th>Rush</th>
                 <th>PaTD</th>
+                <th>RuAtt</th>
+                <th>Rush</th>
+                <th title="Receptions/Targets">R/T</th>
+                <th>Rec</th>
                 <th>TD</th>
                 <th>TO</th>
                 <th>FPts</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let playerStat of this.boxScore.awayTeamQBs">
-                <td colspan="2">{{playerStat.player.lastName}}</td>
+              <tr *ngFor="let playerStat of this.qbsSeasonBoxWithCurrent; let i = index" [ngClass]="{ 'current-game-stat': playerStat.accruedStatsOnLastPlay }">
+                <td class="rank-column">{{i + 1}}</td>
+                <td class="full-name player-name">{{playerStat.player.firstName}} {{playerStat.player.lastName}}</td>
+                <td>{{playerStat.gamesPlayed}}</td>
                 <td>{{playerStat.passAttemptsCompletionsNoZero}}</td>
                 <td>{{playerStat.passYardsNoZero}}</td>
-                <td>{{playerStat.rushYardsNoZero}}</td>
                 <td>{{playerStat.passingTouchdownsNoZero}}</td>
-                <td>{{playerStat.touchdownsNoZero}}</td>
-                <td>{{playerStat.turnoversNoZero}}</td>
-                <td>{{playerStat.fantasyPoints}}</td>
-              </tr>
-            </tbody>
-          </table>
-          <!-- Home -->
-          <table class="table-sm stat-table w-50">
-            <thead class="thead-light">
-              <tr>
-                <th colspan="2"></th>
-                <th title="Completions/Pass Attempts">C/PA</th>
-                <th>Pass</th>
-                <th>Rush</th>
-                <th>PaTD</th>
-                <th>TD</th>
-                <th>TO</th>
-                <th>FPts</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let playerStat of this.boxScore.homeTeamQBs">
-                <td colspan="2">{{playerStat.player.lastName}}</td>
-                <td>{{playerStat.passAttemptsCompletionsNoZero}}</td>
-                <td>{{playerStat.passYardsNoZero}}</td>
-                <td>{{playerStat.rushYardsNoZero}}</td>
-                <td>{{playerStat.passingTouchdownsNoZero}}</td>
-                <td>{{playerStat.touchdownsNoZero}}</td>
-                <td>{{playerStat.turnoversNoZero}}</td>
-                <td>{{playerStat.fantasyPoints}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- RBs -->
-        <div class="row">
-          <!-- Away -->
-          <table class="table-sm stat-table w-50">
-            <thead class="thead-light">
-              <tr>
-                <th colspan="2">RB</th>
-                <th>RuAtt</th>
-                <th>Rush</th>
-                <th title="Receptions/Targets">R/T</th>
-                <th>Rec</th>
-                <th>TD</th>
-                <th>TO</th>
-                <th>FPts</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let playerStat of this.boxScore.awayTeamRBs">
-                <td colspan="2">{{playerStat.player.lastName}}</td>
-                <td>{{playerStat.rushAttemptsNoZero}}</td>
-                <td>{{playerStat.rushYardsNoZero}}</td>
-                <td>{{playerStat.receptionsTargetsNoZero}}</td>
-                <td>{{playerStat.recYardsNoZero}}</td>
-                <td>{{playerStat.touchdownsNoZero}}</td>
-                <td>{{playerStat.turnoversNoZero}}</td>
-                <td>{{playerStat.fantasyPoints}}</td>
-              </tr>
-            </tbody>
-          </table>
-          <!-- Home -->
-          <table class="table-sm stat-table w-50">
-            <thead class="thead-light">
-              <tr>
-                <th colspan="2"></th>
-                <th>RuAtt</th>
-                <th>Rush</th>
-                <th title="Receptions/Targets">R/T</th>
-                <th>Rec</th>
-                <th>TD</th>
-                <th>TO</th>
-                <th>FPts</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let playerStat of this.boxScore.homeTeamRBs">
-                <td colspan="2">{{playerStat.player.lastName}}</td>
                 <td>{{playerStat.rushAttemptsNoZero}}</td>
                 <td>{{playerStat.rushYardsNoZero}}</td>
                 <td>{{playerStat.receptionsTargetsNoZero}}</td>
@@ -850,173 +1051,6 @@
             </tbody>
           </table>
         </div>
-        <!-- WRs -->
-        <div class="row">
-          <!-- Away -->
-          <table class="table-sm stat-table w-50">
-            <thead class="thead-light">
-              <tr>
-                <th colspan="2">WR</th>
-                <th title="Receptions/Targets">R/T</th>
-                <th>Rec</th>
-                <th>RuAtt</th>
-                <th>Rush</th>
-                <th>TD</th>
-                <th>TO</th>
-                <th>FPts</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let playerStat of this.boxScore.awayTeamWRs" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
-                <td colspan="2">{{playerStat.player.lastName}}</td>
-                <td>{{playerStat.receptionsTargetsNoZero}}</td>
-                <td>{{playerStat.recYardsNoZero}}</td>
-                <td>{{playerStat.rushAttemptsNoZero}}</td>
-                <td>{{playerStat.rushYardsNoZero}}</td>
-                <td>{{playerStat.touchdownsNoZero}}</td>
-                <td>{{playerStat.turnoversNoZero}}</td>
-                <td>{{playerStat.fantasyPoints}}</td>
-              </tr>
-            </tbody>
-          </table>
-          <!-- Home -->
-          <table class="table-sm stat-table w-50">
-            <thead class="thead-light">
-              <tr>
-                <th colspan="2"></th>
-                <th title="Receptions/Targets">R/T</th>
-                <th>Rec</th>
-                <th>RuAtt</th>
-                <th>Rush</th>
-                <th>TD</th>
-                <th>TO</th>
-                <th>FPts</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let playerStat of this.boxScore.homeTeamWRs">
-                <td colspan="2">{{playerStat.player.lastName}}</td>
-                <td>{{playerStat.receptionsTargetsNoZero}}</td>
-                <td>{{playerStat.recYardsNoZero}}</td>
-                <td>{{playerStat.rushAttemptsNoZero}}</td>
-                <td>{{playerStat.rushYardsNoZero}}</td>
-                <td>{{playerStat.touchdownsNoZero}}</td>
-                <td>{{playerStat.turnoversNoZero}}</td>
-                <td>{{playerStat.fantasyPoints}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- TEs -->
-        <div class="row">
-          <!-- Away -->
-          <table class="table-sm stat-table w-50">
-            <thead class="thead-light">
-              <tr>
-                <th colspan="2">TE</th>
-                <th title="Receptions/Targets">R/T</th>
-                <th>Rec</th>
-                <th>RuAtt</th>
-                <th>Rush</th>
-                <th>TD</th>
-                <th>TO</th>
-                <th>FPts</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let playerStat of this.boxScore.awayTeamTEs" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
-                <td colspan="2">{{playerStat.player.lastName}}</td>
-                <td>{{playerStat.receptionsTargetsNoZero}}</td>
-                <td>{{playerStat.recYardsNoZero}}</td>
-                <td>{{playerStat.rushAttemptsNoZero}}</td>
-                <td>{{playerStat.rushYardsNoZero}}</td>
-                <td>{{playerStat.touchdownsNoZero}}</td>
-                <td>{{playerStat.turnoversNoZero}}</td>
-                <td>{{playerStat.fantasyPoints}}</td>
-              </tr>
-            </tbody>
-          </table>
-          <!-- Home -->
-          <table class="table-sm stat-table w-50">
-            <thead class="thead-light">
-              <tr>
-                <th colspan="2"></th>
-                <th title="Receptions/Targets">R/T</th>
-                <th>Rec</th>
-                <th>RuAtt</th>
-                <th>Rush</th>
-                <th>TD</th>
-                <th>TO</th>
-                <th>FPts</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let playerStat of this.boxScore.homeTeamTEs">
-                <td colspan="2">{{playerStat.player.lastName}}</td>
-                <td>{{playerStat.receptionsTargetsNoZero}}</td>
-                <td>{{playerStat.recYardsNoZero}}</td>
-                <td>{{playerStat.rushAttemptsNoZero}}</td>
-                <td>{{playerStat.rushYardsNoZero}}</td>
-                <td>{{playerStat.touchdownsNoZero}}</td>
-                <td>{{playerStat.turnoversNoZero}}</td>
-                <td>{{playerStat.fantasyPoints}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- Kickers -->
-        <div class="row">
-          <!-- Away -->
-          <table class="table-sm stat-table w-50">
-            <thead class="thead-light">
-              <tr>
-                <th colspan="5">K</th>
-                <th class="one-dig">FG</th>
-                <th class="one-dig">50+</th>
-                <th class="one-dig">XP</th>
-                <th>FPts</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let playerStat of this.boxScore.awayTeamKs" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
-                <td colspan="5">{{playerStat.player.lastName}}</td>
-                <td class="one-dig">{{playerStat.fieldGoalsNoZero}}</td>
-                <td class="one-dig">{{playerStat.fieldGoals50PlusNoZero}}</td>
-                <td class="one-dig">{{playerStat.extraPointsNoZero}}</td>
-                <td>{{playerStat.fantasyPoints}}</td>
-              </tr>
-            </tbody>
-          </table>
-          <!-- Home -->
-          <table class="table-sm stat-table w-50">
-            <thead class="thead-light">
-              <tr>
-                <th colspan="4"></th>
-                <th class="one-dig">FG</th>
-                <th class="one-dig">50+</th>
-                <th class="one-dig">XP</th>
-                <th>FPts</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let playerStat of this.boxScore.homeTeamKs">
-                <td colspan="4">{{playerStat.player.lastName}}</td>
-                <td class="one-dig">{{playerStat.fieldGoalsNoZero}}</td>
-                <td class="one-dig">{{playerStat.fieldGoals50PlusNoZero}}</td>
-                <td class="one-dig">{{playerStat.extraPointsNoZero}}</td>
-                <td>{{playerStat.fantasyPoints}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- <ul *ngIf="this.boxScore">
-            <li *ngFor="let playerStats of this.boxScore.playerStatsSet">
-              {{playerStats.player.firstName}} {{playerStats.player.lastName}}
-            </li>
-          </ul> -->
-        <!-- <div *ngIf="this.boxScore">
-          {{this.boxScore.json}}
-        </div> -->
       </div>
     </div>
   </div>

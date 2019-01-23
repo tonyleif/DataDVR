@@ -190,8 +190,12 @@ select.btn-primary option {
 
 .stat-table tr > td:first-child,
 .stat-table tr > th:first-child {
-    width: 7.5em;
+    /* width: 7.5em; */
     text-align: left;
+}
+
+.stat-table tr > td.full-name {
+    width: 10em;
 }
 
 /* .stat-table tr > td:first-child.dst-name,
@@ -237,6 +241,11 @@ select.btn-primary option {
     to {background-color: #45B85E;} 
     }
 
+@keyframes highlightBlue {
+    from {background-color: white }
+    to {background-color: #007bff;} 
+    }
+
 .last-play-stat {
     animation: highlight 1s ease-out;
     color: white;
@@ -247,6 +256,12 @@ select.btn-primary option {
     color: white !important;
 }
 
+.current-game-stat {
+    animation: highlightBlue 1s ease-out;
+    color: white;
+    background-color: #007bff;
+}
+
 .stat-error {
     color: white;
     background-color: red;
@@ -255,4 +270,14 @@ select.btn-primary option {
 th.player-name,
 td.player-name {
     text-align: left !important;
+}
+
+th.last-name,
+td.last-name {
+    text-align: left !important;
+    width: 7.5em;
+}
+
+td.rank-column {
+    width: 1em;
 }
