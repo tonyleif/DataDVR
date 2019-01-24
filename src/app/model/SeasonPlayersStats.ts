@@ -6,9 +6,21 @@ import { GameBoxScore } from './GameBoxScore';
 import { PlayersStats } from './PlayersStats';
 import { GamesComponent } from '../components/games/games.component';
 
+
+
 export class SeasonPlayersStats {
     json: string;
     playersStats: Array<PlayerStats>;
+
+    static sortByFantasyPoints(playerStats: Array<PlayerStats>) {
+        playerStats.sort(function (ps1, ps2) {
+          if (ps1.fantasyPoints > ps2.fantasyPoints) {
+            return -1;
+          } else {
+            return 1;
+          }
+        });
+      }
 
     constructor() {
         this.playersStats = new Array<PlayerStats>();
@@ -209,7 +221,7 @@ export class SeasonPlayersStats {
                 }
             });
         }
-        GamesComponent.sortByFantasyPoints(qbStats);
+        SeasonPlayersStats.sortByFantasyPoints(qbStats);
         return qbStats;
     }
 

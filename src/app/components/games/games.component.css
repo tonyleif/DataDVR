@@ -20,6 +20,10 @@
     padding-right: .5em;
 }
 
+.right-column-btn {
+    width: 7.4em;
+}
+
 /* .game-alert {
     width: 34em;
     margin-left: .8em;
@@ -156,7 +160,7 @@ select.btn-primary option {
 
 .team-header {
     display: inline-block;
-    width: 9em;
+    width: 49%;
 }
 
 .stat-table {
@@ -270,6 +274,7 @@ select.btn-primary option {
 th.player-name,
 td.player-name {
     text-align: left !important;
+    white-space: nowrap;
 }
 
 th.last-name,
@@ -280,4 +285,22 @@ td.last-name {
 
 td.rank-column {
     width: 1em;
+}
+
+#plays {
+    width: 24em;
+    margin-left: 1em;
+}
+
+#gameStats {
+    width: 35em;
+    margin-left: 1em;
+}
+
+#weekRanks {
+    /* margin-left: 1em; */
+}
+
+#seasonRanks {
+
 }

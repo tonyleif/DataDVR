@@ -63,6 +63,10 @@ export class GamesComponent implements OnInit {
   wrsWatchedThisWeekStats: Array<PlayerStats> = [];
   tesWatchedThisWeekStats: Array<PlayerStats> = [];
   seasonPlayersStats: SeasonPlayersStats = new SeasonPlayersStats();
+  showQBWeekRank: boolean;
+  showRBWeekRank: boolean;
+  showWRWeekRank: boolean;
+  showTEWeekRank: boolean;
 
   constructor(private gamesService: RegularSeasonGames2017Service,
     private playsService: RegularSeasonPlays2017Service,
@@ -511,8 +515,29 @@ export class GamesComponent implements OnInit {
       GamesComponent.sortByFantasyPoints(this.rbsWatchedThisWeekStats);
       GamesComponent.sortByFantasyPoints(this.wrsWatchedThisWeekStats);
       GamesComponent.sortByFantasyPoints(this.tesWatchedThisWeekStats);
+      this.showQBWeekRank = false;
+      this.showRBWeekRank = false;
+      this.showWRWeekRank = false;
+      this.showTEWeekRank = false;
+      playersStats.lastPlayPlayerStats.forEach(ps => {
+        switch (ps.player.position) {
+          case 'QB':
+            this.showQBWeekRank = true;
+            break;
+          case 'RB':
+          case 'FB':
+            this.showRBWeekRank = true;
+            break;
+          case 'WR':
+            this.showWRWeekRank = true;
+            break;
+          case 'TE':
+            this.showTEWeekRank = true;
+            break;
+        }
+
+      });
       return playersStats;
-      // return new PlayersStats(playsWatched, this.selectedGame.awayTeam.Abbreviation, this.selectedGame.homeTeam.Abbreviation);
     }
     return null;
   }
@@ -634,7 +659,7 @@ export class GamesComponent implements OnInit {
     }
   }
 
-  get qbsSeasonBoxWithCurrent(): Array<PlayerStats>  {
+  get qbsSeasonBoxWithCurrent(): Array<PlayerStats> {
     // const allQbsStats = new Set<PlayerStats>(this.seasonPlayersStats.playersStats);
     // playersStats.q .forEach(allQbsStats.add, allQbsStats);
     // if (this.selectedGame.watched) {
