@@ -4,6 +4,12 @@ import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+// import { HttpClientModule } from '@angular/common/http';
+// import { NgbdTypeaheadBasic } from './components/typeahead-basic/typeahead-basic';
+// import {TypeaheadModule} from '@ng-bootstrap/ng-bootstrap/typeahead/typeahead';
+
 // import { CommonModule } from '@angular/common';
 import { AppComponent } from './app.component';
 import { RegularSeasonGames2017Service } from './model/regular-season-games-2017.service';
@@ -16,10 +22,12 @@ import { AboutComponent } from './components/about/about.component';
 import { Route } from '@angular/compiler/src/core';
 import { RouterLinkActive } from '@angular/router';
 import { GameBoxScoreService } from './model/game-box-score.service';
+import { LineupComponent } from './components/lineup/lineup.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/games', pathMatch: 'full'},
   {path: 'games',   component: GamesComponent },
+  {path: 'lineup',   component: LineupComponent },
   {path: 'contact', component: ContactComponent },
   {path: 'about',   component: AboutComponent }
 ];
@@ -29,15 +37,20 @@ const appRoutes: Routes = [
     AppComponent,
     GamesComponent,
     ContactComponent,
-    AboutComponent
+    AboutComponent,
+    LineupComponent // ,
+    // NgbdTypeaheadBasic
   ],
   imports: [
     BrowserModule,
     HttpModule,
     FormsModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(appRoutes)
-  ], // CommonModule
+    RouterModule.forRoot(appRoutes),
+    NgbModule // ,
+    // TypeaheadModule // ,
+    // HttpClientModule, 
+  ], // NgbModule, CommonModule -- HttpClientModule, NgbModule
   providers: [RegularSeasonGames2017Service, RegularSeasonPlays2017Service,
     RegularSeasonActivePlayers2017Service, TeamService, GameBoxScoreService],
   bootstrap: [AppComponent]

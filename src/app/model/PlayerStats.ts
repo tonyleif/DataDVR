@@ -13,7 +13,6 @@ export class PlayerStats {
     fieldGoals: number;
     fieldGoals50Plus: number;
     interceptions: number;
-    // Not accumulating stats below yet
     gamesPlayed: number;
     passAttempts: number;
     passCompletions: number;
@@ -31,6 +30,7 @@ export class PlayerStats {
     accruedStatsOnLastPlay: boolean;
     newToSet: boolean;
     currentGame: boolean;
+    currentGameStats: PlayerStats;
 
     constructor(player: Player, teamAbbr: string) {
         this.player = player;
@@ -60,6 +60,10 @@ export class PlayerStats {
         this.accruedStatsOnLastPlay = false;
         this.newToSet = false;
         this.currentGame = false;
+    }
+
+    attachCurrentGameStats(ps: PlayerStats) {
+        this.currentGameStats = ps;
     }
 
     addPlayerStats(ps: PlayerStats) {
@@ -274,6 +278,19 @@ export class PlayerStats {
             return (this.passingInterceptions + this.fumblesLost).toString();
         }
         return '';
+    }
+
+    get pointsPerGame(): number {
+        let ppg: number;
+        // if (this.gamesPlayed > 1) {
+        //     alert('gamesPlayed > 1');
+        // }
+        if (this.currentGameStats && this.currentGameStats.fantasyPoints) {
+            ppg = (this.fantasyPoints + this.currentGameStats.fantasyPoints) / (this.gamesPlayed + 1);
+        } else {
+            ppg = this.fantasyPoints / this.gamesPlayed;
+        }
+        return Math.round(ppg * 100) / 100;
     }
 
 }

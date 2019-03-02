@@ -1,0 +1,24 @@
+<div class="container-fluid">
+  <h3>Lineup</h3>
+  <!-- <ngbd-typeahead-basic></ngbd-typeahead-basic> -->
+  <hr>
+  <ng-template #rt let-r="result" let-t="term">
+    <!-- <img [src]="'https://upload.wikimedia.org/wikipedia/commons/thumb/' + r['flag']" class="mr-1" style="width: 16px"> -->
+    <img *ngIf="r.officialImageSrc" [src]="r.officialImageSrc" class="rounded mr-1" style="width: 60px"><!--  -->
+    <ngb-highlight [result]="r.fullName" [term]="t"></ngb-highlight>
+  </ng-template>
+  <label for="typeahead-player">Search for a player:</label>
+  <input id="typeahead-player" type="text" class="form-control" [(ngModel)]="selectedPlayer" 
+    [ngbTypeahead]="search" [resultTemplate]="rt" [inputFormatter]="formatter" />
+  <!-- <ul>
+    <li *ngFor="let player of activePlayers; let i = index">
+      {{ i }}. {{ player.position }} {{ player.firstName }} {{ player.lastName }}
+    </li>
+  </ul> -->
+  <div class="row mt-2">
+    <div class="col-12">
+      <button (click)="deleteSeasonStats()" class="btn">Delete Season Stats</button>
+      <button (click)="clearWatchedGames()" class="btn ml-2">Clear Watched Games</button>
+    </div>
+  </div>
+</div>

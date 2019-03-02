@@ -139,10 +139,11 @@ export class KickingPlay {
         this.isNoPlay = (json.isNoPlay === 'true');
         this.isTouchdown = (json.isTouchdown === 'true');
         this.subPlays = new Array<any>();
+        if (json.kickingPlayer != null) {
+            this.kickingPlayer = new Player(json.kickingPlayer);
+        }
         if (json.retrievingPlayer != null) {
-            // console.log(json.passingPlayer);
             this.retrievingPlayer = new Player(json.retrievingPlayer);
-            // console.log(JSON.stringify(this.passingPlayer));
         }
         if (json.subPlays) {
             this.subPlays = new Array<any>();
@@ -175,6 +176,9 @@ export class RushingPlay {
         this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
         this.isTwoPointConversion = (json.isTwoPointConversion === 'true');
         this.isNoPlay = (json.isNoPlay === 'true');
+        if (!json.rushingPlayer) {
+            console.log('No rushing player');
+        }
         this.rushingPlayer = new Player(json.rushingPlayer);
         this.subPlays = new Array<any>();
         if (json.subPlays) {
@@ -249,9 +253,9 @@ export class PassingPlay {
         }
         if (json.receivingPlayer != null) {
             // console.log(json.receivingPlayer);
-            if (json.receivingPlayer.FirstName === 'Deontay') {
-                console.log('making Deontay');
-            }
+            // if (json.receivingPlayer.FirstName === 'Deontay') {
+            //     console.log('making Deontay');
+            // }
             this.receivingPlayer = new Player(json.receivingPlayer);
         }
         this.intercepted = (json.interceptingPlayer != null);
@@ -294,7 +298,6 @@ export class PassingPlay {
             return null;
         }
     }
-
 
     get holdingSpotFoul(): Penalty {
         let pen: Penalty = null;
@@ -390,10 +393,16 @@ class Fumble {
     fumblingTeamAbbreviation: string;
     recoveringTeamAbbreviation: string;
     isEndedWithTouchdown: boolean;
+    fumblingPlayer: Player;
     constructor(json) {
         this.fumblingTeamAbbreviation = json.fumblingTeamAbbreviation;
         this.recoveringTeamAbbreviation = json.recoveringTeamAbbreviation;
-        this.isEndedWithTouchdown = (json.isEndedWithTouchdown.toString() === 'true');
+        if (json.isEndedWithTouchdown) {
+            this.isEndedWithTouchdown = (json.isEndedWithTouchdown.toString() === 'true');
+        } else {
+            this.isEndedWithTouchdown = false;
+        }
+        this.fumblingPlayer = new Player(json.fumblingPlayer);
     }
 
     get recoveredByOtherTeam(): boolean {

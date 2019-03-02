@@ -3,14 +3,14 @@ import { PlayerStats } from './PlayerStats';
 import { Player } from './Player';
 
 export class GameBoxScore {
-    json: string;
+    // json: string;
     awayPlayerStatsSet: Set<PlayerStats>;
     homePlayerStatsSet: Set<PlayerStats>;
     awayTeamAbbr: string;
     homeTeamAbbr: string;
 
     constructor(json: any) {
-        this.json = JSON.stringify(json);
+        // this.json = JSON.stringify(json);
         const jsonObject: any = json;
         // Teams
         this.awayTeamAbbr = jsonObject.gameboxscore.game.awayTeam.Abbreviation;
@@ -31,9 +31,9 @@ export class GameBoxScore {
                 if (playerEntry.stats.KrTD) {
                     playerStats.touchdowns += Number(playerEntry.stats.KrTD['#text']);
                 }
-                if (playerEntry.stats.KrTD) {
-                    playerStats.touchdowns += Number(playerEntry.stats.KrTD['#text']);
-                }
+                // if (playerEntry.stats.KrTD) {
+                //     playerStats.touchdowns += Number(playerEntry.stats.KrTD['#text']);
+                // }
                 if (playerEntry.stats.PassAttempts) {
                     playerStats.passAttempts = Number(playerEntry.stats.PassAttempts['#text']);
                 }
@@ -87,9 +87,9 @@ export class GameBoxScore {
                 if (playerEntry.stats.KrTD) {
                     playerStats.touchdowns += Number(playerEntry.stats.KrTD['#text']);
                 }
-                if (playerEntry.stats.KrTD) {
-                    playerStats.touchdowns += Number(playerEntry.stats.KrTD['#text']);
-                }
+                // if (playerEntry.stats.KrTD) {
+                //     playerStats.touchdowns += Number(playerEntry.stats.KrTD['#text']);
+                // }
                 if (playerEntry.stats.PassAttempts) {
                     playerStats.passAttempts = Number(playerEntry.stats.PassAttempts['#text']);
                 }

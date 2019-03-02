@@ -24,7 +24,8 @@
           <span *ngIf="loadingPlays" class="ml-3 mt-2">
             Loading...
           </span>
-          <button *ngIf="selectedGame" (click)="markGameAsWatched()" class="btn right-column-btn" [ngClass]="{ 'btn-primary': selectedGame.watched }">
+          <button *ngIf="selectedGame && !loadingPlays" (click)="markGameAsWatched()" class="btn right-column-btn"
+            [ngClass]="{ 'btn-primary': selectedGame.watched }">
             <span *ngIf="selectedGame.watched">Not </span>Done
           </button>
         </div>
@@ -69,16 +70,16 @@
             <div *ngIf="currentPlay.playType === 0" class="container row current-play">
               <!-- Kicker -->
               <div class="player-image">
-                <img *ngIf="!currentPlay.kickingPlay.kickingPlayer.noImageUrl" src={{currentPlay.kickingPlay.kickingPlayer.officialImageSrc}}
-                  class="rounded" />
+                <img *ngIf="!offlineMode && currentPlay.kickingPlay.kickingPlayer && !currentPlay.kickingPlay.kickingPlayer.noImageUrl"
+                  src={{currentPlay.kickingPlay.kickingPlayer.officialImageSrc}} class="rounded" />
               </div>
               <!-- Add returner in future -->
             </div>
             <div *ngIf="currentPlay.playType === 1" class="container row current-play">
               <!-- Rusher -->
-              <div class="player-image">
-                <img *ngIf="!currentPlay.rushingPlay.rushingPlayer.noImageUrl" src={{currentPlay.rushingPlay.rushingPlayer.officialImageSrc}}
-                  class="rounded d-inline" />
+              <div class="player-image" title="Ht: {{currentPlay.rushingPlay.rushingPlayer.height}}&#10;Wt: {{currentPlay.rushingPlay.rushingPlayer.weight}}&#10;Age: {{currentPlay.rushingPlay.rushingPlayer.age}}">
+                <img *ngIf="!offlineMode && currentPlay.rushingPlay.rushingPlayer && !currentPlay.rushingPlay.rushingPlayer.noImageUrl"
+                  src={{currentPlay.rushingPlay.rushingPlayer.officialImageSrc}} class="rounded d-inline" />
                 <!-- <div *ngIf="currentPlay.rushingPlay.rushingPlayer.noImageUrl" class="ml-3">
                                 <div class="row text-center">
                                   {{currentPlay.rushingPlay.rushingPlayer.firstName}}
@@ -91,7 +92,7 @@
                                 </div>
                               </div> -->
               </div>
-              <div class="player-data">
+              <div class="player-data" title="Ht: {{currentPlay.rushingPlay.rushingPlayer.height}}&#10;Wt: {{currentPlay.rushingPlay.rushingPlayer.weight}}&#10;Age: {{currentPlay.rushingPlay.rushingPlayer.age}}">
                 <div class="row">
                   {{currentPlay.rushingPlay.rushingPlayer.firstName}}
                   {{currentPlay.rushingPlay.rushingPlayer.lastName}}
@@ -109,22 +110,11 @@
             </div>
             <div *ngIf="currentPlay.playType === 2" class="container row current-play">
               <!-- Passer -->
-              <div class="player-image">
-                <img *ngIf="!currentPlay.passingPlay.passingPlayer.noImageUrl" src={{currentPlay.passingPlay.passingPlayer.officialImageSrc}}
+              <div class="player-image" title="Ht: {{currentPlay.passingPlay.passingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.passingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.passingPlayer.age}}">
+                <img *ngIf="!offlineMode && !currentPlay.passingPlay.passingPlayer.noImageUrl" src={{currentPlay.passingPlay.passingPlayer.officialImageSrc}}
                   class="rounded" />
-                <!-- <div *ngIf="currentPlay.passingPlay.passingPlayer.noImageUrl">
-                                <div class="row text-center">
-                                  {{currentPlay.passingPlay.passingPlayer.firstName}}
-                                </div>
-                                <div class="row text-center">
-                                  {{currentPlay.passingPlay.passingPlayer.lastName}}
-                                </div>
-                                <div class="row text-center">
-                                  (No Image)
-                                </div>
-                              </div> -->
               </div>
-              <div class="player-data">
+              <div class="player-data" title="Ht: {{currentPlay.passingPlay.passingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.passingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.passingPlayer.age}}">
                 <div class="row">
                   {{currentPlay.passingPlay.passingPlayer.firstName}}
                   {{currentPlay.passingPlay.passingPlayer.lastName}}
@@ -143,11 +133,11 @@
                 </div>
               </div>
               <!-- Receiver -->
-              <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-image-2">
-                <img *ngIf="!currentPlay.passingPlay.receivingPlayer.noImageUrl" src={{currentPlay.passingPlay.receivingPlayer.officialImageSrc}}
+              <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-image-2" title="Ht: {{currentPlay.passingPlay.receivingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.receivingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.receivingPlayer.age}}">
+                <img *ngIf="!offlineMode && !currentPlay.passingPlay.receivingPlayer.noImageUrl" src={{currentPlay.passingPlay.receivingPlayer.officialImageSrc}}
                   class="rounded" />
               </div>
-              <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-data d-inline">
+              <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-data d-inline" title="Ht: {{currentPlay.passingPlay.receivingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.receivingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.receivingPlayer.age}}">
                 <div>{{currentPlay.passingPlay.receivingPlayer.firstName}}
                   {{currentPlay.passingPlay.receivingPlayer.lastName}}
                 </div>
@@ -159,9 +149,9 @@
             <div *ngIf="currentPlay.playType === 3" class="container row current-play">
               <!-- Kicker -->
               <div class="player-image">
-                <img src={{currentPlay.kickAttempt.kickingPlayer.officialImageSrc}} class="rounded" />
+                <img *ngIf="!offlineMode && !currentPlay.kickAttempt.kickingPlayer.noImageUrl" src={{currentPlay.kickAttempt.kickingPlayer.officialImageSrc}} class="rounded" />
               </div>
-              <div *ngIf="currentPlay.kickAttempt.kickingPlayer.noImageUrl" class="ml-3">
+              <div *ngIf="!offlineMode && currentPlay.kickAttempt.kickingPlayer.noImageUrl" class="ml-3">
                 <div class="row text-center">
                   {{currentPlay.kickAttempt.kickingPlayer.firstName}}
                 </div>
@@ -211,6 +201,13 @@
         </div>
         <div *ngIf="selectedGame">
           <a href={{selectGameAPIURL}} target="_blank" class="btn">Play JSON</a>
+          <a href={{selectGameGamePassURL}} target="_blank" class="btn">GamePass</a>
+          <button (click)="recordError('Previous Play Missing')" class="btn">Previous Play Missing</button>
+          <button (click)="recordError('Wrong Player')" class="btn">Wrong Player</button>
+          <button (click)="recordError('Incorrect Play Data')" class="btn">Incorrect Play Data</button>
+          <button (click)="recordError('Next Play Missing')" class="btn">Next Play Missing</button>
+          <button (click)="recordError('Player not in ActivePlayers for this game')" class="btn">Not in ActivePlayers</button>
+          <button (click)="recordMyError('My Bug')" class="btn">My Error</button>
         </div>
       </div>
     </div>
@@ -219,13 +216,13 @@
       <!-- Game Header -->
       <div id="gameHeader" class="container-fluid">
         <div id="awayTeam" class="team-header">
-          <div class="crop d-inline">
+          <div *ngIf="!offlineMode" class="crop d-inline">
             <img src='{{awayTeamObject.officialImageSrc}}' class="team-logo" />
           </div>
           {{selectedGame.awayTeam.City}}
         </div>
         <div id="homeTeam" class="team-header">
-          <div class="crop d-inline">
+          <div *ngIf="!offlineMode" class="crop d-inline">
             <img src='{{homeTeamObject.officialImageSrc}}' class="team-logo" />
           </div>
           {{selectedGame.homeTeam.City}}
@@ -841,51 +838,51 @@
       </div>
     </div>
     <!-- Week Ranks -->
-    <div *ngIf="selectedWeek" id="weekRanks" class="">
-      <h5>Week Ranks</h5>
+    <div *ngIf="selectedGame && showRanks" id="weekRanks" class="ranks">
+      <h4>Week Ranks</h4>
       <!-- QBs -->
-      <div *ngIf="showQBWeekRank" class="container-fluid mt-1">
+      <div *ngIf="showQBRank" class="container-fluid mt-1">
         <!-- <div class="row"> -->
-          <table class="table-sm stat-table w-50">
-            <thead class="thead-light">
-              <tr style="border-radius: 5px;">
-                <!-- <th>Rank</th> -->
-                <th colspan="2" class="player-name">QB</th>
-                <th>Pass</th>
-                <th>Rush</th>
-                <th>PaTD</th>
-                <th>TD</th>
-                <!-- <th>TO</th> -->
-                <th>FPts</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let playerStat of this.qbsWatchedThisWeekStats; let i = index" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
-                <!-- <td>{{i + 1}}</td> -->
-                <td colspan="2" class="player-name">{{i + 1}} {{playerStat.player.lastName}}</td>
-                <td>{{playerStat.passYardsNoZero}}</td>
-                <td>{{playerStat.rushYardsNoZero}}</td>
-                <td>{{playerStat.passingTouchdownsNoZero}}</td>
-                <td>{{playerStat.touchdownsNoZero}}</td>
-                <!-- <td>{{playerStat.turnoversNoZero}}</td> -->
-                <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
-              </tr>
-            </tbody>
-          </table>
+        <table class="table-sm stat-table w-50">
+          <thead class="thead-light">
+            <tr style="border-radius: 5px;">
+              <!-- <th>Rank</th> -->
+              <th colspan="2" class="player-name">QB</th>
+              <!-- <th>Pass</th> -->
+              <!-- <th>Rush</th> -->
+              <!-- <th>PaTD</th> -->
+              <!-- <th>TD</th> -->
+              <!-- <th>TO</th> -->
+              <th>FPts</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let playerStat of this.qbsWatchedThisWeekStats; let i = index" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <!-- <td>{{i + 1}}</td> -->
+              <td colspan="2" class="player-name">{{i + 1}} {{playerStat.player.lastName}}</td>
+              <!-- <td>{{playerStat.passYardsNoZero}}</td> -->
+              <!-- <td>{{playerStat.rushYardsNoZero}}</td> -->
+              <!-- <td>{{playerStat.passingTouchdownsNoZero}}</td> -->
+              <!-- <td>{{playerStat.touchdownsNoZero}}</td> -->
+              <!-- <td>{{playerStat.turnoversNoZero}}</td> -->
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+            </tr>
+          </tbody>
+        </table>
         <!-- </div> -->
       </div>
       <!-- RBs -->
-      <div *ngIf="showRBWeekRank" class="container-fluid mt-1">
+      <div *ngIf="showRBRank" class="container-fluid mt-1">
         <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr>
               <!-- <th>Rank</th> -->
               <th colspan="2" class="player-name">RB</th>
-              <th>RuAtt</th>
-              <th>Rush</th>
+              <!-- <th>RuAtt</th>
+              <th>Rush</th> -->
               <!-- <th title="Receptions/Targets">R/T</th> -->
-              <th>Rec</th>
-              <th>TD</th>
+              <!-- <th>Rec</th> -->
+              <!-- <th>TD</th> -->
               <!-- <th>TO</th> -->
               <th>FPts</th>
             </tr>
@@ -894,11 +891,11 @@
             <tr *ngFor="let playerStat of this.rbsWatchedThisWeekStats; let i = index" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
               <!-- <td>{{i + 1}}</td> -->
               <td colspan="2" class="player-name">{{i + 1}} {{playerStat.player.lastName}}</td>
-              <td>{{playerStat.rushAttemptsNoZero}}</td>
-              <td>{{playerStat.rushYardsNoZero}}</td>
+              <!-- <td>{{playerStat.rushAttemptsNoZero}}</td>
+              <td>{{playerStat.rushYardsNoZero}}</td> -->
               <!-- <td>{{playerStat.receptionsTargetsNoZero}}</td> -->
-              <td>{{playerStat.recYardsNoZero}}</td>
-              <td>{{playerStat.touchdownsNoZero}}</td>
+              <!-- <td>{{playerStat.recYardsNoZero}}</td>
+              <td>{{playerStat.touchdownsNoZero}}</td> -->
               <!-- <td>{{playerStat.turnoversNoZero}}</td> -->
               <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
             </tr>
@@ -906,17 +903,17 @@
         </table>
       </div>
       <!-- WRs -->
-      <div *ngIf="showWRWeekRank" class="container-fluid mt-1">
+      <div *ngIf="showWRRank" class="container-fluid mt-1">
         <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr>
               <!-- <th>Rank</th> -->
               <th colspan="2" class="player-name">WR</th>
               <!-- <th title="Receptions/Targets">R/T</th> -->
-              <th>Rec</th>
+              <!-- <th>Rec</th>
               <th>RuAtt</th>
               <th>Rush</th>
-              <th>TD</th>
+              <th>TD</th> -->
               <!-- <th>TO</th> -->
               <th>FPts</th>
             </tr>
@@ -926,10 +923,10 @@
               <!-- <td>{{i + 1}}</td> -->
               <td colspan="2" class="player-name">{{i + 1}} {{playerStat.player.lastName}}</td>
               <!-- <td>{{playerStat.receptionsTargetsNoZero}}</td> -->
-              <td>{{playerStat.recYardsNoZero}}</td>
+              <!-- <td>{{playerStat.recYardsNoZero}}</td>
               <td>{{playerStat.rushAttemptsNoZero}}</td>
               <td>{{playerStat.rushYardsNoZero}}</td>
-              <td>{{playerStat.touchdownsNoZero}}</td>
+              <td>{{playerStat.touchdownsNoZero}}</td> -->
               <!-- <td>{{playerStat.turnoversNoZero}}</td> -->
               <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
             </tr>
@@ -937,17 +934,17 @@
         </table>
       </div>
       <!-- TEs -->
-      <div *ngIf="showTEWeekRank" class="container-fluid mt-1">
+      <div *ngIf="showTERank" class="container-fluid mt-1">
         <table class="table-sm stat-table w-50">
           <thead class="thead-light">
             <tr>
               <!-- <th>Rank</th> -->
               <th colspan="2" class="player-name">TE</th>
               <!-- <th title="Receptions/Targets">R/T</th> -->
-              <th>Rec</th>
+              <!-- <th>Rec</th>
               <th>RuAtt</th>
               <th>Rush</th>
-              <th>TD</th>
+              <th>TD</th> -->
               <!-- <th>TO</th> -->
               <th>FPts</th>
             </tr>
@@ -957,10 +954,10 @@
               <!-- <td>{{i + 1}}</td> -->
               <td colspan="2" class="player-name">{{i + 1}} {{playerStat.player.lastName}}</td>
               <!-- <td>{{playerStat.receptionsTargetsNoZero}}</td> -->
-              <td>{{playerStat.recYardsNoZero}}</td>
+              <!-- <td>{{playerStat.recYardsNoZero}}</td>
               <td>{{playerStat.rushAttemptsNoZero}}</td>
               <td>{{playerStat.rushYardsNoZero}}</td>
-              <td>{{playerStat.touchdownsNoZero}}</td>
+              <td>{{playerStat.touchdownsNoZero}}</td> -->
               <!-- <td>{{playerStat.turnoversNoZero}}</td> -->
               <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
             </tr>
@@ -969,49 +966,143 @@
       </div>
     </div>
     <!-- Season Ranks -->
-    <div *ngIf="this.seasonPlayersStats" id="seasonRanks" class="">
+    <div *ngIf="selectedGame && showRanks && this.seasonPlayersStats" id="seasonRanks" class="ranks">
       <h4>Season Ranks</h4>
-      <div class="container-fluid">
-        <!-- <div class="row"> -->
-          <table class="table-sm stat-table w-60">
-            <thead class="thead-light">
-              <tr style="border-radius: 5px;">
-                <!-- <th></th> -->
-                <th class="full-name">QB</th>
-                <th>Games</th>
-                <!-- <th title="Completions/Pass Attempts">C/PA</th> -->
-                <!-- <th>Pass</th> -->
-                <!-- <th>PaTD</th> -->
-                <!-- <th>RuAtt</th> -->
-                <!-- <th>Rush</th> -->
-                <!-- <th title="Receptions/Targets">R/T</th> -->
-                <!-- <th>Rec</th> -->
-                <!-- <th>TD</th> -->
-                <!-- <th>TO</th> -->
-                <th>FPts</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let playerStat of this.qbsSeasonBoxWithCurrent; let i = index" [ngClass]="{ 'current-game-stat': playerStat.accruedStatsOnLastPlay }">
-                <!-- <td class="rank-column"></td> -->
-                <td class="full-name player-name">{{i + 1}} {{playerStat.player.firstName}}
-                  {{playerStat.player.lastName}}</td>
-                <td>{{playerStat.gamesPlayed}}</td>
-                <!-- <td>{{playerStat.passAttemptsCompletionsNoZero}}</td> -->
-                <!-- <td>{{playerStat.passYardsNoZero}}</td> -->
-                <!-- <td>{{playerStat.passingTouchdownsNoZero}}</td> -->
-                <!-- <td>{{playerStat.rushAttemptsNoZero}}</td> -->
-                <!-- <td>{{playerStat.rushYardsNoZero}}</td> -->
-                <!-- <td>{{playerStat.receptionsTargetsNoZero}}</td> -->
-                <!-- <td>{{playerStat.recYardsNoZero}}</td> -->
-                <!-- <td>{{playerStat.touchdownsNoZero}}</td> -->
-                <!-- <td>{{playerStat.turnoversNoZero}}</td> -->
-                <td>{{playerStat.fantasyPoints}}</td>
-              </tr>
-            </tbody>
-          </table>
-        <!-- </div> -->
+      <div *ngIf="showQBRank" class="container-fluid">
+        <table class="table-sm stat-table w-60">
+          <thead class="thead-light">
+            <tr style="border-radius: 5px;">
+              <th class="full-name">QB</th>
+              <th>G</th>
+              <th>FP</th>
+              <th>FP/G</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let playerStat of this.qbsSeasonBoxWithCurrent; let i = index" [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <!-- <td class="rank-column"></td> -->
+              <td class="player-name" title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
+                {{i + 1}} {{playerStat.player.lastName}}
+              </td>
+              <td>{{playerStat.gamesPlayed}}</td>
+              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.pointsPerGame}}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+      <div *ngIf="showRBRank" class="container-fluid">
+        <table class="table-sm stat-table w-60">
+          <thead class="thead-light">
+            <tr style="border-radius: 5px;">
+              <th>RB</th>
+              <th>G</th>
+              <th>FP</th>
+              <th>FP/G</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let playerStat of this.rbsSeasonBoxWithCurrent; let i = index" [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <td class="player-name" title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
+                {{i + 1}} {{playerStat.player.lastName}}
+              </td>
+              <td>{{playerStat.gamesPlayed}}</td>
+              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.pointsPerGame}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="showWRRank" class="container-fluid">
+        <table class="table-sm stat-table w-60">
+          <thead class="thead-light">
+            <tr style="border-radius: 5px;">
+              <th>WR</th>
+              <th>G</th>
+              <th>FP</th>
+              <th>FP/G</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let playerStat of this.wrsSeasonBoxWithCurrent; let i = index" [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <td class="player-name" title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
+                {{i + 1}} {{playerStat.player.lastName}}
+              </td>
+              <td>{{playerStat.gamesPlayed}}</td>
+              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.pointsPerGame}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="showTERank" class="container-fluid">
+        <table class="table-sm stat-table w-60">
+          <thead class="thead-light">
+            <tr style="border-radius: 5px;">
+              <th>TE</th>
+              <th>G</th>
+              <th>FP</th>
+              <th>FP/G</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let playerStat of this.tesSeasonBoxWithCurrent; let i = index" [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <td class="player-name" title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
+                {{i + 1}} {{playerStat.player.lastName}}
+              </td>
+              <td>{{playerStat.gamesPlayed}}</td>
+              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.pointsPerGame}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="mySportsFeedsErrors.mySportsFeedsErrors.length > 0" class="row">
+    <div class="container-fluid">
+      <h4>mySportsFeeds Errors</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Week</th>
+            <th>Game</th>
+            <th>Play</th>
+            <th>Error</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let err of mySportsFeedsErrors.mySportsFeedsErrors">
+            <td>Week {{err.week}}</td>
+            <td>{{err.gameId}}</td>
+            <td>{{err.playQuarterAndTime}}</td>
+            <td>{{err.error}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div *ngIf="myBugs.mySportsFeedsErrors.length > 0" class="row">
+    <div class="container-fluid">
+      <h4>Data DVR Errors</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Week</th>
+            <th>Game</th>
+            <th>Play</th>
+            <!-- <th>Error</th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let err of myBugs.mySportsFeedsErrors">
+            <td>Week {{err.week}}</td>
+            <td>{{err.gameId}}</td>
+            <td>{{err.playQuarterAndTime}}</td>
+            <!-- <td>{{err.error}}</td> -->
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

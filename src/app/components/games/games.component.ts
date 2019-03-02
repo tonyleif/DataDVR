@@ -20,6 +20,9 @@ import { $ } from 'protractor';
 import { jsonpFactory } from '@angular/http/src/http_module';
 import { debug } from 'util';
 import { SeasonPlayersStats } from '../../model/SeasonPlayersStats';
+import { MySportsFeedsErrors } from '../../model/MySportsFeedsErrors';
+import { MySportsFeedsError } from '../../model/MySportsFeedsError';
+import { ErrorListType } from '../../model/MySportsFeedsErrors';
 
 @Component({
   selector: 'app-games',
@@ -63,10 +66,12 @@ export class GamesComponent implements OnInit {
   wrsWatchedThisWeekStats: Array<PlayerStats> = [];
   tesWatchedThisWeekStats: Array<PlayerStats> = [];
   seasonPlayersStats: SeasonPlayersStats = new SeasonPlayersStats();
-  showQBWeekRank: boolean;
-  showRBWeekRank: boolean;
-  showWRWeekRank: boolean;
-  showTEWeekRank: boolean;
+  showQBRank: boolean;
+  showRBRank: boolean;
+  showWRRank: boolean;
+  showTERank: boolean;
+  mySportsFeedsErrors: MySportsFeedsErrors;
+  myBugs: MySportsFeedsErrors;
 
   constructor(private gamesService: RegularSeasonGames2017Service,
     private playsService: RegularSeasonPlays2017Service,
@@ -91,6 +96,11 @@ export class GamesComponent implements OnInit {
 
   ngOnInit() {
     this.loadSchedule();
+    const jsonMySportsFeedsErrors = JSON.parse(localStorage.getItem(ErrorListType.MySportsFeedsErrors));
+    this.mySportsFeedsErrors = new MySportsFeedsErrors(jsonMySportsFeedsErrors, ErrorListType.MySportsFeedsErrors);
+
+    const jsonMyBugs = JSON.parse(localStorage.getItem(ErrorListType.MyBugs));
+    this.myBugs = new MySportsFeedsErrors(jsonMyBugs, ErrorListType.MyBugs);
     // this.seasonPlayersStats = new SeasonPlayersStats();
     // this.loadPlayers();
   }
@@ -205,14 +215,15 @@ export class GamesComponent implements OnInit {
         this.loadBoxScore();
       }
     }
-    // if (this._selectedGame) {
-    //   const team: Team = this.awayTeamObject;
-    // }
   }
 
   set selectedGameId(id: number) {
     // console.log('selectedGameId ' + id);
     if (!this._selectedGame || (this._selectedGame.id !== id)) {
+      // Clean local data
+      if (this.currentPlayersStats) {
+        this.currentPlayersStats.clear();
+      }
       // Clean out old games from LocalStorage
       if (!this.offlineMode) {
         for (let i = 0; i < localStorage.length; i++) {
@@ -285,9 +296,10 @@ export class GamesComponent implements OnInit {
     // the observable subscription
     if (this.offlineMode) {
       // console.log(this.offlineMode);
-      const playerArray = JSON.parse(localStorage.getItem(
+      const activePlayersJSON = JSON.parse(localStorage.getItem(
         'activeplayers' + this.awayTeamObject.Abbreviation + '-' + this.homeTeamObject.Abbreviation));
       // console.log(JSON.stringify(playerArray));
+      const playerArray = activePlayersJSON.activeplayers.playerentry;
       for (let i = 0; i < playerArray.length; i++) {
         const player = new Player(playerArray[i]);
         this.players.push(player);
@@ -307,11 +319,9 @@ export class GamesComponent implements OnInit {
   }
 
   getPlayer(id: number): Player {
-    for (let i = 0; i < this.players.length; i++) {
-      // console.log(JSON.stringify(this.players[i]));
-      if (this.players[i].id === id) {
-        return this.players[i];
-      }
+    const player = this.players.filter(p => p.id === id)[0];
+    if (player != null) {
+      return player;
     }
     return null;
   }
@@ -375,15 +385,24 @@ export class GamesComponent implements OnInit {
     if (this._currentPlay) {
       switch (this._currentPlay.playType) {
         case PlayType.KickingPlay:
-          const kickingPlayer = this.getPlayer(this._currentPlay.json.kickingPlay.kickingPlayer.ID);
+          let kickingPlayer = this.getPlayer(this._currentPlay.json.kickingPlay.kickingPlayer.ID);
+          if (!kickingPlayer) {
+            kickingPlayer = new Player(this._currentPlay.json.kickingPlay.kickingPlayer);
+          }
           this._currentPlay.kickingPlay.kickingPlayer = kickingPlayer;
           break;
         case PlayType.RushingPlay:
-          const rushingPlayer = this.getPlayer(this._currentPlay.json.rushingPlay.rushingPlayer.ID);
+          let rushingPlayer = this.getPlayer(this._currentPlay.json.rushingPlay.rushingPlayer.ID);
+          if (!rushingPlayer) {
+            rushingPlayer = new Player(this._currentPlay.json.rushingPlay.rushingPlayer);
+          }
           this._currentPlay.rushingPlay.rushingPlayer = rushingPlayer;
           break;
         case PlayType.PassingPlay:
-          const passingPlayer = this.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
+          let passingPlayer = this.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
+          if (!passingPlayer) {
+            passingPlayer = new Player(this._currentPlay.json.passingPlay.passingPlayer);
+          }
           this._currentPlay.passingPlay.passingPlayer = passingPlayer;
           if (this._currentPlay.json.passingPlay.receivingPlayer) {
             const receivingPlayer = this.getPlayer(this._currentPlay.json.passingPlay.receivingPlayer.ID);
@@ -391,11 +410,17 @@ export class GamesComponent implements OnInit {
           }
           break;
         case PlayType.KickAttempt:
-          const kicker = this.getPlayer(this._currentPlay.json.kickAttempt.kickingPlayer.ID);
+          let kicker = this.getPlayer(this._currentPlay.json.kickAttempt.kickingPlayer.ID);
+          if (!kicker) {
+            kicker = new Player(this._currentPlay.json.kickAttempt.kickingPlayer);
+          }
           this._currentPlay.kickAttempt.kickingPlayer = kicker;
           break;
         case PlayType.LateralPass:
-          const lateralPassingPlayer = this.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
+          let lateralPassingPlayer = this.getPlayer(this._currentPlay.json.passingPlay.passingPlayer.ID);
+          if (!lateralPassingPlayer) {
+            lateralPassingPlayer = new Player(this._currentPlay.json.passingPlay.passingPlayer);
+          }
           this._currentPlay.lateralPass.passingPlayer = passingPlayer;
           if (this._currentPlay.json.passingPlay.receivingPlayer) {
             const lateralReceivingPlayer = this.getPlayer(this._currentPlay.json.passingPlay.receivingPlayer.ID);
@@ -413,7 +438,7 @@ export class GamesComponent implements OnInit {
   }
 
   get hasPlayersStats(): boolean {
-    return (this.currentPlayIndex >= 0); // (this.currentPlayersStats != null);
+    return (this.currentPlayIndex >= 0);
   }
 
   get onePlayAhead(): Play {
@@ -515,27 +540,26 @@ export class GamesComponent implements OnInit {
       GamesComponent.sortByFantasyPoints(this.rbsWatchedThisWeekStats);
       GamesComponent.sortByFantasyPoints(this.wrsWatchedThisWeekStats);
       GamesComponent.sortByFantasyPoints(this.tesWatchedThisWeekStats);
-      this.showQBWeekRank = false;
-      this.showRBWeekRank = false;
-      this.showWRWeekRank = false;
-      this.showTEWeekRank = false;
+      this.showQBRank = false;
+      this.showRBRank = false;
+      this.showWRRank = false;
+      this.showTERank = false;
       playersStats.lastPlayPlayerStats.forEach(ps => {
         switch (ps.player.position) {
           case 'QB':
-            this.showQBWeekRank = true;
+            this.showQBRank = true;
             break;
           case 'RB':
           case 'FB':
-            this.showRBWeekRank = true;
+            this.showRBRank = true;
             break;
           case 'WR':
-            this.showWRWeekRank = true;
+            this.showWRRank = true;
             break;
           case 'TE':
-            this.showTEWeekRank = true;
+            this.showTERank = true;
             break;
         }
-
       });
       return playersStats;
     }
@@ -635,6 +659,17 @@ export class GamesComponent implements OnInit {
     return 'https://api.mysportsfeeds.com/v1.2/pull/nfl/2018-regular/game_playbyplay.json?gameid=' + this._selectedGame.gameid;
   }
 
+  get selectGameGamePassURL() {
+    // Example: 'https://gamepass.nfl.com/game/falcons-at-eagles-on-09062018?condensed=true';
+    let url = 'https://gamepass.nfl.com/game/';
+    url += this.awayTeamObject.Name + '-at-' + this.homeTeamObject.Name;
+    let urlDateString: string;
+    const dateAsString = this._selectedGame.date.toString();
+    urlDateString = dateAsString.substr(5, 2) + dateAsString.substr(8, 2) + dateAsString.substr(0, 4);
+    url += '-on-' + urlDateString + '?condensed=true';
+    return url;
+  }
+
   playerStatsCheckOut(player: Player, teamAbbr: string): boolean {
     const playerBox: PlayerStats = this.boxScore.findPlayerStats(player, teamAbbr);
     const playerStats = PlayersStats.findPlayerStats(player, teamAbbr, this.currentPlayersStats.playersStats);
@@ -660,15 +695,45 @@ export class GamesComponent implements OnInit {
   }
 
   get qbsSeasonBoxWithCurrent(): Array<PlayerStats> {
-    // const allQbsStats = new Set<PlayerStats>(this.seasonPlayersStats.playersStats);
-    // playersStats.q .forEach(allQbsStats.add, allQbsStats);
-    // if (this.selectedGame.watched) {
-    //   return this.seasonPlayersStats.qbsSeasonStats(this.currentPlayersStats, false);
-    // } else {
-    //   return this.seasonPlayersStats.qbsSeasonStats(this.currentPlayersStats, true);
-    // }
-    const allQbsStats = this.seasonPlayersStats.qbsSeasonStats(this.currentPlayersStats, !this.selectedGame.watched);
-    return allQbsStats;
+    const allQBsStats = this.seasonPlayersStats.qbsSeasonStats(this.currentPlayersStats, !this.selectedGame.watched);
+    return allQBsStats;
+  }
+
+  get rbsSeasonBoxWithCurrent(): Array<PlayerStats> {
+    const allRBsStats = this.seasonPlayersStats.rbsSeasonStats(this.currentPlayersStats, !this.selectedGame.watched);
+    return allRBsStats;
+  }
+
+  get wrsSeasonBoxWithCurrent(): Array<PlayerStats> {
+    const allWRsStats = this.seasonPlayersStats.wrsSeasonStats(this.currentPlayersStats, !this.selectedGame.watched);
+    return allWRsStats;
+  }
+
+  get tesSeasonBoxWithCurrent(): Array<PlayerStats> {
+    const allTEsStats = this.seasonPlayersStats.tesSeasonStats(this.currentPlayersStats, !this.selectedGame.watched);
+    return allTEsStats;
+  }
+
+  get showRanks(): boolean {
+    return this.showQBRank || this.showRBRank || this.showWRRank || this.showTERank;
+  }
+
+  recordError(errDescription: string) {
+    const err = new MySportsFeedsError(null);
+    err.week = this.selectedWeek;
+    err.gameId = this.selectedGame.gameid;
+    err.playQuarterAndTime = 'Q' + this.currentPlay.quarter + ' ' + this.currentPlay.clock + ' ' + this.currentPlay.downAndDistance;
+    err.error = errDescription;
+    this.mySportsFeedsErrors.addError(err);
+  }
+
+  recordMyError(errDescription: string) {
+    const err = new MySportsFeedsError(null);
+    err.week = this.selectedWeek;
+    err.gameId = this.selectedGame.gameid;
+    err.playQuarterAndTime = 'Q' + this.currentPlay.quarter + ' ' + this.currentPlay.clock + ' ' + this.currentPlay.downAndDistance;
+    err.error = errDescription;
+    this.myBugs.addError(err);
   }
 
 }

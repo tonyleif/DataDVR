@@ -15,20 +15,38 @@ export class RegularSeasonActivePlayers2017Service {
       btoa('tonyleif:00password'));
   }
 
-  getActivePlayersFromAPI(): Observable<string> {
+  // getActivePlayersFromAPI(): Observable<string> {
+  //   const headers = new Headers();
+  //   this.createAuthorizationHeader(headers);
+  //   return this.http
+  //     .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/2018-regular/active_players.json', { headers: headers })
+  //     .map((res: Response) => {
+  //       localStorage.activeplayers = JSON.stringify(res.json());
+  //       const allPlayers: Array<string> = res.json().activeplayers.playerentry;
+  //       let playerObject: any;
+  //       for (let i = 0; i < allPlayers.length; i++) {
+  //         playerObject = allPlayers[i];
+  //         localStorage.setItem(playerObject.player.ID + 'ap', JSON.stringify(playerObject.player));
+  //       }
+  //       return res.json();
+  //     });
+  // }
+
+  getActivePlayersFromAPI(): Observable<Player[]> {
     const headers = new Headers();
-    this.createAuthorizationHeader(headers);
+    this.createAuthorizationHeader(headers); // &position=qb,rb,fb,wr,te,k,p
     return this.http
-      .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/2018-regular/active_players.json', { headers: headers })
+      .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/latest/active_players.json?position=qb,rb,fb,wr,te', { headers: headers })
       .map((res: Response) => {
-        localStorage.activeplayers = JSON.stringify(res.json());
+        const playerArray: Player[] = new Array<Player>();
         const allPlayers: Array<string> = res.json().activeplayers.playerentry;
         let playerObject: any;
         for (let i = 0; i < allPlayers.length; i++) {
           playerObject = allPlayers[i];
-          localStorage.setItem(playerObject.player.ID + 'ap', JSON.stringify(playerObject.player));
+          const player = new Player(playerObject.player);
+          playerArray.push(player);
         }
-        return res.json();
+        return playerArray;
       });
   }
 
@@ -38,8 +56,7 @@ export class RegularSeasonActivePlayers2017Service {
     const headers = new Headers();
     this.createAuthorizationHeader(headers); // &position=qb,rb,fb,wr,te,k,p
     return this.http
-      .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/latest/active_players.json?team=' + awayTeam + ',' + homeTeam +
-        ',la', { headers: headers })
+      .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/latest/active_players.json?team=' + awayTeam + ',' + homeTeam, { headers: headers })
       .map((res: Response) => {
         // localStorage.activeplayers = JSON.stringify(res.json());
         localStorage.setItem('activeplayers' + awayTeam + '-' + homeTeam, JSON.stringify(res.json()));

@@ -245,10 +245,10 @@ select.btn-primary option {
     to {background-color: #45B85E;} 
     }
 
-@keyframes highlightBlue {
+/* @keyframes highlightBlue {
     from {background-color: white }
     to {background-color: #007bff;} 
-    }
+    } */
 
 .last-play-stat {
     animation: highlight 1s ease-out;
@@ -261,9 +261,9 @@ select.btn-primary option {
 }
 
 .current-game-stat {
-    animation: highlightBlue 1s ease-out;
-    color: white;
-    background-color: #007bff;
+    /* animation: highlightBlue 1s ease-out; */
+    color: #007bff;
+    /* background-color: #007bff; */
 }
 
 .stat-error {
@@ -293,14 +293,32 @@ td.rank-column {
 }
 
 #gameStats {
-    width: 35em;
+    width: 37em;
     margin-left: 1em;
 }
 
-#weekRanks {
-    /* margin-left: 1em; */
+.ranks h4 {
+    font-weight: 400;
+    margin-top: .2em;
+    margin-bottom: .4em;
+    margin-left: .5em;
+}
+
+.ranks>div {
+    padding-left: .5em;
+    padding-right: 0;
+}
+
+.ranks table {
+    display: inline-block;
+}
+
+#weekRanks{
+    width: 18em;
+    font-size: .65em;
 }
 
 #seasonRanks {
-
+    width: 20em;
+    font-size: .65em;
 }
