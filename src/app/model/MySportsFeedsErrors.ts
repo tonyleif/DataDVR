@@ -21,6 +21,12 @@ export class MySportsFeedsErrors {
         this.saveToLocalStorage();
     }
 
+    removeError(err: MySportsFeedsError) {
+        const index = this.mySportsFeedsErrors.indexOf(err);
+        this.mySportsFeedsErrors.splice(index, 1);
+        this.saveToLocalStorage();
+    }
+
     // Save to localStorage
     saveToLocalStorage() {
         localStorage.setItem(this.errorListType, JSON.stringify(this));

@@ -736,4 +736,8 @@ export class GamesComponent implements OnInit {
     this.myBugs.addError(err);
   }
 
+  deleteError(err: MySportsFeedsError) {
+    this.myBugs.removeError(err);
+  }
+
 }

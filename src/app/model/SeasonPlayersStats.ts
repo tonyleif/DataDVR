@@ -6,8 +6,6 @@ import { GameBoxScore } from './GameBoxScore';
 import { PlayersStats } from './PlayersStats';
 import { GamesComponent } from '../components/games/games.component';
 
-
-
 export class SeasonPlayersStats {
     // json: string;
     playersStats: Array<PlayerStats>;

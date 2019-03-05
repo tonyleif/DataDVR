@@ -51,7 +51,7 @@ export const TEAMS: Team[] = [
     'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/TB.svg'},
 {'ID': 72, 'City': 'Denver', 'Name': 'Broncos', 'Abbreviation': 'DEN',
     'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/DEN.svg'},
-{'ID': 73, 'City': 'Kansas City', 'Name': 'Cheifs', 'Abbreviation': 'KC',
+{'ID': 73, 'City': 'Kansas City', 'Name': 'Chiefs', 'Abbreviation': 'KC',
     'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/KC.svg'},
 {'ID': 74, 'City': 'Oakland', 'Name': 'Raiders', 'Abbreviation': 'OAK',
     'officialImageSrc': 'https://static.nfl.com/static/content/public/static/wildcat/assets/img/logos/teams/OAK.svg'},

@@ -521,7 +521,7 @@
                 <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.interceptionsNoZero}}</td>
                 <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.touchDownsNoZero}}</td>
                 <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.blockedKicksNoZero}}</td>
-                <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.safetieNoZero}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.safetiesNoZero}}</td>
                 <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.twoPointConversionReturnsNoZero}}</td>
                 <td class="one-dig" [ngClass]="{ 'text-success': !this.currentPlayersStats.awayDSTStats.accruedStatsOnLastPlay }">{{this.currentPlayersStats.awayDSTStats.fantasyPoints}}</td>
               </tr>
@@ -549,7 +549,7 @@
                 <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.interceptionsNoZero}}</td>
                 <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.touchDownsNoZero}}</td>
                 <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.blockedKicksNoZero}}</td>
-                <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.safetieNoZero}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.safetiesNoZero}}</td>
                 <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.twoPointConversionReturnsNoZero}}</td>
                 <td class="one-dig" [ngClass]="{ 'text-success': !this.currentPlayersStats.homeDSTStats.accruedStatsOnLastPlay }">{{this.currentPlayersStats.homeDSTStats.fantasyPoints}}</td>
               </tr>
@@ -1091,6 +1091,7 @@
             <th>Week</th>
             <th>Game</th>
             <th>Play</th>
+            <th></th>
             <!-- <th>Error</th> -->
           </tr>
         </thead>
@@ -1099,6 +1100,7 @@
             <td>Week {{err.week}}</td>
             <td>{{err.gameId}}</td>
             <td>{{err.playQuarterAndTime}}</td>
+            <td><button (click)="deleteError(err)" class="btn btn-danger">Delete</button></td>
             <!-- <td>{{err.error}}</td> -->
           </tr>
         </tbody>

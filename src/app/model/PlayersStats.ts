@@ -199,9 +199,6 @@ export class PlayersStats {
                                 // DST
                                 if (passingPlay.intercepted) {
                                     // Passing player
-                                    // currentPlayerStats = PlayersStats.findPlayerStats(
-                                    //     p.passingPlay.passingPlayer, p.passingPlay.teamAbbreviation, tempPlayersStats);
-                                    // currentPlayerStats.passingInterceptions += 1;
                                     passingPlayerPlayerStats.passingInterceptions++;
                                     if (passingPlay.teamAbbreviation === awayTeamAbbr) {
                                         homeDSTStatsLocal.interceptions += 1;
@@ -221,6 +218,16 @@ export class PlayersStats {
                                         }
                                     }
                                 }
+                            }
+                            if (passingPlay.stoppedAtPosition && passingPlay.stoppedAtPosition.yardLine === 0
+                                && p.description.search('SAFETY')) {
+                                let defenseTeamStats: DefenseSepecialTeamsStats;
+                                if (passingPlay.teamAbbreviation === awayTeamAbbr) {
+                                    defenseTeamStats = homeDSTStatsLocal;
+                                } else {
+                                    defenseTeamStats = awayDSTStatsLocal;
+                                }
+                                defenseTeamStats.safeties++;
                             }
                         }
                         break;
@@ -347,6 +354,17 @@ export class PlayersStats {
                                     currentPlayerStats.accruedStatsOnLastPlay = true;
                                     tempLastPlayPlayerStats.add(currentPlayerStats);
                                 }
+                            }
+                            if (rushingPlay.stoppedAtPosition && rushingPlay.stoppedAtPosition.yardLine == 0
+                                && p.description.search('SAFETY') > -1) {
+                                let defenseTeamStats: DefenseSepecialTeamsStats;
+                                if (rushingPlay.teamAbbreviation === awayTeamAbbr) {
+                                    defenseTeamStats = homeDSTStatsLocal;
+                                } else {
+                                    defenseTeamStats = awayDSTStatsLocal;
+                                }
+                                defenseTeamStats.safeties++;
+                                defenseTeamStats.accruedStatsOnLastPlay = mostRecentPlay;
                             }
                         }
 

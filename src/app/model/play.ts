@@ -169,6 +169,7 @@ export class RushingPlay {
     isTwoPointConversion: boolean;
     isNoPlay: boolean;
     subPlays: any[];
+    stoppedAtPosition: LineOfScrimmage;
 
     constructor(json, lineOfScrimmage: FieldPosition) {
         this.teamAbbreviation = json.teamAbbreviation;
@@ -176,6 +177,9 @@ export class RushingPlay {
         this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
         this.isTwoPointConversion = (json.isTwoPointConversion === 'true');
         this.isNoPlay = (json.isNoPlay === 'true');
+        if (json.stoppedAtPosition) {
+            this.stoppedAtPosition = new LineOfScrimmage(json.stoppedAtPosition);
+        }
         if (!json.rushingPlayer) {
             console.log('No rushing player');
         }
@@ -233,6 +237,7 @@ export class PassingPlay {
     penalties: Penalty[];
     receivedAtPosition: FieldPosition;
     lineOfScrimmage: FieldPosition;
+    stoppedAtPosition: LineOfScrimmage;
 
     constructor(json, lineOfScrim: FieldPosition) {
         this.json = json;
@@ -242,20 +247,10 @@ export class PassingPlay {
         this.isEndedWithTouchdown = (json.isEndedWithTouchdown === 'true');
         this.isTwoPointConversion = (json.isTwoPointConversion === 'true');
         this.isNoPlay = (json.isNoPlay === 'true');
-        // console.log(this.teamAbbreviation);
-        // if (this.teamAbbreviation === 'BUF') {
-        //     console.log(json);
-        // }
         if (json.passingPlayer != null) {
-            // console.log(json.passingPlayer);
             this.passingPlayer = new Player(json.passingPlayer);
-            // console.log(JSON.stringify(this.passingPlayer));
         }
         if (json.receivingPlayer != null) {
-            // console.log(json.receivingPlayer);
-            // if (json.receivingPlayer.FirstName === 'Deontay') {
-            //     console.log('making Deontay');
-            // }
             this.receivingPlayer = new Player(json.receivingPlayer);
         }
         this.intercepted = (json.interceptingPlayer != null);
@@ -278,6 +273,9 @@ export class PassingPlay {
             this.receivedAtPosition = new FieldPosition(json.receivedAtPosition);
         }
         this.lineOfScrimmage = lineOfScrim;
+        if (json.stoppedAtPosition) {
+            this.stoppedAtPosition = new LineOfScrimmage(json.stoppedAtPosition);
+        }
     }
 
     get noReceivingPlayer(): boolean {
