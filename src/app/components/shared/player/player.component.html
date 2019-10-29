@@ -1,0 +1,39 @@
+<div class="player">
+  <div *ngIf="!offlineMode && player && !player.noImageUrl" class="player-image">
+    <img [src]="player.officialImageSrc" class="rounded" />
+  </div>
+  <div class="row data-row">
+    <div class="container-fluid">
+      <strong>#{{player.jerseyNumber}}</strong>
+    </div>
+  </div>
+  <div class="row data-row">
+    <div class="container-fluid">
+      {{player.firstName}} {{player.lastName}}
+    </div>
+  </div>
+  <div class="row data-row">
+    <div class="col-3">
+      <label>Ht</label>
+    </div>
+    <div class="col-9">
+      {{player.height}}
+    </div>
+  </div>
+  <div class="row data-row">
+    <div class="col-3">
+      <label>Wt</label>
+    </div>
+    <div class="col-9">
+      {{player.weight}}
+    </div>
+  </div>
+  <div class="row data-row">
+    <div class="col-3">
+      <label>Age</label>
+    </div>
+    <div class="col-9">
+      {{player.age}}
+    </div>
+  </div>
+</div>

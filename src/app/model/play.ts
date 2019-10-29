@@ -262,7 +262,7 @@ export class PassingPlay {
             }
         }
         this.penalties = new Array<Penalty>();
-        if (json.penalties && json.penalties.length > 0) {
+        if (json.penalties && (json.penalties.penalty && json.penalties.penalty.length > 0)) {
             const penaltiesRef: Penalty[] = this.penalties;
             json.penalties.penalty.forEach(penalty => {
                 const pen = new Penalty(penalty);
@@ -297,11 +297,11 @@ export class PassingPlay {
         }
     }
 
-    get holdingSpotFoul(): Penalty {
+    get blockingSpotFoul(): Penalty {
         let pen: Penalty = null;
         this.penalties.forEach(penalty => {
-            if (penalty.description === 'Offensive Holding' && !penalty.isCancelsPlay
-                && penalty.yardsPenalized > 0 && penalty.enforcedAtPosition !== null) {
+            if ((penalty.description === 'Offensive Holding' || penalty.description === 'Illegal Block Above the Waist')
+            && !penalty.isCancelsPlay && penalty.yardsPenalized > 0 && penalty.enforcedAtPosition !== null) {
                 // console.log('holding penalty spot foul, penalty.enforcedAtPosition: ' + JSON.stringify(penalty.enforcedAtPosition));
                 pen = penalty;
                 return penalty;
@@ -311,12 +311,12 @@ export class PassingPlay {
     }
 
     get statYards(): number {
-        if (this.holdingSpotFoul != null) {
+        if (this.blockingSpotFoul != null) {
             // console.log(this.holdingSpotFoul.description);
-            if (this.holdingSpotFoul.enforcedAtPosition.team === this.lineOfScrimmage.team) {
-                return +this.holdingSpotFoul.enforcedAtPosition.yardLine - +this.lineOfScrimmage.yardLine;
+            if (this.blockingSpotFoul.enforcedAtPosition.team === this.lineOfScrimmage.team) {
+                return +this.blockingSpotFoul.enforcedAtPosition.yardLine - +this.lineOfScrimmage.yardLine;
             } else {
-                return 100 - +this.holdingSpotFoul.enforcedAtPosition.yardLine - +this.lineOfScrimmage.yardLine;
+                return 100 - +this.blockingSpotFoul.enforcedAtPosition.yardLine - +this.lineOfScrimmage.yardLine;
             }
         } else {
             return this.totalYardsGained;

@@ -154,6 +154,7 @@ export class PlayerStats {
         // general
         fantasyPointsTally += this.touchdowns * 6;
         fantasyPointsTally += this.twoPointConversions * 2;
+        fantasyPointsTally += this.fumblesLost * -1;
         // passing
         fantasyPointsTally += this.passingYards * .04;
         fantasyPointsTally += this.passingTouchdowns * 4;
@@ -282,9 +283,6 @@ export class PlayerStats {
 
     get pointsPerGame(): number {
         let ppg: number;
-        // if (this.gamesPlayed > 1) {
-        //     alert('gamesPlayed > 1');
-        // }
         if (this.currentGameStats && this.currentGameStats.fantasyPoints) {
             ppg = (this.fantasyPoints + this.currentGameStats.fantasyPoints) / (this.gamesPlayed + 1);
         } else {

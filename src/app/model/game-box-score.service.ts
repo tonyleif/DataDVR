@@ -4,7 +4,9 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { GameBoxScore } from './GameBoxScore';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class GameBoxScoreService {
 
   constructor(private http: Http) { }
@@ -15,7 +17,7 @@ export class GameBoxScoreService {
   }
 
   getBoxScoreFromAPI(gameid: string): Observable<string> {
-    const getUrl: string = 'https://api.mysportsfeeds.com/v1.2/pull/nfl/2018-regular/game_boxscore.json?' +
+    const getUrl: string = 'https://api.mysportsfeeds.com/v1.2/pull/nfl/2019-regular/game_boxscore.json?' +
     'playerstats=Att,Yds,TD,Int,Fum,Fumbles,Lost,OppRec&' +
     'gameid=' + gameid;
     const headers = new Headers();

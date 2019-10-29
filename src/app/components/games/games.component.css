@@ -262,8 +262,10 @@ select.btn-primary option {
 
 .current-game-stat {
     /* animation: highlightBlue 1s ease-out; */
-    color: #007bff;
+    /* color: #007bff; */
     /* background-color: #007bff; */
+    background-color: #6c757d;
+    color: white;
 }
 
 .stat-error {
@@ -288,12 +290,12 @@ td.rank-column {
 }
 
 #plays {
-    width: 24em;
+    width: 20em;
     margin-left: 1em;
 }
 
 #gameStats {
-    width: 37em;
+    width: 40em;
     margin-left: 1em;
 }
 
@@ -319,6 +321,6 @@ td.rank-column {
 }
 
 #seasonRanks {
-    width: 20em;
+    width: 29em;
     font-size: .65em;
 }

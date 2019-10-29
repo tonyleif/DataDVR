@@ -5,7 +5,9 @@ import 'rxjs/add/operator/map';
 import { Player } from './Player';
 import { Play } from './Play';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class RegularSeasonActivePlayers2017Service {
 
   constructor(private http: Http) { }

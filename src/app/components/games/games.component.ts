@@ -60,7 +60,6 @@ export class GamesComponent implements OnInit {
   updated: boolean;
   _goToValue: string;
   currentPlayersStats: PlayersStats;
-  // qbsWatchedStats: Array<PlayerStats> = [];
   qbsWatchedThisWeekStats: Array<PlayerStats> = [];
   rbsWatchedThisWeekStats: Array<PlayerStats> = [];
   wrsWatchedThisWeekStats: Array<PlayerStats> = [];
@@ -92,6 +91,15 @@ export class GamesComponent implements OnInit {
         return 1;
       }
     });
+  }
+
+  static deleteBoxScoresFromStorage() {
+    for (let i = 0; i < localStorage.length; i++) {
+      if (localStorage.key(i).substring(0, 8) === 'boxscore') {
+        localStorage.removeItem(localStorage.key(i));
+        i--;
+      }
+    }
   }
 
   ngOnInit() {
@@ -126,6 +134,12 @@ export class GamesComponent implements OnInit {
   }
 
   set selectedWeek(weekNumber: number) {
+    let lastSelectedWeek: number = Number(localStorage.getItem('selectedWeek'));
+    if (!lastSelectedWeek || lastSelectedWeek !== weekNumber) {
+      GamesComponent.deleteBoxScoresFromStorage();
+      lastSelectedWeek = weekNumber;
+    }
+    localStorage.setItem('selectedWeek', weekNumber.toString());
     if (this._selectedWeek !== weekNumber) {
       this.selectedGame = null;
       // this updates the original array so the reference is not lost per
@@ -218,33 +232,40 @@ export class GamesComponent implements OnInit {
   }
 
   set selectedGameId(id: number) {
-    // console.log('selectedGameId ' + id);
-    if (!this._selectedGame || (this._selectedGame.id !== id)) {
-      // Clean local data
-      if (this.currentPlayersStats) {
-        this.currentPlayersStats.clear();
-      }
-      // Clean out old games from LocalStorage
-      if (!this.offlineMode) {
-        for (let i = 0; i < localStorage.length; i++) {
-          if (localStorage.key(i).substring(0, 4) === 'game' || localStorage.key(i).substring(0, 13) === 'activeplayers') {
-            localStorage.removeItem(localStorage.key(i));
+    console.log('selectedGameId ' + id);
+    if (id == 0) {
+      console.log('(id == 0)');
+      this._selectedGame = null;
+      console.log(this._selectedGame);
+    } else {
+      if (!this._selectedGame || (this._selectedGame.id !== id)) {
+        // Clean local data
+        if (this.currentPlayersStats) {
+          this.currentPlayersStats.clear();
+        }
+        // Clean out old games from LocalStorage
+        if (!this.offlineMode) {
+          for (let i = 0; i < localStorage.length; i++) {
+            if (localStorage.key(i).substring(0, 4) === 'game' || localStorage.key(i).substring(0, 13) === 'activeplayers') {
+              localStorage.removeItem(localStorage.key(i));
+            }
           }
         }
+        // this updates the original array so the reference is not lost per
+        // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
+        this._selectedGame = new Game(this.gamesService.getGame(id));
+        this.currentPlayIndex = -1;
+        if (id !== null) {
+          this.loadPlayerArray();
+          this.loadPlayArray();
+          this.loadBoxScore();
+        }
       }
-      // this updates the original array so the reference is not lost per
-      // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
-      this._selectedGame = new Game(this.gamesService.getGame(id));
-      this.currentPlayIndex = -1;
-      if (id !== null) {
-        this.loadPlayerArray();
-        this.loadPlayArray();
-        this.loadBoxScore();
+      if (this._selectedGame) {
+        const team: Team = this.awayTeamObject;
       }
     }
-    if (this._selectedGame) {
-      const team: Team = this.awayTeamObject;
-    }
+
   }
 
   get selectedGame(): Game {
@@ -256,6 +277,10 @@ export class GamesComponent implements OnInit {
       return this._selectedGame.id;
     }
     return 0;
+  }
+
+  setWeek(week: number) {
+    this.selectedWeek = week;
   }
 
   setGame(id: number) {

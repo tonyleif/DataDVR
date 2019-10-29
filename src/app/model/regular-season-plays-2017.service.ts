@@ -3,7 +3,9 @@ import { Http, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class RegularSeasonPlays2017Service {
 
   constructor(private http: Http) { }
@@ -49,7 +51,7 @@ export class RegularSeasonPlays2017Service {
   }
 
   getPlaysFromAPI(gameid: string): Observable<string> {
-    const getUrl: string = 'https://api.mysportsfeeds.com/v1.2/pull/nfl/2018-regular/game_playbyplay.json?gameid=' + gameid;
+    const getUrl: string = 'https://api.mysportsfeeds.com/v1.2/pull/nfl/2019-regular/game_playbyplay.json?gameid=' + gameid;
     const headers = new Headers();
     this.createAuthorizationHeader(headers);
     return this.http

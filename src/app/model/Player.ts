@@ -7,6 +7,7 @@ export class Player {
     height: string;
     weight: number;
     age: number;
+    jerseyNumber: number;
 
     constructor(json: any) {
         this.id = json.ID;
@@ -21,6 +22,7 @@ export class Player {
         this.height = json.Height;
         this.weight = json.Weight;
         this.age = json.Age;
+        this.jerseyNumber = json.JerseyNumber;
     }
 
     get noImageUrl(): boolean {

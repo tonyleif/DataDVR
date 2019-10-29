@@ -1,9 +1,28 @@
 <div class="container-fluid">
-  <div class="row">
+  <div *ngIf="!selectedGame" class="row">
+    <p *ngIf="!doneLoadingSchedule">Loading schedule...</p>
+    <div *ngIf="doneLoadingSchedule" class="row">
+      <div class="col-1">
+        <h4>Weeks</h4>
+        <button *ngFor="let week of weeks; i as index" [value]="week" (click)="setWeek(week)"
+          [ngClass]="{ 'btn-primary': selectedWeek == week }" class="btn btn-default mb-1 w-100">
+          Week {{week}}
+        </button>
+      </div>
+      <div class="col-2">
+        <h4>Games</h4>
+        <button *ngFor="let game of games" [value]="game.id" (click)="selectedGameId=game.id"
+        [ngClass]="{ 'btn-success' : game.watched }" class="btn btn-default mb-1 w-75">
+        {{game.awayTeam.Abbreviation}} @ {{game.homeTeam.Abbreviation}}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="selectedGame" class="row">
     <div id="plays" class="">
-      <div class="buttonRow row">
+      <!-- <div class="buttonRow row">
         <p *ngIf="!doneLoadingSchedule">Loading schedule...</p>
-        <div class="col-4 pl-0">
+        <div class="col-6 pl-0">
           <select *ngIf="doneLoadingSchedule" id="weekSelect" [(ngModel)]="selectedWeek" class="btn btn-primary w-100">
             <option value="undefined">Select</option>
             <option *ngFor="let week of weeks; i as index" [value]="week">
@@ -11,38 +30,27 @@
             </option>
           </select>
         </div>
-        <div class="col-4">
+        <div class="col-6">
           <select *ngIf="selectedWeek" id="gameSelect" [(ngModel)]="selectedGameId" class="btn btn-primary w-100">
-            <!-- left-col-btn -->
             <option value="0">Select</option>
             <option *ngFor="let game of games" [value]="game.id">
               {{game.awayTeam.Abbreviation}} @ {{game.homeTeam.Abbreviation}}
             </option>
           </select>
         </div>
-        <div class="col-4">
-          <span *ngIf="loadingPlays" class="ml-3 mt-2">
-            Loading...
-          </span>
-          <button *ngIf="selectedGame && !loadingPlays" (click)="markGameAsWatched()" class="btn right-column-btn"
-            [ngClass]="{ 'btn-primary': selectedGame.watched }">
-            <span *ngIf="selectedGame.watched">Not </span>Done
-          </button>
-        </div>
-      </div>
-      <div id="buttonHeader" *ngIf="showPlays" class="buttonRow row mt-2">
-        <div class="col-4 pl-0">
-          <button (click)="previousPlay()" [disabled]="currentPlayIndex < 0" class="btn btn-default ml-0 w-100">
-            Previous Play
-          </button>
-        </div>
-        <div class="col-4">
-          <button (click)="nextPlay()" [disabled]="this.currentPlayIndex == this.plays.length - 1" class="btn btn-success w-100">
-            Next Play
-          </button>
-        </div>
-        <div class="col-4">
-          <select #quarter class="btn btn-secondary right-column-btn" [(ngModel)]="goToValue">
+      </div> -->
+      <div class="buttonRow row pt-2">
+          <div class="col-4">
+              <span *ngIf="loadingPlays" class="ml-3 mt-2">
+                Loading...
+              </span>
+              <button *ngIf="selectedGame && !loadingPlays" (click)="selectedGameId = 0" class="btn w-100"
+                [ngClass]="{ 'btn-success': selectedGame.watched }">
+                New Game
+              </button>
+            </div>
+        <div *ngIf="showPlays" class="col-4">
+          <select #quarter class="btn btn-secondary w-100" [(ngModel)]="goToValue">
             <!-- (change)="goTo(quarter.value)" value={{this.goToValue}}  -->
             <option value="GoTo">Go to...</option>
             <option value="1">Q1</option>
@@ -51,6 +59,49 @@
             <option value="4">Q4</option>
             <option value="End">End</option>
           </select>
+        </div>
+        <div class="col-4">
+          <!-- <span *ngIf="loadingPlays" class="ml-3 mt-2">
+            Loading...
+          </span> -->
+          <button *ngIf="selectedGame && !loadingPlays" (click)="markGameAsWatched()" class="btn w-100"
+            [ngClass]="{ 'btn-primary': selectedGame.watched }">
+            <span *ngIf="selectedGame.watched">Not </span>Done
+          </button>
+        </div>
+      </div>
+      <!-- <div class="buttonRow row pt-2">
+        <div *ngIf="showPlays" class="col-6">
+          <select #quarter class="btn btn-secondary w-100" [(ngModel)]="goToValue">
+            <option value="GoTo">Go to...</option>
+            <option value="1">Q1</option>
+            <option value="2">Q2</option>
+            <option value="3">Q3</option>
+            <option value="4">Q4</option>
+            <option value="End">End</option>
+          </select>
+        </div>
+        <div class="col-6">
+          <span *ngIf="loadingPlays" class="ml-3 mt-2">
+            Loading...
+          </span>
+          <button *ngIf="selectedGame && !loadingPlays" (click)="markGameAsWatched()" class="btn w-100"
+            [ngClass]="{ 'btn-primary': selectedGame.watched }">
+            <span *ngIf="selectedGame.watched">Not </span>Done
+          </button>
+        </div>
+      </div> -->
+      <div id="buttonHeader" *ngIf="showPlays" class="buttonRow row mt-2">
+        <div class="col-6 pl-0">
+          <button (click)="previousPlay()" [disabled]="currentPlayIndex < 0" class="btn btn-default ml-0 w-100">
+            Previous Play
+          </button>
+        </div>
+        <div class="col-6">
+          <button (click)="nextPlay()" [disabled]="this.currentPlayIndex == this.plays.length - 1"
+            (keydown.ArrowLeft)="previousPlay()" (keydown.ArrowRight)="nextPlay()" class="btn btn-success w-100">
+            Next Play
+          </button>
         </div>
       </div>
       <!-- Plays -->
@@ -69,34 +120,26 @@
             </div>
             <div *ngIf="currentPlay.playType === 0" class="container row current-play">
               <!-- Kicker -->
-              <div class="player-image">
+              <app-player [player]="currentPlay.kickingPlay.kickingPlayer"></app-player>
+              <!-- <div class="player-image">
                 <img *ngIf="!offlineMode && currentPlay.kickingPlay.kickingPlayer && !currentPlay.kickingPlay.kickingPlayer.noImageUrl"
                   src={{currentPlay.kickingPlay.kickingPlayer.officialImageSrc}} class="rounded" />
-              </div>
+              </div> -->
               <!-- Add returner in future -->
             </div>
             <div *ngIf="currentPlay.playType === 1" class="container row current-play">
               <!-- Rusher -->
-              <div class="player-image" title="Ht: {{currentPlay.rushingPlay.rushingPlayer.height}}&#10;Wt: {{currentPlay.rushingPlay.rushingPlayer.weight}}&#10;Age: {{currentPlay.rushingPlay.rushingPlayer.age}}">
+              <app-player [player]="currentPlay.rushingPlay.rushingPlayer"></app-player>
+              <!-- <div class="player-image" title="Ht: {{currentPlay.rushingPlay.rushingPlayer.height}}&#10;Wt: {{currentPlay.rushingPlay.rushingPlayer.weight}}&#10;Age: {{currentPlay.rushingPlay.rushingPlayer.age}}">
                 <img *ngIf="!offlineMode && currentPlay.rushingPlay.rushingPlayer && !currentPlay.rushingPlay.rushingPlayer.noImageUrl"
                   src={{currentPlay.rushingPlay.rushingPlayer.officialImageSrc}} class="rounded d-inline" />
-                <!-- <div *ngIf="currentPlay.rushingPlay.rushingPlayer.noImageUrl" class="ml-3">
-                                <div class="row text-center">
-                                  {{currentPlay.rushingPlay.rushingPlayer.firstName}}
-                                </div>
-                                <div class="row text-center">
-                                  {{currentPlay.rushingPlay.rushingPlayer.lastName}}
-                                </div>
-                                <div class="row text-center">
-                                  (No Image)
-                                </div>
-                              </div> -->
-              </div>
-              <div class="player-data" title="Ht: {{currentPlay.rushingPlay.rushingPlayer.height}}&#10;Wt: {{currentPlay.rushingPlay.rushingPlayer.weight}}&#10;Age: {{currentPlay.rushingPlay.rushingPlayer.age}}">
-                <div class="row">
+              </div> -->
+              <div class="player-data"
+                title="Ht: {{currentPlay.rushingPlay.rushingPlayer.height}}&#10;Wt: {{currentPlay.rushingPlay.rushingPlayer.weight}}&#10;Age: {{currentPlay.rushingPlay.rushingPlayer.age}}">
+                <!-- <div class="row">
                   {{currentPlay.rushingPlay.rushingPlayer.firstName}}
                   {{currentPlay.rushingPlay.rushingPlayer.lastName}}
-                </div>
+                </div> -->
                 <div class="row">
                   <strong>{{currentPlay.rushingPlay.yardsRushed}}</strong>&nbsp;rushing yards
                 </div>
@@ -110,15 +153,17 @@
             </div>
             <div *ngIf="currentPlay.playType === 2" class="container row current-play">
               <!-- Passer -->
-              <div class="player-image" title="Ht: {{currentPlay.passingPlay.passingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.passingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.passingPlayer.age}}">
+              <app-player [player]="currentPlay.passingPlay.passingPlayer"></app-player>
+              <!-- <div class="player-image" title="Ht: {{currentPlay.passingPlay.passingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.passingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.passingPlayer.age}}">
                 <img *ngIf="!offlineMode && !currentPlay.passingPlay.passingPlayer.noImageUrl" src={{currentPlay.passingPlay.passingPlayer.officialImageSrc}}
                   class="rounded" />
-              </div>
-              <div class="player-data" title="Ht: {{currentPlay.passingPlay.passingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.passingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.passingPlayer.age}}">
-                <div class="row">
+              </div> -->
+              <div class="player-data"
+                title="Ht: {{currentPlay.passingPlay.passingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.passingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.passingPlayer.age}}">
+                <!-- <div class="row">
                   {{currentPlay.passingPlay.passingPlayer.firstName}}
                   {{currentPlay.passingPlay.passingPlayer.lastName}}
-                </div>
+                </div> -->
                 <div *ngIf="!currentPlay.passingPlay.isCompleted" class="row">
                   <strong class="alert alert-danger">Incomplete</strong>
                 </div>
@@ -133,25 +178,31 @@
                 </div>
               </div>
               <!-- Receiver -->
-              <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-image-2" title="Ht: {{currentPlay.passingPlay.receivingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.receivingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.receivingPlayer.age}}">
+              <!-- <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-image-2" title="Ht: {{currentPlay.passingPlay.receivingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.receivingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.receivingPlayer.age}}">
                 <img *ngIf="!offlineMode && !currentPlay.passingPlay.receivingPlayer.noImageUrl" src={{currentPlay.passingPlay.receivingPlayer.officialImageSrc}}
                   class="rounded" />
-              </div>
-              <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-data d-inline" title="Ht: {{currentPlay.passingPlay.receivingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.receivingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.receivingPlayer.age}}">
-                <div>{{currentPlay.passingPlay.receivingPlayer.firstName}}
+              </div> -->
+              <!-- <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" 
+                title="Ht: {{currentPlay.passingPlay.receivingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.receivingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.receivingPlayer.age}}"> -->
+              <app-player *ngIf="!currentPlay.passingPlay.noReceivingPlayer"
+                [player]="currentPlay.passingPlay.receivingPlayer"></app-player>
+              <!-- <div>{{currentPlay.passingPlay.receivingPlayer.firstName}}
                   {{currentPlay.passingPlay.receivingPlayer.lastName}}
-                </div>
-                <div *ngIf="currentPlay.passingPlay.isCompleted">
-                  <strong>{{currentPlay.passingPlay.totalYardsGained}}</strong>&nbsp;receiving yards
-                </div>
+                </div> -->
+              <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer && currentPlay.passingPlay.isCompleted"
+                class="player-data d-inline">
+                <strong>{{currentPlay.passingPlay.totalYardsGained}}</strong>&nbsp;receiving yards
               </div>
+              <!-- </div> -->
             </div>
             <div *ngIf="currentPlay.playType === 3" class="container row current-play">
               <!-- Kicker -->
-              <div class="player-image">
-                <img *ngIf="!offlineMode && !currentPlay.kickAttempt.kickingPlayer.noImageUrl" src={{currentPlay.kickAttempt.kickingPlayer.officialImageSrc}} class="rounded" />
-              </div>
-              <div *ngIf="!offlineMode && currentPlay.kickAttempt.kickingPlayer.noImageUrl" class="ml-3">
+              <app-player [player]="currentPlay.kickAttempt.kickingPlayer"></app-player>
+              <!-- <div class="player-image">
+                <img *ngIf="!offlineMode && !currentPlay.kickAttempt.kickingPlayer.noImageUrl"
+                  src={{currentPlay.kickAttempt.kickingPlayer.officialImageSrc}} class="rounded" />
+              </div> -->
+              <!-- <div *ngIf="!offlineMode && currentPlay.kickAttempt.kickingPlayer.noImageUrl" class="ml-3">
                 <div class="row text-center">
                   {{currentPlay.kickAttempt.kickingPlayer.firstName}}
                 </div>
@@ -161,21 +212,25 @@
                 <div class="row text-center">
                   (No Image)
                 </div>
-              </div>
+              </div> -->
               <div class="player-data">
-                <div class="row">
+                <!-- <div class="row">
                   {{currentPlay.kickAttempt.kickingPlayer.firstName}}
                   {{currentPlay.kickAttempt.kickingPlayer.lastName}}
-                </div>
+                </div> -->
                 <div *ngIf="currentPlay.kickAttempt.isFieldGoal" class="row">
-                  <strong *ngIf="currentPlay.kickAttempt.isGood" class="alert alert-success">{{currentPlay.kickAttempt.yardsKicked}}
+                  <strong *ngIf="currentPlay.kickAttempt.isGood"
+                    class="alert alert-success">{{currentPlay.kickAttempt.yardsKicked}}
                     yard FG is good!</strong>
-                  <strong *ngIf="!currentPlay.kickAttempt.isGood" class="alert alert-danger">{{currentPlay.kickAttempt.yardsKicked}}
+                  <strong *ngIf="!currentPlay.kickAttempt.isGood"
+                    class="alert alert-danger">{{currentPlay.kickAttempt.yardsKicked}}
                     yard FG is NO good</strong>
                 </div>
                 <div *ngIf="currentPlay.kickAttempt.isExtraPoint" class="row">
-                  <strong *ngIf="currentPlay.kickAttempt.isGood" class="alert alert-success">Extra point is good!</strong>
-                  <strong *ngIf="!currentPlay.kickAttempt.isGood" class="alert alert-danger">Extra point is NO good</strong>
+                  <strong *ngIf="currentPlay.kickAttempt.isGood" class="alert alert-success">Extra point is
+                    good!</strong>
+                  <strong *ngIf="!currentPlay.kickAttempt.isGood" class="alert alert-danger">Extra point is NO
+                    good</strong>
                 </div>
               </div>
             </div>
@@ -183,22 +238,22 @@
           </div>
         </div>
         <!-- Previous plays -->
-        <div *ngFor="let oneAgo of [onePlayAgo]" class="container-fluid play">
+        <!-- <div *ngFor="let oneAgo of [onePlayAgo]" class="container-fluid play">
           <div *ngIf="onePlayAgo" [@flyInOut]="direction" class="list-group-item">
             <small>
               <div class="text-secondary">Q{{oneAgo.quarter}} {{oneAgo.clock}} {{oneAgo.downAndDistance}}</div>
               {{oneAgo.description}}
             </small>
           </div>
-        </div>
-        <div *ngFor="let twoAgo of [twoPlaysAgo]" class="container-fluid play">
+        </div> -->
+        <!-- <div *ngFor="let twoAgo of [twoPlaysAgo]" class="container-fluid play">
           <div *ngIf="twoPlaysAgo" [@flyInOut]="direction" class="list-group-item">
             <small>
               <div class="text-secondary">Q{{twoAgo.quarter}} {{twoAgo.clock}} {{twoAgo.downAndDistance}}</div>
               {{twoAgo.description}}
             </small>
           </div>
-        </div>
+        </div> -->
         <div *ngIf="selectedGame">
           <a href={{selectGameAPIURL}} target="_blank" class="btn">Play JSON</a>
           <a href={{selectGameGamePassURL}} target="_blank" class="btn">GamePass</a>
@@ -206,7 +261,8 @@
           <button (click)="recordError('Wrong Player')" class="btn">Wrong Player</button>
           <button (click)="recordError('Incorrect Play Data')" class="btn">Incorrect Play Data</button>
           <button (click)="recordError('Next Play Missing')" class="btn">Next Play Missing</button>
-          <button (click)="recordError('Player not in ActivePlayers for this game')" class="btn">Not in ActivePlayers</button>
+          <button (click)="recordError('Player not in ActivePlayers for this game')" class="btn">Not in
+            ActivePlayers</button>
           <button (click)="recordMyError('My Bug')" class="btn">My Error</button>
         </div>
       </div>
@@ -247,7 +303,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamQBsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
+              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamQBsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
                 <td colspan="2">{{playerStat.player.lastName}}</td>
                 <td>{{playerStat.passAttemptsCompletionsNoZero}}</td>
                 <td>{{playerStat.passYardsNoZero}}</td>
@@ -274,7 +331,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamQBsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
+              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamQBsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
                 <td colspan="2">{{playerStat.player.lastName}}</td>
                 <td>{{playerStat.passAttemptsCompletionsNoZero}}</td>
                 <td>{{playerStat.passYardsNoZero}}</td>
@@ -303,7 +361,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamRBsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
+              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamRBsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
                 <td colspan="2">{{playerStat.player.lastName}}</td>
                 <td>{{playerStat.rushAttemptsNoZero}}</td>
                 <td>{{playerStat.rushYardsNoZero}}</td>
@@ -329,7 +388,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamRBsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
+              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamRBsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
                 <td colspan="2">{{playerStat.player.lastName}}</td>
                 <td>{{playerStat.rushAttemptsNoZero}}</td>
                 <td>{{playerStat.rushYardsNoZero}}</td>
@@ -358,7 +418,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamWRsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
+              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamWRsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
                 <td colspan="2">{{playerStat.player.lastName}}</td>
                 <td>{{playerStat.receptionsTargetsNoZero}}</td>
                 <td>{{playerStat.recYardsNoZero}}</td>
@@ -384,7 +445,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamWRsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
+              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamWRsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
                 <td colspan="2">{{playerStat.player.lastName}}</td>
                 <td>{{playerStat.receptionsTargetsNoZero}}</td>
                 <td>{{playerStat.recYardsNoZero}}</td>
@@ -413,7 +475,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamTEsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
+              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamTEsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
                 <td colspan="2">{{playerStat.player.lastName}}</td>
                 <td>{{playerStat.receptionsTargetsNoZero}}</td>
                 <td>{{playerStat.recYardsNoZero}}</td>
@@ -439,7 +502,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamTEsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
+              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamTEsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
                 <td colspan="2">{{playerStat.player.lastName}}</td>
                 <td>{{playerStat.receptionsTargetsNoZero}}</td>
                 <td>{{playerStat.recYardsNoZero}}</td>
@@ -466,7 +530,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamKsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
+              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamKsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
                 <td colspan="5">{{playerStat.player.lastName}}</td>
                 <td class="one-dig">{{playerStat.fieldGoalsNoZero}}</td>
                 <td class="one-dig">{{playerStat.fieldGoals50PlusNoZero}}</td>
@@ -487,7 +552,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamKsStats" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
+              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamKsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
                 <td colspan="4">{{playerStat.player.lastName}}</td>
                 <td class="one-dig">{{playerStat.fieldGoalsNoZero}}</td>
                 <td class="one-dig">{{playerStat.fieldGoals50PlusNoZero}}</td>
@@ -523,7 +589,9 @@
                 <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.blockedKicksNoZero}}</td>
                 <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.safetiesNoZero}}</td>
                 <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.twoPointConversionReturnsNoZero}}</td>
-                <td class="one-dig" [ngClass]="{ 'text-success': !this.currentPlayersStats.awayDSTStats.accruedStatsOnLastPlay }">{{this.currentPlayersStats.awayDSTStats.fantasyPoints}}</td>
+                <td class="one-dig"
+                  [ngClass]="{ 'text-success': !this.currentPlayersStats.awayDSTStats.accruedStatsOnLastPlay }">
+                  {{this.currentPlayersStats.awayDSTStats.fantasyPoints}}</td>
               </tr>
             </tbody>
           </table>
@@ -551,7 +619,9 @@
                 <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.blockedKicksNoZero}}</td>
                 <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.safetiesNoZero}}</td>
                 <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.twoPointConversionReturnsNoZero}}</td>
-                <td class="one-dig" [ngClass]="{ 'text-success': !this.currentPlayersStats.homeDSTStats.accruedStatsOnLastPlay }">{{this.currentPlayersStats.homeDSTStats.fantasyPoints}}</td>
+                <td class="one-dig"
+                  [ngClass]="{ 'text-success': !this.currentPlayersStats.homeDSTStats.accruedStatsOnLastPlay }">
+                  {{this.currentPlayersStats.homeDSTStats.fantasyPoints}}</td>
               </tr>
             </tbody>
           </table>
@@ -691,7 +761,8 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let playerStat of this.boxScore.awayTeamWRs" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+                  <tr *ngFor="let playerStat of this.boxScore.awayTeamWRs"
+                    [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
                     <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
                     <td>{{playerStat.receptionsTargetsNoZero}}</td>
                     <td>{{playerStat.recYardsNoZero}}</td>
@@ -748,7 +819,8 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let playerStat of this.boxScore.awayTeamTEs" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+                  <tr *ngFor="let playerStat of this.boxScore.awayTeamTEs"
+                    [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
                     <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
                     <td>{{playerStat.receptionsTargetsNoZero}}</td>
                     <td>{{playerStat.recYardsNoZero}}</td>
@@ -802,7 +874,8 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let playerStat of this.boxScore.awayTeamKs" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+                  <tr *ngFor="let playerStat of this.boxScore.awayTeamKs"
+                    [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
                     <td colspan="5" class="last-name">{{playerStat.player.lastName}}</td>
                     <td class="one-dig">{{playerStat.fieldGoalsNoZero}}</td>
                     <td class="one-dig">{{playerStat.fieldGoals50PlusNoZero}}</td>
@@ -857,7 +930,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let playerStat of this.qbsWatchedThisWeekStats; let i = index" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+            <tr *ngFor="let playerStat of this.qbsWatchedThisWeekStats; let i = index"
+              [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
               <!-- <td>{{i + 1}}</td> -->
               <td colspan="2" class="player-name">{{i + 1}} {{playerStat.player.lastName}}</td>
               <!-- <td>{{playerStat.passYardsNoZero}}</td> -->
@@ -888,7 +962,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let playerStat of this.rbsWatchedThisWeekStats; let i = index" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+            <tr *ngFor="let playerStat of this.rbsWatchedThisWeekStats; let i = index"
+              [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
               <!-- <td>{{i + 1}}</td> -->
               <td colspan="2" class="player-name">{{i + 1}} {{playerStat.player.lastName}}</td>
               <!-- <td>{{playerStat.rushAttemptsNoZero}}</td>
@@ -919,7 +994,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let playerStat of this.wrsWatchedThisWeekStats; let i = index" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+            <tr *ngFor="let playerStat of this.wrsWatchedThisWeekStats; let i = index"
+              [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
               <!-- <td>{{i + 1}}</td> -->
               <td colspan="2" class="player-name">{{i + 1}} {{playerStat.player.lastName}}</td>
               <!-- <td>{{playerStat.receptionsTargetsNoZero}}</td> -->
@@ -950,7 +1026,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let playerStat of this.tesWatchedThisWeekStats; let i = index" [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+            <tr *ngFor="let playerStat of this.tesWatchedThisWeekStats; let i = index"
+              [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
               <!-- <td>{{i + 1}}</td> -->
               <td colspan="2" class="player-name">{{i + 1}} {{playerStat.player.lastName}}</td>
               <!-- <td>{{playerStat.receptionsTargetsNoZero}}</td> -->
@@ -979,9 +1056,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let playerStat of this.qbsSeasonBoxWithCurrent; let i = index" [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+            <tr *ngFor="let playerStat of this.qbsSeasonBoxWithCurrent; let i = index"
+              [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
               <!-- <td class="rank-column"></td> -->
-              <td class="player-name" title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
+              <td class="player-name"
+                title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
                 {{i + 1}} {{playerStat.player.lastName}}
               </td>
               <td>{{playerStat.gamesPlayed}}</td>
@@ -1002,8 +1081,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let playerStat of this.rbsSeasonBoxWithCurrent; let i = index" [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
-              <td class="player-name" title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
+            <tr *ngFor="let playerStat of this.rbsSeasonBoxWithCurrent; let i = index"
+              [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <td class="player-name"
+                title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
                 {{i + 1}} {{playerStat.player.lastName}}
               </td>
               <td>{{playerStat.gamesPlayed}}</td>
@@ -1024,8 +1105,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let playerStat of this.wrsSeasonBoxWithCurrent; let i = index" [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
-              <td class="player-name" title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
+            <tr *ngFor="let playerStat of this.wrsSeasonBoxWithCurrent; let i = index"
+              [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <td class="player-name"
+                title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
                 {{i + 1}} {{playerStat.player.lastName}}
               </td>
               <td>{{playerStat.gamesPlayed}}</td>
@@ -1046,8 +1129,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let playerStat of this.tesSeasonBoxWithCurrent; let i = index" [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
-              <td class="player-name" title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
+            <tr *ngFor="let playerStat of this.tesSeasonBoxWithCurrent; let i = index"
+              [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <td class="player-name"
+                title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
                 {{i + 1}} {{playerStat.player.lastName}}
               </td>
               <td>{{playerStat.gamesPlayed}}</td>

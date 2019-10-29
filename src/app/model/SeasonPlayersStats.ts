@@ -125,20 +125,19 @@ export class SeasonPlayersStats {
                 const foundQB = PlayersStats.findPlayerStatsInArray(currentQb.player, currentQb.teamAbbreviation, qbStats);
                 if (foundQB) {
                     foundQB.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(foundQB.player)) {
-                        foundQB.accruedStatsOnLastPlay = true;
-                    }
-                    // if (!foundQB.currentGameStats) {
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(foundQB.player)) {
+                    //     foundQB.accruedStatsOnLastPlay = true;
+                    // }
+                    foundQB.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(foundQB.player);
                     if (addCurrentPlayers) {
                         foundQB.currentGameStats = currentQb;
                     }
-                    // }
-                    // foundQB.addPlayerStats(currentQb);
                 } else {
                     currentQb.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(currentQb.player)) {
-                        currentQb.accruedStatsOnLastPlay = true;
-                    }
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(currentQb.player)) {
+                    //     currentQb.accruedStatsOnLastPlay = true;
+                    // }
+                    currentQb.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(currentQb.player);
                     qbStats.push(currentQb);
                 }
             });
@@ -146,20 +145,19 @@ export class SeasonPlayersStats {
                 const foundQB = PlayersStats.findPlayerStatsInArray(currentQb.player, currentQb.teamAbbreviation, qbStats);
                 if (foundQB) {
                     foundQB.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(foundQB.player)) {
-                        foundQB.accruedStatsOnLastPlay = true;
-                    }
-                    // if (!foundQB.currentGameStats) {
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(foundQB.player)) {
+                    //     foundQB.accruedStatsOnLastPlay = true;
+                    // }
+                    foundQB.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(foundQB.player);
                     if (addCurrentPlayers) {
                         foundQB.currentGameStats = currentQb;
                     }
-                    // }
-                    // foundQB.addPlayerStats(currentQb);
                 } else {
                     currentQb.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(currentQb.player)) {
-                        currentQb.accruedStatsOnLastPlay = true;
-                    }
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(currentQb.player)) {
+                    //     currentQb.accruedStatsOnLastPlay = true;
+                    // }
+                    currentQb.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(currentQb.player);
                     qbStats.push(currentQb);
                 }
             });
@@ -176,18 +174,20 @@ export class SeasonPlayersStats {
                 const foundRB = PlayersStats.findPlayerStatsInArray(currentRB.player, currentRB.teamAbbreviation, rbStats);
                 if (foundRB) {
                     foundRB.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(foundRB.player)) {
-                        foundRB.accruedStatsOnLastPlay = true;
-                    }
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(foundRB.player)) {
+                    //     foundRB.accruedStatsOnLastPlay = true;
+                    // }
+                    foundRB.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(foundRB.player);
                     // foundRB.addPlayerStats(currentRB);
                     if (addCurrentPlayers) {
                         foundRB.currentGameStats = currentRB;
                     }
                 } else {
                     currentRB.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(currentRB.player)) {
-                        currentRB.accruedStatsOnLastPlay = true;
-                    }
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(currentRB.player)) {
+                    //     currentRB.accruedStatsOnLastPlay = true;
+                    // }
+                    currentRB.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(currentRB.player);
                     rbStats.push(currentRB);
                 }
             });
@@ -195,18 +195,20 @@ export class SeasonPlayersStats {
                 const foundRB = PlayersStats.findPlayerStatsInArray(currentRB.player, currentRB.teamAbbreviation, rbStats);
                 if (foundRB) {
                     foundRB.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(foundRB.player)) {
-                        foundRB.accruedStatsOnLastPlay = true;
-                    }
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(foundRB.player)) {
+                    //     foundRB.accruedStatsOnLastPlay = true;
+                    // }
+                    foundRB.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(foundRB.player);
                     // foundRB.addPlayerStats(currentRB);
                     if (addCurrentPlayers) {
                         foundRB.currentGameStats = currentRB;
                     }
                 } else {
                     currentRB.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(currentRB.player)) {
-                        currentRB.accruedStatsOnLastPlay = true;
-                    }
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(currentRB.player)) {
+                    //     currentRB.accruedStatsOnLastPlay = true;
+                    // }
+                    currentRB.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(currentRB.player);
                     rbStats.push(currentRB);
                 }
             });
@@ -223,18 +225,19 @@ export class SeasonPlayersStats {
                 const foundWR = PlayersStats.findPlayerStatsInArray(currentWR.player, currentWR.teamAbbreviation, wrStats);
                 if (foundWR) {
                     foundWR.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(foundWR.player)) {
-                        foundWR.accruedStatsOnLastPlay = true;
-                    }
-                    // foundWR.addPlayerStats(currentWR);
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(foundWR.player)) {
+                    //     foundWR.accruedStatsOnLastPlay = true;
+                    // }
+                    foundWR.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(foundWR.player);
                     if (addCurrentPlayers) {
                         foundWR.currentGameStats = currentWR;
                     }
                 } else {
                     currentWR.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(currentWR.player)) {
-                        currentWR.accruedStatsOnLastPlay = true;
-                    }
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(currentWR.player)) {
+                    //     currentWR.accruedStatsOnLastPlay = true;
+                    // }
+                    currentWR.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(currentWR.player);
                     wrStats.push(currentWR);
                 }
             });
@@ -242,18 +245,20 @@ export class SeasonPlayersStats {
                 const foundWR = PlayersStats.findPlayerStatsInArray(currentWR.player, currentWR.teamAbbreviation, wrStats);
                 if (foundWR) {
                     foundWR.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(foundWR.player)) {
-                        foundWR.accruedStatsOnLastPlay = true;
-                    }
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(foundWR.player)) {
+                    //     foundWR.accruedStatsOnLastPlay = true;
+                    // }
+                    foundWR.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(foundWR.player);
                     // foundWR.addPlayerStats(currentWR);
                     if (addCurrentPlayers) {
                         foundWR.currentGameStats = currentWR;
                     }
                 } else {
                     currentWR.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(currentWR.player)) {
-                        currentWR.accruedStatsOnLastPlay = true;
-                    }
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(currentWR.player)) {
+                    //     currentWR.accruedStatsOnLastPlay = true;
+                    // }
+                    currentWR.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(currentWR.player);
                     wrStats.push(currentWR);
                 }
             });
@@ -270,18 +275,20 @@ export class SeasonPlayersStats {
                 const foundTE = PlayersStats.findPlayerStatsInArray(currentTE.player, currentTE.teamAbbreviation, teStats);
                 if (foundTE) {
                     foundTE.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(foundTE.player)) {
-                        foundTE.accruedStatsOnLastPlay = true;
-                    }
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(foundTE.player)) {
+                    //     foundTE.accruedStatsOnLastPlay = true;
+                    // }
+                    foundTE.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(foundTE.player);
                     // foundTE.addPlayerStats(currentTE);
                     if (addCurrentPlayers) {
                         foundTE.currentGameStats = currentTE;
                     }
                 } else {
                     currentTE.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(currentTE.player)) {
-                        currentTE.accruedStatsOnLastPlay = true;
-                    }
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(currentTE.player)) {
+                    //     currentTE.accruedStatsOnLastPlay = true;
+                    // }
+                    currentTE.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(currentTE.player);
                     teStats.push(currentTE);
                 }
             });
@@ -289,18 +296,20 @@ export class SeasonPlayersStats {
                 const foundTE = PlayersStats.findPlayerStatsInArray(currentTE.player, currentTE.teamAbbreviation, teStats);
                 if (foundTE) {
                     foundTE.currentGame = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(foundTE.player)) {
-                        foundTE.accruedStatsOnLastPlay = true;
-                    }
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(foundTE.player)) {
+                    //     foundTE.accruedStatsOnLastPlay = true;
+                    // }
+                    foundTE.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(foundTE.player);
                     // foundTE.addPlayerStats(currentTE);
                     if (addCurrentPlayers) {
                         foundTE.currentGameStats = currentTE;
                     }
                 } else {
-                    currentTE.accruedStatsOnLastPlay = true;
-                    if (currentPlayersStats.isPlayerInLastPlayStats(currentTE.player)) {
-                        currentTE.accruedStatsOnLastPlay = true;
-                    }
+                    // currentTE.accruedStatsOnLastPlay = true;
+                    // if (currentPlayersStats.isPlayerInLastPlayStats(currentTE.player)) {
+                    //     currentTE.accruedStatsOnLastPlay = true;
+                    // }
+                    currentTE.accruedStatsOnLastPlay = currentPlayersStats.isPlayerInLastPlayStats(currentTE.player);
                     teStats.push(currentTE);
                 }
             });

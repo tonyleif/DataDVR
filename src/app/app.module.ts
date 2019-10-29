@@ -23,6 +23,7 @@ import { Route } from '@angular/compiler/src/core';
 import { RouterLinkActive } from '@angular/router';
 import { GameBoxScoreService } from './model/game-box-score.service';
 import { LineupComponent } from './components/lineup/lineup.component';
+import { PlayerComponent } from './components/shared/player/player.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/games', pathMatch: 'full'},
@@ -38,7 +39,8 @@ const appRoutes: Routes = [
     GamesComponent,
     ContactComponent,
     AboutComponent,
-    LineupComponent // ,
+    LineupComponent,
+    PlayerComponent // ,
     // NgbdTypeaheadBasic
   ],
   imports: [
@@ -49,10 +51,8 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     NgbModule // ,
     // TypeaheadModule // ,
-    // HttpClientModule, 
+    // HttpClientModule,
   ], // NgbModule, CommonModule -- HttpClientModule, NgbModule
-  providers: [RegularSeasonGames2017Service, RegularSeasonPlays2017Service,
-    RegularSeasonActivePlayers2017Service, TeamService, GameBoxScoreService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
