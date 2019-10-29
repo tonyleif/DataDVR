@@ -1,0 +1,20 @@
+<div>
+  <header>
+      <nav class="navbar navbar-light d-md-flex">
+      <div class="container-fluid">
+        <a routerLink="/" class="navbar-brand">
+          <img id="logo" src="./assets/images/DataDVR.png">
+        </a>
+        <a routerLink="/contact" routerLinkActive="active-link" class="nav-item float-right">Contact</a>
+        <a routerLink="/about" routerLinkActive="active-link" class="nav-item float-right">About</a>
+        <a routerLink="/lineup" routerLinkActive="active-link" class="nav-item float-right">Lineup</a>
+        <a routerLink="/games" routerLinkActive="active-link" class="nav-item float-right">Games</a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container-fluid">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

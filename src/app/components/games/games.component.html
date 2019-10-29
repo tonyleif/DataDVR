@@ -1,0 +1,1195 @@
+<div class="container-fluid">
+  <div *ngIf="!selectedGame" class="row">
+    <p *ngIf="!doneLoadingSchedule">Loading schedule...</p>
+    <div *ngIf="doneLoadingSchedule" class="row">
+      <div class="col-1">
+        <h4>Weeks</h4>
+        <button *ngFor="let week of weeks; i as index" [value]="week" (click)="setWeek(week)"
+          [ngClass]="{ 'btn-primary': selectedWeek == week }" class="btn btn-default mb-1 w-100">
+          Week {{week}}
+        </button>
+      </div>
+      <div class="col-2">
+        <h4>Games</h4>
+        <button *ngFor="let game of games" [value]="game.id" (click)="selectedGameId=game.id"
+        [ngClass]="{ 'btn-success' : game.watched }" class="btn btn-default mb-1 w-75">
+        {{game.awayTeam.Abbreviation}} @ {{game.homeTeam.Abbreviation}}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="selectedGame" class="row">
+    <div id="plays" class="">
+      <!-- <div class="buttonRow row">
+        <p *ngIf="!doneLoadingSchedule">Loading schedule...</p>
+        <div class="col-6 pl-0">
+          <select *ngIf="doneLoadingSchedule" id="weekSelect" [(ngModel)]="selectedWeek" class="btn btn-primary w-100">
+            <option value="undefined">Select</option>
+            <option *ngFor="let week of weeks; i as index" [value]="week">
+              Week {{week}}
+            </option>
+          </select>
+        </div>
+        <div class="col-6">
+          <select *ngIf="selectedWeek" id="gameSelect" [(ngModel)]="selectedGameId" class="btn btn-primary w-100">
+            <option value="0">Select</option>
+            <option *ngFor="let game of games" [value]="game.id">
+              {{game.awayTeam.Abbreviation}} @ {{game.homeTeam.Abbreviation}}
+            </option>
+          </select>
+        </div>
+      </div> -->
+      <div class="buttonRow row pt-2">
+          <div class="col-4">
+              <span *ngIf="loadingPlays" class="ml-3 mt-2">
+                Loading...
+              </span>
+              <button *ngIf="selectedGame && !loadingPlays" (click)="selectedGameId = 0" class="btn w-100"
+                [ngClass]="{ 'btn-success': selectedGame.watched }">
+                New Game
+              </button>
+            </div>
+        <div *ngIf="showPlays" class="col-4">
+          <select #quarter class="btn btn-secondary w-100" [(ngModel)]="goToValue">
+            <!-- (change)="goTo(quarter.value)" value={{this.goToValue}}  -->
+            <option value="GoTo">Go to...</option>
+            <option value="1">Q1</option>
+            <option value="2">Q2</option>
+            <option value="3">Q3</option>
+            <option value="4">Q4</option>
+            <option value="End">End</option>
+          </select>
+        </div>
+        <div class="col-4">
+          <!-- <span *ngIf="loadingPlays" class="ml-3 mt-2">
+            Loading...
+          </span> -->
+          <button *ngIf="selectedGame && !loadingPlays" (click)="markGameAsWatched()" class="btn w-100"
+            [ngClass]="{ 'btn-primary': selectedGame.watched }">
+            <span *ngIf="selectedGame.watched">Not </span>Done
+          </button>
+        </div>
+      </div>
+      <!-- <div class="buttonRow row pt-2">
+        <div *ngIf="showPlays" class="col-6">
+          <select #quarter class="btn btn-secondary w-100" [(ngModel)]="goToValue">
+            <option value="GoTo">Go to...</option>
+            <option value="1">Q1</option>
+            <option value="2">Q2</option>
+            <option value="3">Q3</option>
+            <option value="4">Q4</option>
+            <option value="End">End</option>
+          </select>
+        </div>
+        <div class="col-6">
+          <span *ngIf="loadingPlays" class="ml-3 mt-2">
+            Loading...
+          </span>
+          <button *ngIf="selectedGame && !loadingPlays" (click)="markGameAsWatched()" class="btn w-100"
+            [ngClass]="{ 'btn-primary': selectedGame.watched }">
+            <span *ngIf="selectedGame.watched">Not </span>Done
+          </button>
+        </div>
+      </div> -->
+      <div id="buttonHeader" *ngIf="showPlays" class="buttonRow row mt-2">
+        <div class="col-6 pl-0">
+          <button (click)="previousPlay()" [disabled]="currentPlayIndex < 0" class="btn btn-default ml-0 w-100">
+            Previous Play
+          </button>
+        </div>
+        <div class="col-6">
+          <button (click)="nextPlay()" [disabled]="this.currentPlayIndex == this.plays.length - 1"
+            (keydown.ArrowLeft)="previousPlay()" (keydown.ArrowRight)="nextPlay()" class="btn btn-success w-100">
+            Next Play
+          </button>
+        </div>
+      </div>
+      <!-- Plays -->
+      <div class="float-left ml-0 pr-0">
+        <div class="container-fluid mb-0 mt-2 w-100 px-0">
+          <div *ngIf="(showPlays && gameOver)" class="alert alert-success game-alert mb-0">
+            Game Over
+          </div>
+        </div>
+        <!-- Current Play -->
+        <!-- Needed to make these single play objects into a single object array to make the animations work -->
+        <div *ngFor="let currentPlay of [currentPlay]" class="container-fluid play">
+          <div *ngIf="currentPlayIndex > -1" [@flyInOut]="direction" class="jumbotron my-2">
+            <div id="playHeader" class="text-secondary">Q{{currentPlay.quarter}} {{currentPlay.clock}}
+              {{currentPlay.downAndDistance}}
+            </div>
+            <div *ngIf="currentPlay.playType === 0" class="container row current-play">
+              <!-- Kicker -->
+              <app-player [player]="currentPlay.kickingPlay.kickingPlayer"></app-player>
+              <!-- <div class="player-image">
+                <img *ngIf="!offlineMode && currentPlay.kickingPlay.kickingPlayer && !currentPlay.kickingPlay.kickingPlayer.noImageUrl"
+                  src={{currentPlay.kickingPlay.kickingPlayer.officialImageSrc}} class="rounded" />
+              </div> -->
+              <!-- Add returner in future -->
+            </div>
+            <div *ngIf="currentPlay.playType === 1" class="container row current-play">
+              <!-- Rusher -->
+              <app-player [player]="currentPlay.rushingPlay.rushingPlayer"></app-player>
+              <!-- <div class="player-image" title="Ht: {{currentPlay.rushingPlay.rushingPlayer.height}}&#10;Wt: {{currentPlay.rushingPlay.rushingPlayer.weight}}&#10;Age: {{currentPlay.rushingPlay.rushingPlayer.age}}">
+                <img *ngIf="!offlineMode && currentPlay.rushingPlay.rushingPlayer && !currentPlay.rushingPlay.rushingPlayer.noImageUrl"
+                  src={{currentPlay.rushingPlay.rushingPlayer.officialImageSrc}} class="rounded d-inline" />
+              </div> -->
+              <div class="player-data"
+                title="Ht: {{currentPlay.rushingPlay.rushingPlayer.height}}&#10;Wt: {{currentPlay.rushingPlay.rushingPlayer.weight}}&#10;Age: {{currentPlay.rushingPlay.rushingPlayer.age}}">
+                <!-- <div class="row">
+                  {{currentPlay.rushingPlay.rushingPlayer.firstName}}
+                  {{currentPlay.rushingPlay.rushingPlayer.lastName}}
+                </div> -->
+                <div class="row">
+                  <strong>{{currentPlay.rushingPlay.yardsRushed}}</strong>&nbsp;rushing yards
+                </div>
+                <div *ngIf="currentPlay.rushingPlay.isEndedWithTouchdown" class="row">
+                  <strong class="alert alert-success">TOUCHDOWN!</strong>
+                </div>
+                <div *ngIf="currentPlay.rushingPlay.isTwoPointConversion" class="row">
+                  <strong class="alert alert-success">2 pt conversion</strong>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="currentPlay.playType === 2" class="container row current-play">
+              <!-- Passer -->
+              <app-player [player]="currentPlay.passingPlay.passingPlayer"></app-player>
+              <!-- <div class="player-image" title="Ht: {{currentPlay.passingPlay.passingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.passingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.passingPlayer.age}}">
+                <img *ngIf="!offlineMode && !currentPlay.passingPlay.passingPlayer.noImageUrl" src={{currentPlay.passingPlay.passingPlayer.officialImageSrc}}
+                  class="rounded" />
+              </div> -->
+              <div class="player-data"
+                title="Ht: {{currentPlay.passingPlay.passingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.passingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.passingPlayer.age}}">
+                <!-- <div class="row">
+                  {{currentPlay.passingPlay.passingPlayer.firstName}}
+                  {{currentPlay.passingPlay.passingPlayer.lastName}}
+                </div> -->
+                <div *ngIf="!currentPlay.passingPlay.isCompleted" class="row">
+                  <strong class="alert alert-danger">Incomplete</strong>
+                </div>
+                <div *ngIf="currentPlay.passingPlay.isCompleted" class="row">
+                  <strong>{{currentPlay.passingPlay.totalYardsGained}}</strong>&nbsp;passing yards
+                </div>
+                <div *ngIf="currentPlay.passingPlay.isEndedWithTouchdown" class="row">
+                  <strong class="alert alert-success">TOUCHDOWN!</strong>
+                </div>
+                <div *ngIf="currentPlay.passingPlay.isTwoPointConversion" class="row">
+                  <strong class="alert alert-success">2 pt conversion</strong>
+                </div>
+              </div>
+              <!-- Receiver -->
+              <!-- <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" class="player-image-2" title="Ht: {{currentPlay.passingPlay.receivingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.receivingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.receivingPlayer.age}}">
+                <img *ngIf="!offlineMode && !currentPlay.passingPlay.receivingPlayer.noImageUrl" src={{currentPlay.passingPlay.receivingPlayer.officialImageSrc}}
+                  class="rounded" />
+              </div> -->
+              <!-- <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer" 
+                title="Ht: {{currentPlay.passingPlay.receivingPlayer.height}}&#10;Wt: {{currentPlay.passingPlay.receivingPlayer.weight}}&#10;Age: {{currentPlay.passingPlay.receivingPlayer.age}}"> -->
+              <app-player *ngIf="!currentPlay.passingPlay.noReceivingPlayer"
+                [player]="currentPlay.passingPlay.receivingPlayer"></app-player>
+              <!-- <div>{{currentPlay.passingPlay.receivingPlayer.firstName}}
+                  {{currentPlay.passingPlay.receivingPlayer.lastName}}
+                </div> -->
+              <div *ngIf="!currentPlay.passingPlay.noReceivingPlayer && currentPlay.passingPlay.isCompleted"
+                class="player-data d-inline">
+                <strong>{{currentPlay.passingPlay.totalYardsGained}}</strong>&nbsp;receiving yards
+              </div>
+              <!-- </div> -->
+            </div>
+            <div *ngIf="currentPlay.playType === 3" class="container row current-play">
+              <!-- Kicker -->
+              <app-player [player]="currentPlay.kickAttempt.kickingPlayer"></app-player>
+              <!-- <div class="player-image">
+                <img *ngIf="!offlineMode && !currentPlay.kickAttempt.kickingPlayer.noImageUrl"
+                  src={{currentPlay.kickAttempt.kickingPlayer.officialImageSrc}} class="rounded" />
+              </div> -->
+              <!-- <div *ngIf="!offlineMode && currentPlay.kickAttempt.kickingPlayer.noImageUrl" class="ml-3">
+                <div class="row text-center">
+                  {{currentPlay.kickAttempt.kickingPlayer.firstName}}
+                </div>
+                <div class="row text-center">
+                  {{currentPlay.kickAttempt.kickingPlayer.lastName}}
+                </div>
+                <div class="row text-center">
+                  (No Image)
+                </div>
+              </div> -->
+              <div class="player-data">
+                <!-- <div class="row">
+                  {{currentPlay.kickAttempt.kickingPlayer.firstName}}
+                  {{currentPlay.kickAttempt.kickingPlayer.lastName}}
+                </div> -->
+                <div *ngIf="currentPlay.kickAttempt.isFieldGoal" class="row">
+                  <strong *ngIf="currentPlay.kickAttempt.isGood"
+                    class="alert alert-success">{{currentPlay.kickAttempt.yardsKicked}}
+                    yard FG is good!</strong>
+                  <strong *ngIf="!currentPlay.kickAttempt.isGood"
+                    class="alert alert-danger">{{currentPlay.kickAttempt.yardsKicked}}
+                    yard FG is NO good</strong>
+                </div>
+                <div *ngIf="currentPlay.kickAttempt.isExtraPoint" class="row">
+                  <strong *ngIf="currentPlay.kickAttempt.isGood" class="alert alert-success">Extra point is
+                    good!</strong>
+                  <strong *ngIf="!currentPlay.kickAttempt.isGood" class="alert alert-danger">Extra point is NO
+                    good</strong>
+                </div>
+              </div>
+            </div>
+            <div class="mt-3">{{currentPlay.description}}</div>
+          </div>
+        </div>
+        <!-- Previous plays -->
+        <!-- <div *ngFor="let oneAgo of [onePlayAgo]" class="container-fluid play">
+          <div *ngIf="onePlayAgo" [@flyInOut]="direction" class="list-group-item">
+            <small>
+              <div class="text-secondary">Q{{oneAgo.quarter}} {{oneAgo.clock}} {{oneAgo.downAndDistance}}</div>
+              {{oneAgo.description}}
+            </small>
+          </div>
+        </div> -->
+        <!-- <div *ngFor="let twoAgo of [twoPlaysAgo]" class="container-fluid play">
+          <div *ngIf="twoPlaysAgo" [@flyInOut]="direction" class="list-group-item">
+            <small>
+              <div class="text-secondary">Q{{twoAgo.quarter}} {{twoAgo.clock}} {{twoAgo.downAndDistance}}</div>
+              {{twoAgo.description}}
+            </small>
+          </div>
+        </div> -->
+        <div *ngIf="selectedGame">
+          <a href={{selectGameAPIURL}} target="_blank" class="btn">Play JSON</a>
+          <a href={{selectGameGamePassURL}} target="_blank" class="btn">GamePass</a>
+          <button (click)="recordError('Previous Play Missing')" class="btn">Previous Play Missing</button>
+          <button (click)="recordError('Wrong Player')" class="btn">Wrong Player</button>
+          <button (click)="recordError('Incorrect Play Data')" class="btn">Incorrect Play Data</button>
+          <button (click)="recordError('Next Play Missing')" class="btn">Next Play Missing</button>
+          <button (click)="recordError('Player not in ActivePlayers for this game')" class="btn">Not in
+            ActivePlayers</button>
+          <button (click)="recordMyError('My Bug')" class="btn">My Error</button>
+        </div>
+      </div>
+    </div>
+    <!-- Game Stats -->
+    <div *ngIf="selectedGame" id="gameStats">
+      <!-- Game Header -->
+      <div id="gameHeader" class="container-fluid">
+        <div id="awayTeam" class="team-header">
+          <div *ngIf="!offlineMode" class="crop d-inline">
+            <img src='{{awayTeamObject.officialImageSrc}}' class="team-logo" />
+          </div>
+          {{selectedGame.awayTeam.City}}
+        </div>
+        <div id="homeTeam" class="team-header">
+          <div *ngIf="!offlineMode" class="crop d-inline">
+            <img src='{{homeTeamObject.officialImageSrc}}' class="team-logo" />
+          </div>
+          {{selectedGame.homeTeam.City}}
+        </div>
+      </div>
+      <!-- Stats -->
+      <div *ngIf="hasPlayersStats" class="pt-2 container-fluid">
+        <!-- QBs -->
+        <div class="row">
+          <!-- Away -->
+          <table class="table-sm stat-table w-50">
+            <thead class="thead-light">
+              <tr style="border-radius: 5px;">
+                <th colspan="2">QB</th>
+                <th title="Completions/Pass Attempts">C/PA</th>
+                <th>Pass</th>
+                <th>Rush</th>
+                <th>PaTD</th>
+                <th>TD</th>
+                <th>TO</th>
+                <th>FPts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamQBsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
+                <td colspan="2">{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.passAttemptsCompletionsNoZero}}</td>
+                <td>{{playerStat.passYardsNoZero}}</td>
+                <td>{{playerStat.rushYardsNoZero}}</td>
+                <td>{{playerStat.passingTouchdownsNoZero}}</td>
+                <td>{{playerStat.touchdownsNoZero}}</td>
+                <td>{{playerStat.turnoversNoZero}}</td>
+                <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Home -->
+          <table class="table-sm stat-table w-50">
+            <thead class="thead-light">
+              <tr>
+                <th colspan="2"></th>
+                <th title="Completions/Pass Attempts">C/PA</th>
+                <th>Pass</th>
+                <th>Rush</th>
+                <th>PaTD</th>
+                <th>TD</th>
+                <th>TO</th>
+                <th>FPts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamQBsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
+                <td colspan="2">{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.passAttemptsCompletionsNoZero}}</td>
+                <td>{{playerStat.passYardsNoZero}}</td>
+                <td>{{playerStat.rushYardsNoZero}}</td>
+                <td>{{playerStat.passingTouchdownsNoZero}}</td>
+                <td>{{playerStat.touchdownsNoZero}}</td>
+                <td>{{playerStat.turnoversNoZero}}</td>
+                <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- RBs -->
+        <div class="row">
+          <table class="table-sm stat-table w-50">
+            <thead class="thead-light">
+              <tr>
+                <th colspan="2">RB</th>
+                <th>RuAtt</th>
+                <th>Rush</th>
+                <th title="Receptions/Targets">R/T</th>
+                <th>Rec</th>
+                <th>TD</th>
+                <th>TO</th>
+                <th>FPts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamRBsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
+                <td colspan="2">{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.rushAttemptsNoZero}}</td>
+                <td>{{playerStat.rushYardsNoZero}}</td>
+                <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                <td>{{playerStat.recYardsNoZero}}</td>
+                <td>{{playerStat.touchdownsNoZero}}</td>
+                <td>{{playerStat.turnoversNoZero}}</td>
+                <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table-sm stat-table w-50">
+            <thead class="thead-light">
+              <tr>
+                <th colspan="2"></th>
+                <th>RuAtt</th>
+                <th>Rush</th>
+                <th title="Receptions/Targets">R/T</th>
+                <th>Rec</th>
+                <th>TD</th>
+                <th>TO</th>
+                <th>FPts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamRBsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
+                <td colspan="2">{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.rushAttemptsNoZero}}</td>
+                <td>{{playerStat.rushYardsNoZero}}</td>
+                <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                <td>{{playerStat.recYardsNoZero}}</td>
+                <td>{{playerStat.touchdownsNoZero}}</td>
+                <td>{{playerStat.turnoversNoZero}}</td>
+                <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- WRs -->
+        <div class="row">
+          <table class="table-sm stat-table w-50">
+            <thead class="thead-light">
+              <tr>
+                <th colspan="2">WR</th>
+                <th title="Receptions/Targets">R/T</th>
+                <th>Rec</th>
+                <th>RuAtt</th>
+                <th>Rush</th>
+                <th>TD</th>
+                <th>TO</th>
+                <th>FPts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamWRsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
+                <td colspan="2">{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                <td>{{playerStat.recYardsNoZero}}</td>
+                <td>{{playerStat.rushAttemptsNoZero}}</td>
+                <td>{{playerStat.rushYardsNoZero}}</td>
+                <td>{{playerStat.touchdownsNoZero}}</td>
+                <td>{{playerStat.turnoversNoZero}}</td>
+                <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table-sm stat-table w-50">
+            <thead class="thead-light">
+              <tr>
+                <th colspan="2"></th>
+                <th title="Receptions/Targets">R/T</th>
+                <th>Rec</th>
+                <th>RuAtt</th>
+                <th>Rush</th>
+                <th>TD</th>
+                <th>TO</th>
+                <th>FPts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamWRsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
+                <td colspan="2">{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                <td>{{playerStat.recYardsNoZero}}</td>
+                <td>{{playerStat.rushAttemptsNoZero}}</td>
+                <td>{{playerStat.rushYardsNoZero}}</td>
+                <td>{{playerStat.touchdownsNoZero}}</td>
+                <td>{{playerStat.turnoversNoZero}}</td>
+                <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- TEs -->
+        <div class="row">
+          <table class="table-sm stat-table w-50">
+            <thead class="thead-light">
+              <tr>
+                <th colspan="2">TE</th>
+                <th title="Receptions/Targets">R/T</th>
+                <th>Rec</th>
+                <th>RuAtt</th>
+                <th>Rush</th>
+                <th>TD</th>
+                <th>TO</th>
+                <th>FPts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamTEsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
+                <td colspan="2">{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                <td>{{playerStat.recYardsNoZero}}</td>
+                <td>{{playerStat.rushAttemptsNoZero}}</td>
+                <td>{{playerStat.rushYardsNoZero}}</td>
+                <td>{{playerStat.touchdownsNoZero}}</td>
+                <td>{{playerStat.turnoversNoZero}}</td>
+                <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table-sm stat-table w-50">
+            <thead class="thead-light">
+              <tr>
+                <th colspan="2"></th>
+                <th title="Receptions/Targets">R/T</th>
+                <th>Rec</th>
+                <th>RuAtt</th>
+                <th>Rush</th>
+                <th>TD</th>
+                <th>TO</th>
+                <th>FPts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamTEsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
+                <td colspan="2">{{playerStat.player.lastName}}</td>
+                <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                <td>{{playerStat.recYardsNoZero}}</td>
+                <td>{{playerStat.rushAttemptsNoZero}}</td>
+                <td>{{playerStat.rushYardsNoZero}}</td>
+                <td>{{playerStat.touchdownsNoZero}}</td>
+                <td>{{playerStat.turnoversNoZero}}</td>
+                <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Kickers -->
+        <div class="row">
+          <!-- Away -->
+          <table class="table-sm stat-table w-50">
+            <thead class="thead-light">
+              <tr>
+                <th colspan="5">K</th>
+                <th class="one-dig">FG</th>
+                <th class="one-dig">50+</th>
+                <th class="one-dig">XP</th>
+                <th>FPts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of currentPlayersStats.awayTeamKsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.awayTeam.Abbreviation)) }">
+                <td colspan="5">{{playerStat.player.lastName}}</td>
+                <td class="one-dig">{{playerStat.fieldGoalsNoZero}}</td>
+                <td class="one-dig">{{playerStat.fieldGoals50PlusNoZero}}</td>
+                <td class="one-dig">{{playerStat.extraPointsNoZero}}</td>
+                <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Home -->
+          <table class="table-sm stat-table w-50">
+            <thead class="thead-light">
+              <tr>
+                <th colspan="4"></th>
+                <th class="one-dig">FG</th>
+                <th class="one-dig">50+</th>
+                <th class="one-dig">XP</th>
+                <th>FPts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let playerStat of currentPlayersStats.homeTeamKsStats"
+                [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay, 'stat-error': (gameOver && !this.playerStatsCheckOut(playerStat.player, this._selectedGame.homeTeam.Abbreviation)) }">
+                <td colspan="4">{{playerStat.player.lastName}}</td>
+                <td class="one-dig">{{playerStat.fieldGoalsNoZero}}</td>
+                <td class="one-dig">{{playerStat.fieldGoals50PlusNoZero}}</td>
+                <td class="one-dig">{{playerStat.extraPointsNoZero}}</td>
+                <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- DSTs -->
+        <div class="row">
+          <table class="table-sm stat-table w-50">
+            <thead class="thead-light">
+              <tr>
+                <th class="dst-name"></th>
+                <th title="Sacks" class="one-dig">Sk</th>
+                <th title="Fumbles Recovered" class="one-dig">FR</th>
+                <th class="one-dig">Int</th>
+                <th class="one-dig">TD</th>
+                <th title="Blocked Kicks" class="one-dig">BK</th>
+                <th title="Safeties" class="one-dig">STY</th>
+                <th title="Conversion Returns for Two-points" class="one-dig">Ret2P</th>
+                <th>FPts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr [ngClass]="{ 'last-play-stat': this.currentPlayersStats.awayDSTStats.accruedStatsOnLastPlay }">
+                <td class="dst-name">{{this.currentPlayersStats.awayDSTStats.teamAbbreviation}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.sacksNoZero}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.fumblesRecoveredNoZero}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.interceptionsNoZero}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.touchDownsNoZero}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.blockedKicksNoZero}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.safetiesNoZero}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.awayDSTStats.twoPointConversionReturnsNoZero}}</td>
+                <td class="one-dig"
+                  [ngClass]="{ 'text-success': !this.currentPlayersStats.awayDSTStats.accruedStatsOnLastPlay }">
+                  {{this.currentPlayersStats.awayDSTStats.fantasyPoints}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table-sm stat-table w-50">
+            <thead class="thead-light">
+              <tr>
+                <th class="dst-name"></th>
+                <th title="Sacks" class="one-dig">Sk</th>
+                <th title="Fumbles Recovered" class="one-dig">FR</th>
+                <th class="one-dig">Int</th>
+                <th class="one-dig">TD</th>
+                <th title="Blocked Kicks" class="one-dig">BK</th>
+                <th title="Safeties" class="one-dig">STY</th>
+                <th title="Conversion Returns for Two-points" class="one-dig">Ret2P</th>
+                <th>FPts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr [ngClass]="{ 'last-play-stat': this.currentPlayersStats.homeDSTStats.accruedStatsOnLastPlay }">
+                <td class="dst-name">{{this.currentPlayersStats.homeDSTStats.teamAbbreviation}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.sacksNoZero}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.fumblesRecoveredNoZero}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.interceptionsNoZero}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.touchDownsNoZero}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.blockedKicksNoZero}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.safetiesNoZero}}</td>
+                <td class="one-dig">{{this.currentPlayersStats.homeDSTStats.twoPointConversionReturnsNoZero}}</td>
+                <td class="one-dig"
+                  [ngClass]="{ 'text-success': !this.currentPlayersStats.homeDSTStats.accruedStatsOnLastPlay }">
+                  {{this.currentPlayersStats.homeDSTStats.fantasyPoints}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf="gameOver">
+          <!-- Box Score -->
+          <h4>Box Score</h4>
+          <div class="row container-fluid">
+            <!-- QBs -->
+            <div class="row">
+              <!-- Away -->
+              <table class="table-sm stat-table w-50">
+                <thead class="thead-light">
+                  <tr style="border-radius: 5px;">
+                    <th colspan="2">QB</th>
+                    <th title="Completions/Pass Attempts">C/PA</th>
+                    <th>Pass</th>
+                    <th>Rush</th>
+                    <th>PaTD</th>
+                    <th>TD</th>
+                    <th>TO</th>
+                    <th>FPts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let playerStat of this.boxScore.awayTeamQBs">
+                    <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                    <td>{{playerStat.passAttemptsCompletionsNoZero}}</td>
+                    <td>{{playerStat.passYardsNoZero}}</td>
+                    <td>{{playerStat.rushYardsNoZero}}</td>
+                    <td>{{playerStat.passingTouchdownsNoZero}}</td>
+                    <td>{{playerStat.touchdownsNoZero}}</td>
+                    <td>{{playerStat.turnoversNoZero}}</td>
+                    <td>{{playerStat.fantasyPoints}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- Home -->
+              <table class="table-sm stat-table w-50">
+                <thead class="thead-light">
+                  <tr>
+                    <th colspan="2"></th>
+                    <th title="Completions/Pass Attempts">C/PA</th>
+                    <th>Pass</th>
+                    <th>Rush</th>
+                    <th>PaTD</th>
+                    <th>TD</th>
+                    <th>TO</th>
+                    <th>FPts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let playerStat of this.boxScore.homeTeamQBs">
+                    <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                    <td>{{playerStat.passAttemptsCompletionsNoZero}}</td>
+                    <td>{{playerStat.passYardsNoZero}}</td>
+                    <td>{{playerStat.rushYardsNoZero}}</td>
+                    <td>{{playerStat.passingTouchdownsNoZero}}</td>
+                    <td>{{playerStat.touchdownsNoZero}}</td>
+                    <td>{{playerStat.turnoversNoZero}}</td>
+                    <td>{{playerStat.fantasyPoints}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- RBs -->
+            <div class="row">
+              <!-- Away -->
+              <table class="table-sm stat-table w-50">
+                <thead class="thead-light">
+                  <tr>
+                    <th colspan="2">RB</th>
+                    <th>RuAtt</th>
+                    <th>Rush</th>
+                    <th title="Receptions/Targets">R/T</th>
+                    <th>Rec</th>
+                    <th>TD</th>
+                    <th>TO</th>
+                    <th>FPts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let playerStat of this.boxScore.awayTeamRBs">
+                    <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                    <td>{{playerStat.rushAttemptsNoZero}}</td>
+                    <td>{{playerStat.rushYardsNoZero}}</td>
+                    <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                    <td>{{playerStat.recYardsNoZero}}</td>
+                    <td>{{playerStat.touchdownsNoZero}}</td>
+                    <td>{{playerStat.turnoversNoZero}}</td>
+                    <td>{{playerStat.fantasyPoints}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- Home -->
+              <table class="table-sm stat-table w-50">
+                <thead class="thead-light">
+                  <tr>
+                    <th colspan="2"></th>
+                    <th>RuAtt</th>
+                    <th>Rush</th>
+                    <th title="Receptions/Targets">R/T</th>
+                    <th>Rec</th>
+                    <th>TD</th>
+                    <th>TO</th>
+                    <th>FPts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let playerStat of this.boxScore.homeTeamRBs">
+                    <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                    <td>{{playerStat.rushAttemptsNoZero}}</td>
+                    <td>{{playerStat.rushYardsNoZero}}</td>
+                    <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                    <td>{{playerStat.recYardsNoZero}}</td>
+                    <td>{{playerStat.touchdownsNoZero}}</td>
+                    <td>{{playerStat.turnoversNoZero}}</td>
+                    <td>{{playerStat.fantasyPoints}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- WRs -->
+            <div class="row">
+              <!-- Away -->
+              <table class="table-sm stat-table w-50">
+                <thead class="thead-light">
+                  <tr>
+                    <th colspan="2">WR</th>
+                    <th title="Receptions/Targets">R/T</th>
+                    <th>Rec</th>
+                    <th>RuAtt</th>
+                    <th>Rush</th>
+                    <th>TD</th>
+                    <th>TO</th>
+                    <th>FPts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let playerStat of this.boxScore.awayTeamWRs"
+                    [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+                    <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                    <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                    <td>{{playerStat.recYardsNoZero}}</td>
+                    <td>{{playerStat.rushAttemptsNoZero}}</td>
+                    <td>{{playerStat.rushYardsNoZero}}</td>
+                    <td>{{playerStat.touchdownsNoZero}}</td>
+                    <td>{{playerStat.turnoversNoZero}}</td>
+                    <td>{{playerStat.fantasyPoints}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- Home -->
+              <table class="table-sm stat-table w-50">
+                <thead class="thead-light">
+                  <tr>
+                    <th colspan="2"></th>
+                    <th title="Receptions/Targets">R/T</th>
+                    <th>Rec</th>
+                    <th>RuAtt</th>
+                    <th>Rush</th>
+                    <th>TD</th>
+                    <th>TO</th>
+                    <th>FPts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let playerStat of this.boxScore.homeTeamWRs">
+                    <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                    <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                    <td>{{playerStat.recYardsNoZero}}</td>
+                    <td>{{playerStat.rushAttemptsNoZero}}</td>
+                    <td>{{playerStat.rushYardsNoZero}}</td>
+                    <td>{{playerStat.touchdownsNoZero}}</td>
+                    <td>{{playerStat.turnoversNoZero}}</td>
+                    <td>{{playerStat.fantasyPoints}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- TEs -->
+            <div class="row">
+              <!-- Away -->
+              <table class="table-sm stat-table w-50">
+                <thead class="thead-light">
+                  <tr>
+                    <th colspan="2">TE</th>
+                    <th title="Receptions/Targets">R/T</th>
+                    <th>Rec</th>
+                    <th>RuAtt</th>
+                    <th>Rush</th>
+                    <th>TD</th>
+                    <th>TO</th>
+                    <th>FPts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let playerStat of this.boxScore.awayTeamTEs"
+                    [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+                    <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                    <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                    <td>{{playerStat.recYardsNoZero}}</td>
+                    <td>{{playerStat.rushAttemptsNoZero}}</td>
+                    <td>{{playerStat.rushYardsNoZero}}</td>
+                    <td>{{playerStat.touchdownsNoZero}}</td>
+                    <td>{{playerStat.turnoversNoZero}}</td>
+                    <td>{{playerStat.fantasyPoints}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- Home -->
+              <table class="table-sm stat-table w-50">
+                <thead class="thead-light">
+                  <tr>
+                    <th colspan="2"></th>
+                    <th title="Receptions/Targets">R/T</th>
+                    <th>Rec</th>
+                    <th>RuAtt</th>
+                    <th>Rush</th>
+                    <th>TD</th>
+                    <th>TO</th>
+                    <th>FPts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let playerStat of this.boxScore.homeTeamTEs">
+                    <td colspan="2" class="last-name">{{playerStat.player.lastName}}</td>
+                    <td>{{playerStat.receptionsTargetsNoZero}}</td>
+                    <td>{{playerStat.recYardsNoZero}}</td>
+                    <td>{{playerStat.rushAttemptsNoZero}}</td>
+                    <td>{{playerStat.rushYardsNoZero}}</td>
+                    <td>{{playerStat.touchdownsNoZero}}</td>
+                    <td>{{playerStat.turnoversNoZero}}</td>
+                    <td>{{playerStat.fantasyPoints}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Kickers -->
+            <div class="row">
+              <!-- Away -->
+              <table class="table-sm stat-table w-50">
+                <thead class="thead-light">
+                  <tr>
+                    <th colspan="5">K</th>
+                    <th class="one-dig">FG</th>
+                    <th class="one-dig">50+</th>
+                    <th class="one-dig">XP</th>
+                    <th>FPts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let playerStat of this.boxScore.awayTeamKs"
+                    [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+                    <td colspan="5" class="last-name">{{playerStat.player.lastName}}</td>
+                    <td class="one-dig">{{playerStat.fieldGoalsNoZero}}</td>
+                    <td class="one-dig">{{playerStat.fieldGoals50PlusNoZero}}</td>
+                    <td class="one-dig">{{playerStat.extraPointsNoZero}}</td>
+                    <td>{{playerStat.fantasyPoints}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- Home -->
+              <table class="table-sm stat-table w-50">
+                <thead class="thead-light">
+                  <tr>
+                    <th colspan="4"></th>
+                    <th class="one-dig">FG</th>
+                    <th class="one-dig">50+</th>
+                    <th class="one-dig">XP</th>
+                    <th>FPts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let playerStat of this.boxScore.homeTeamKs">
+                    <td colspan="5" class="last-name">{{playerStat.player.lastName}}</td>
+                    <td class="one-dig">{{playerStat.fieldGoalsNoZero}}</td>
+                    <td class="one-dig">{{playerStat.fieldGoals50PlusNoZero}}</td>
+                    <td class="one-dig">{{playerStat.extraPointsNoZero}}</td>
+                    <td>{{playerStat.fantasyPoints}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Week Ranks -->
+    <div *ngIf="selectedGame && showRanks" id="weekRanks" class="ranks">
+      <h4>Week Ranks</h4>
+      <!-- QBs -->
+      <div *ngIf="showQBRank" class="container-fluid mt-1">
+        <!-- <div class="row"> -->
+        <table class="table-sm stat-table w-50">
+          <thead class="thead-light">
+            <tr style="border-radius: 5px;">
+              <!-- <th>Rank</th> -->
+              <th colspan="2" class="player-name">QB</th>
+              <!-- <th>Pass</th> -->
+              <!-- <th>Rush</th> -->
+              <!-- <th>PaTD</th> -->
+              <!-- <th>TD</th> -->
+              <!-- <th>TO</th> -->
+              <th>FPts</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let playerStat of this.qbsWatchedThisWeekStats; let i = index"
+              [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <!-- <td>{{i + 1}}</td> -->
+              <td colspan="2" class="player-name">{{i + 1}} {{playerStat.player.lastName}}</td>
+              <!-- <td>{{playerStat.passYardsNoZero}}</td> -->
+              <!-- <td>{{playerStat.rushYardsNoZero}}</td> -->
+              <!-- <td>{{playerStat.passingTouchdownsNoZero}}</td> -->
+              <!-- <td>{{playerStat.touchdownsNoZero}}</td> -->
+              <!-- <td>{{playerStat.turnoversNoZero}}</td> -->
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- </div> -->
+      </div>
+      <!-- RBs -->
+      <div *ngIf="showRBRank" class="container-fluid mt-1">
+        <table class="table-sm stat-table w-50">
+          <thead class="thead-light">
+            <tr>
+              <!-- <th>Rank</th> -->
+              <th colspan="2" class="player-name">RB</th>
+              <!-- <th>RuAtt</th>
+              <th>Rush</th> -->
+              <!-- <th title="Receptions/Targets">R/T</th> -->
+              <!-- <th>Rec</th> -->
+              <!-- <th>TD</th> -->
+              <!-- <th>TO</th> -->
+              <th>FPts</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let playerStat of this.rbsWatchedThisWeekStats; let i = index"
+              [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <!-- <td>{{i + 1}}</td> -->
+              <td colspan="2" class="player-name">{{i + 1}} {{playerStat.player.lastName}}</td>
+              <!-- <td>{{playerStat.rushAttemptsNoZero}}</td>
+              <td>{{playerStat.rushYardsNoZero}}</td> -->
+              <!-- <td>{{playerStat.receptionsTargetsNoZero}}</td> -->
+              <!-- <td>{{playerStat.recYardsNoZero}}</td>
+              <td>{{playerStat.touchdownsNoZero}}</td> -->
+              <!-- <td>{{playerStat.turnoversNoZero}}</td> -->
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- WRs -->
+      <div *ngIf="showWRRank" class="container-fluid mt-1">
+        <table class="table-sm stat-table w-50">
+          <thead class="thead-light">
+            <tr>
+              <!-- <th>Rank</th> -->
+              <th colspan="2" class="player-name">WR</th>
+              <!-- <th title="Receptions/Targets">R/T</th> -->
+              <!-- <th>Rec</th>
+              <th>RuAtt</th>
+              <th>Rush</th>
+              <th>TD</th> -->
+              <!-- <th>TO</th> -->
+              <th>FPts</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let playerStat of this.wrsWatchedThisWeekStats; let i = index"
+              [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <!-- <td>{{i + 1}}</td> -->
+              <td colspan="2" class="player-name">{{i + 1}} {{playerStat.player.lastName}}</td>
+              <!-- <td>{{playerStat.receptionsTargetsNoZero}}</td> -->
+              <!-- <td>{{playerStat.recYardsNoZero}}</td>
+              <td>{{playerStat.rushAttemptsNoZero}}</td>
+              <td>{{playerStat.rushYardsNoZero}}</td>
+              <td>{{playerStat.touchdownsNoZero}}</td> -->
+              <!-- <td>{{playerStat.turnoversNoZero}}</td> -->
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- TEs -->
+      <div *ngIf="showTERank" class="container-fluid mt-1">
+        <table class="table-sm stat-table w-50">
+          <thead class="thead-light">
+            <tr>
+              <!-- <th>Rank</th> -->
+              <th colspan="2" class="player-name">TE</th>
+              <!-- <th title="Receptions/Targets">R/T</th> -->
+              <!-- <th>Rec</th>
+              <th>RuAtt</th>
+              <th>Rush</th>
+              <th>TD</th> -->
+              <!-- <th>TO</th> -->
+              <th>FPts</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let playerStat of this.tesWatchedThisWeekStats; let i = index"
+              [ngClass]="{ 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <!-- <td>{{i + 1}}</td> -->
+              <td colspan="2" class="player-name">{{i + 1}} {{playerStat.player.lastName}}</td>
+              <!-- <td>{{playerStat.receptionsTargetsNoZero}}</td> -->
+              <!-- <td>{{playerStat.recYardsNoZero}}</td>
+              <td>{{playerStat.rushAttemptsNoZero}}</td>
+              <td>{{playerStat.rushYardsNoZero}}</td>
+              <td>{{playerStat.touchdownsNoZero}}</td> -->
+              <!-- <td>{{playerStat.turnoversNoZero}}</td> -->
+              <td [ngClass]="{ 'text-success': !playerStat.accruedStatsOnLastPlay }">{{playerStat.fantasyPoints}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Season Ranks -->
+    <div *ngIf="selectedGame && showRanks && this.seasonPlayersStats" id="seasonRanks" class="ranks">
+      <h4>Season Ranks</h4>
+      <div *ngIf="showQBRank" class="container-fluid">
+        <table class="table-sm stat-table w-60">
+          <thead class="thead-light">
+            <tr style="border-radius: 5px;">
+              <th class="full-name">QB</th>
+              <th>G</th>
+              <th>FP</th>
+              <th>FP/G</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let playerStat of this.qbsSeasonBoxWithCurrent; let i = index"
+              [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <!-- <td class="rank-column"></td> -->
+              <td class="player-name"
+                title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
+                {{i + 1}} {{playerStat.player.lastName}}
+              </td>
+              <td>{{playerStat.gamesPlayed}}</td>
+              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.pointsPerGame}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="showRBRank" class="container-fluid">
+        <table class="table-sm stat-table w-60">
+          <thead class="thead-light">
+            <tr style="border-radius: 5px;">
+              <th>RB</th>
+              <th>G</th>
+              <th>FP</th>
+              <th>FP/G</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let playerStat of this.rbsSeasonBoxWithCurrent; let i = index"
+              [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <td class="player-name"
+                title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
+                {{i + 1}} {{playerStat.player.lastName}}
+              </td>
+              <td>{{playerStat.gamesPlayed}}</td>
+              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.pointsPerGame}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="showWRRank" class="container-fluid">
+        <table class="table-sm stat-table w-60">
+          <thead class="thead-light">
+            <tr style="border-radius: 5px;">
+              <th>WR</th>
+              <th>G</th>
+              <th>FP</th>
+              <th>FP/G</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let playerStat of this.wrsSeasonBoxWithCurrent; let i = index"
+              [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <td class="player-name"
+                title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
+                {{i + 1}} {{playerStat.player.lastName}}
+              </td>
+              <td>{{playerStat.gamesPlayed}}</td>
+              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.pointsPerGame}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="showTERank" class="container-fluid">
+        <table class="table-sm stat-table w-60">
+          <thead class="thead-light">
+            <tr style="border-radius: 5px;">
+              <th>TE</th>
+              <th>G</th>
+              <th>FP</th>
+              <th>FP/G</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let playerStat of this.tesSeasonBoxWithCurrent; let i = index"
+              [ngClass]="{ 'current-game-stat': (playerStat.currentGame && !playerStat.accruedStatsOnLastPlay), 'last-play-stat': playerStat.accruedStatsOnLastPlay }">
+              <td class="player-name"
+                title="{{playerStat.player.firstName}} {{playerStat.player.lastName}} ({{playerStat.teamAbbreviation}})">
+                {{i + 1}} {{playerStat.player.lastName}}
+              </td>
+              <td>{{playerStat.gamesPlayed}}</td>
+              <td>{{playerStat.fantasyPoints}}</td>
+              <td>{{playerStat.pointsPerGame}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="mySportsFeedsErrors.mySportsFeedsErrors.length > 0" class="row">
+    <div class="container-fluid">
+      <h4>mySportsFeeds Errors</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Week</th>
+            <th>Game</th>
+            <th>Play</th>
+            <th>Error</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let err of mySportsFeedsErrors.mySportsFeedsErrors">
+            <td>Week {{err.week}}</td>
+            <td>{{err.gameId}}</td>
+            <td>{{err.playQuarterAndTime}}</td>
+            <td>{{err.error}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div *ngIf="myBugs.mySportsFeedsErrors.length > 0" class="row">
+    <div class="container-fluid">
+      <h4>Data DVR Errors</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Week</th>
+            <th>Game</th>
+            <th>Play</th>
+            <th></th>
+            <!-- <th>Error</th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let err of myBugs.mySportsFeedsErrors">
+            <td>Week {{err.week}}</td>
+            <td>{{err.gameId}}</td>
+            <td>{{err.playQuarterAndTime}}</td>
+            <td><button (click)="deleteError(err)" class="btn btn-danger">Delete</button></td>
+            <!-- <td>{{err.error}}</td> -->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

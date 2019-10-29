@@ -1,0 +1,15 @@
+.social-list {
+    padding-left: 0px;
+}
+
+.social-list > li {
+    font-size: 1.2em;
+    list-style-type: none;
+    padding: 3px;
+}
+
+.social-icon{
+    height: 40px;
+    width: 40px;
+    margin-right: .5em;
+}

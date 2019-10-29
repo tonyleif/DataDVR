@@ -1,0 +1,23 @@
+.player {
+    width: 9em;
+}
+
+.player-image {
+    margin-right: 1.5em;
+    display: inline;
+}
+
+.player-image img {
+    height: 100px;
+    width: 100px;
+}
+
+.data-row {
+    height: 1em;
+    margin-top: .2em;
+    margin-bottom: .2em;
+}
+
+.data-row label {
+    color: gray;
+}

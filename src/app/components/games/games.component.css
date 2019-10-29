@@ -1,0 +1,326 @@
+/* .left-col-btn {
+    width: 112px;
+} */
+
+/* #buttonHeader,*/
+.play {
+    /* width: 35em; */
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+} 
+
+.buttonRow {
+    margin-left: 0;
+}
+
+.buttonRow > div {
+    padding-left: 0;
+    padding-right: .5em;
+}
+
+.right-column-btn {
+    width: 7.4em;
+}
+
+/* .game-alert {
+    width: 34em;
+    margin-left: .8em;
+} */
+
+.current-play {
+    padding-right: 0;
+    margin-right: 0 !important;
+}
+
+#weekSelect,
+#games {
+    width: 6.8em;
+}
+
+#weekSelect li,
+#games li {
+    padding: .25em .2em;
+}
+
+.not-selected:hover {
+    background-color: lightgray;
+}
+
+.watched {
+    color: white;
+    background-color: dimgray;
+}
+
+.play-data {
+    padding: .25em .75em;
+}
+
+.play-data label {
+    color: darkgray;
+    padding-right: .25em;
+}
+
+.play-data p {
+    margin-bottom: 0;
+    font-size: .8em;
+}
+
+select.btn-primary option {
+    color: black;
+    background-color: white;
+    /* padding-top: 20px !important;
+    padding-bottom: 1em !important; */
+}
+
+.list-group-item {
+    padding: .5em 1em;
+}
+
+.jumbotron {
+    padding: 1rem;
+}
+
+.team-logo {
+    height: 100px;
+    width: 100px;
+}
+
+.crop {
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+}
+
+.crop img {
+    width: 65px;
+    height: 65px;
+    margin-top: -32px;
+    margin-bottom: -27px;
+}
+
+#gameHeader {
+    font-size: 1.5em;
+}
+
+.player-image {
+    margin-right: 1.5em;
+    display: inline;
+}
+
+.player-image img,
+.player-image-2 img {
+    height: 100px;
+    width: 100px;
+}
+
+.player-image-2 {
+    margin-left: 0;
+    margin-right: .5em;
+    display: inline;
+}
+
+.receiver {
+    margin-left: 1.5em;
+    width: 15em;
+}
+
+.player-data {
+    width: 8em;
+    white-space: nowrap;
+}
+
+.player-data span {
+    vertical-align: top;
+}
+
+.single-player-data {
+    width: 20em;
+    white-space: nowrap;
+}
+
+.jumbotron {
+    padding-top: .7em;
+}
+
+/* #buttonHeader { */
+    /* width: 34em; */
+    /* display: inline-block; */
+    /* float: left; */
+/* } */
+
+#playHeader {
+    padding-bottom: .8em;
+}
+
+/* #gameHeader {
+    display: inline-block;
+} */
+
+.team-header {
+    display: inline-block;
+    width: 49%;
+}
+
+.stat-table {
+    float: left;
+    border-radius: 5px;
+    padding-left: .25em;
+}
+
+.stat-table thead {
+    border-radius: 5px;
+}
+
+.stat-table thead > tr {
+    height: 1.8em;
+    background-color: #e9ecef;
+    border-radius: 5px !important;
+    -webkit-border-radius:5px;
+    /* border-style: solid; */
+    /* border-width: 1px; */
+    border-collapse: separate;
+}
+
+.stat-table tr > td,
+.stat-table tr > th {
+    /* width: 2.7em; */
+    text-align: right;
+    font-size: .7em;
+    padding-top: .2em;
+    padding-bottom: .2em;
+}
+
+.stat-table tr > td:first-child,
+.stat-table tr > th:first-child {
+    /* width: 7.5em; */
+    text-align: left;
+}
+
+.stat-table tr > td.full-name {
+    width: 10em;
+}
+
+/* .stat-table tr > td:first-child.dst-name,
+.stat-table tr > th:first-child.dst-name {
+    width: 3m;
+} */
+.stat-table tr > th.dst-name,
+.stat-table tr > td.dst-name {
+    width: 2em;
+}
+
+.one-dig {
+    width: 2em;
+}
+
+/* .stat-table tr > td:nth-child(2),
+.stat-table tr > th:nth-child(2){
+    width: 3.3em;
+} */
+
+/* .stat-table tr > td:nth-child(3),
+.stat-table tr > th:nth-child(3){
+    width: 3.3em;
+} */
+
+/* .stat-table tr > td:nth-child(4),
+.stat-table tr > th:nth-child(4){
+    width: 3.3em;
+} */
+
+/* .stat-table tr > td:nth-child(5),
+.stat-table tr > th:nth-child(5){
+    width: 2.1em;
+} */
+
+/* .stat-table tr > td:nth-child(6),
+.stat-table tr > th:nth-child(6) {
+    width: 2.2em;
+} */
+
+@keyframes highlight {
+    from {background-color: white }
+    to {background-color: #45B85E;} 
+    }
+
+/* @keyframes highlightBlue {
+    from {background-color: white }
+    to {background-color: #007bff;} 
+    } */
+
+.last-play-stat {
+    animation: highlight 1s ease-out;
+    color: white;
+    background-color: #45B85E;
+}
+
+.last-play-stat.text-success {
+    color: white !important;
+}
+
+.current-game-stat {
+    /* animation: highlightBlue 1s ease-out; */
+    /* color: #007bff; */
+    /* background-color: #007bff; */
+    background-color: #6c757d;
+    color: white;
+}
+
+.stat-error {
+    color: white;
+    background-color: red;
+}
+
+th.player-name,
+td.player-name {
+    text-align: left !important;
+    white-space: nowrap;
+}
+
+th.last-name,
+td.last-name {
+    text-align: left !important;
+    width: 7.5em;
+}
+
+td.rank-column {
+    width: 1em;
+}
+
+#plays {
+    width: 20em;
+    margin-left: 1em;
+}
+
+#gameStats {
+    width: 40em;
+    margin-left: 1em;
+}
+
+.ranks h4 {
+    font-weight: 400;
+    margin-top: .2em;
+    margin-bottom: .4em;
+    margin-left: .5em;
+}
+
+.ranks>div {
+    padding-left: .5em;
+    padding-right: 0;
+}
+
+.ranks table {
+    display: inline-block;
+}
+
+#weekRanks{
+    width: 18em;
+    font-size: .65em;
+}
+
+#seasonRanks {
+    width: 29em;
+    font-size: .65em;
+}
