@@ -11,20 +11,20 @@ const states = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'C
   'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Islands', 'Virginia',
   'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
 
-@Component({
-  selector: 'ngbd-typeahead-basic',
-  templateUrl: './typeahead-basic.html',
-  styles: [`.form-control { width: 300px; }`]
-})
-export class NgbdTypeaheadBasic {
-  public model: any;
+// @Component({
+//   selector: 'ngbd-typeahead-basic',
+//   templateUrl: './typeahead-basic.html',
+//   styles: [`.form-control { width: 300px; }`]
+// })
+// export class NgbdTypeaheadBasic {
+//   public model: any;
 
-  search = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map(term => term.length < 2 ? []
-        : states.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
-    )
+//   search = (text$: Observable<string>) =>
+//     text$.pipe(
+//       debounceTime(200),
+//       distinctUntilChanged(),
+//       map(term => term.length < 2 ? []
+//         : states.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
+//     )
 
-}
+// }
