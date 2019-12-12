@@ -1,20 +1,148 @@
 <div class="container-fluid">
   <h3>Lineup</h3>
   <!-- <ngbd-typeahead-basic></ngbd-typeahead-basic> -->
-  <hr>
+  <!-- <hr> -->
+  <!-- Search player row -->
   <ng-template #rt let-r="result" let-t="term">
     <!-- <img [src]="'https://upload.wikimedia.org/wikipedia/commons/thumb/' + r['flag']" class="mr-1" style="width: 16px"> -->
-    <img *ngIf="r.officialImageSrc" [src]="r.officialImageSrc" class="rounded mr-1" style="width: 60px"><!--  -->
+    <img *ngIf="r.officialImageSrc" [src]="r.officialImageSrc" class="rounded mr-1" style="width: 60px">
     <ngb-highlight [result]="r.fullName" [term]="t"></ngb-highlight>
   </ng-template>
-  <label for="typeahead-player">Search for a player:</label>
-  <input id="typeahead-player" type="text" class="form-control" [(ngModel)]="selectedPlayer" 
-    [ngbTypeahead]="search" [resultTemplate]="rt" [inputFormatter]="formatter" />
-  <!-- <ul>
-    <li *ngFor="let player of activePlayers; let i = index">
-      {{ i }}. {{ player.position }} {{ player.firstName }} {{ player.lastName }}
-    </li>
-  </ul> -->
+  <div class="input-group">
+    <h5 class="label mr-2 pt-2 text-muted" for="typeahead-player">Search for a player</h5>
+    <input id="typeahead-player" type="text" class="form-control mr-2" [(ngModel)]="selectedPlayer"
+      [ngbTypeahead]="search" [resultTemplate]="rt" [inputFormatter]="formatter" />
+    <span class="input-group-btn">
+      <button (click)="addToMyTeam()" class="btn btn-success mr-2">Add to My Team</button>
+    </span>
+    <span class="input-group-btn">
+      <button (click)="addToTheirTeam()" class="btn btn-danger">Add to Their Team</button>
+    </span>
+  </div>
+
+  <div class="container-fluid mt-2">
+    <div class="row">
+      <div class="col-md">
+        <h3>My Team</h3>
+        <table class="roster">
+          <tbody>
+            <tr>
+              <td class="pos-col">QB</td>
+              <td class="pic-col"><img *ngIf="myRoster.startingQB" src="{{ myRoster.startingQB.officialImageSrc }}"
+                  class="rounded img-thumbnail w-100"></td>
+              <td class="name-col">{{myRoster.startingQB.firstName + ' ' + myRoster.startingQB.lastName}}</td>
+              <td>{{scoreboard.myQBScore}}</td>
+            </tr>
+            <tr>
+              <td class="pos-col">RB1</td>
+              <td class="pic-col"><img *ngIf="myRoster.startingRB1" src="{{ myRoster.startingRB1.officialImageSrc }}"
+                  class="rounded img-thumbnail w-100"></td>
+              <td class="name-col">{{myRoster.startingRB1.firstName + ' ' + myRoster.startingRB1.lastName}}</td>
+            </tr>
+            <tr>
+              <td class="pos-col">RB2</td>
+              <td class="pic-col"><img *ngIf="myRoster.startingRB2" src="{{ myRoster.startingRB2.officialImageSrc }}"
+                  class="rounded img-thumbnail w-100"></td>
+              <td class="name-col">{{myRoster.startingRB2.firstName + ' ' + myRoster.startingRB2.lastName}}</td>
+            </tr>
+            <tr>
+              <td class="pos-col">WR1</td>
+              <td class="pic-col"><img *ngIf="myRoster.startingWR1" src="{{ myRoster.startingWR1.officialImageSrc }}"
+                  class="rounded img-thumbnail w-100"></td>
+              <td class="name-col">{{myRoster.startingWR1.firstName + ' ' + myRoster.startingWR1.lastName}}</td>
+            </tr>
+            <tr>
+              <td class="pos-col">WR2</td>
+              <td class="pic-col"><img *ngIf="myRoster.startingWR2" src="{{ myRoster.startingWR2.officialImageSrc }}"
+                  class="rounded img-thumbnail w-100"></td>
+              <td class="name-col">{{myRoster.startingWR2.firstName + ' ' + myRoster.startingWR2.lastName}}</td>
+            </tr>
+            <tr>
+              <td class="pos-col">TE</td>
+              <td class="pic-col"><img *ngIf="myRoster.startingTE" src="{{ myRoster.startingTE.officialImageSrc }}"
+                  class="rounded img-thumbnail w-100"></td>
+              <td class="name-col">{{myRoster.startingTE.firstName + ' ' + myRoster.startingTE.lastName}}</td>
+            </tr>
+            <tr>
+              <td class="pos-col">K</td>
+              <td class="pic-col"><img *ngIf="myRoster.startingK" src="{{ myRoster.startingK.officialImageSrc }}"
+                  class="rounded img-thumbnail w-100"></td>
+              <td class="name-col">{{myRoster.startingK.firstName + ' ' + myRoster.startingK.lastName}}</td>
+            </tr>
+            <tr>
+              <td class="pos-col">DST</td>
+              <td class="pic-col"><img *ngIf="myRoster.startingDST" src="{{ myRoster.startingDST.officialImageSrc }}"
+                  class="rounded img-thumbnail w-100"></td>
+              <td class="name-col">{{myRoster.startingDST.firstName + ' ' + myRoster.startingDST.lastName}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <ul *ngIf="myRoster">
+          <li *ngFor="let player of myRoster.reserves; i as index">{{ player.fullName }}</li>
+        </ul>
+      </div>
+      <div class="col-md">
+        <h3>Their Team</h3>
+        <table class="roster">
+            <tbody>
+              <tr>
+                <td class="pos-col">QB</td>
+                <td class="pic-col"><img *ngIf="theirRoster.startingQB" src="{{ theirRoster.startingQB.officialImageSrc }}"
+                    class="rounded img-thumbnail w-100"></td>
+                <td class="name-col">{{theirRoster.startingQB.firstName + ' ' + theirRoster.startingQB.lastName}}</td>
+                <td>{{scoreboard.theirQBScore}}</td>
+              </tr>
+              <tr>
+                <td class="pos-col">RB1</td>
+                <td class="pic-col"><img *ngIf="theirRoster.startingRB1" src="{{ theirRoster.startingRB1.officialImageSrc }}"
+                    class="rounded img-thumbnail w-100"></td>
+                <td class="name-col">{{theirRoster.startingRB1.firstName + ' ' + theirRoster.startingRB1.lastName}}</td>
+                <td>TEST</td>
+              </tr>
+              <tr>
+                <td class="pos-col">RB2</td>
+                <td class="pic-col"><img *ngIf="theirRoster.startingRB2" src="{{ theirRoster.startingRB2.officialImageSrc }}"
+                    class="rounded img-thumbnail w-100"></td>
+                <td class="name-col">{{theirRoster.startingRB2.firstName + ' ' + theirRoster.startingRB2.lastName}}</td>
+              </tr>
+              <tr>
+                <td class="pos-col">WR1</td>
+                <td class="pic-col"><img *ngIf="theirRoster.startingWR1" src="{{ theirRoster.startingWR1.officialImageSrc }}"
+                    class="rounded img-thumbnail w-100"></td>
+                <td class="name-col">{{theirRoster.startingWR1.firstName + ' ' + theirRoster.startingWR1.lastName}}</td>
+              </tr>
+              <tr>
+                <td class="pos-col">WR2</td>
+                <td class="pic-col"><img *ngIf="theirRoster.startingWR2" src="{{ theirRoster.startingWR2.officialImageSrc }}"
+                    class="rounded img-thumbnail w-100"></td>
+                <td class="name-col">{{theirRoster.startingWR2.firstName + ' ' + theirRoster.startingWR2.lastName}}</td>
+              </tr>
+              <tr>
+                <td class="pos-col">TE</td>
+                <td class="pic-col"><img *ngIf="theirRoster.startingTE" src="{{ theirRoster.startingTE.officialImageSrc }}"
+                    class="rounded img-thumbnail w-100"></td>
+                <td class="name-col">{{theirRoster.startingTE.firstName + ' ' + theirRoster.startingTE.lastName}}</td>
+              </tr>
+              <tr>
+                <td class="pos-col">K</td>
+                <td class="pic-col"><img *ngIf="theirRoster.startingK" src="{{ theirRoster.startingK.officialImageSrc }}"
+                    class="rounded img-thumbnail w-100"></td>
+                <td class="name-col">{{theirRoster.startingK.firstName + ' ' + theirRoster.startingK.lastName}}</td>
+              </tr>
+              <tr>
+                <td class="pos-col">DST</td>
+                <td class="pic-col"><img *ngIf="theirRoster.startingDST" src="{{ theirRoster.startingDST.officialImageSrc }}"
+                    class="rounded img-thumbnail w-100"></td>
+                <td class="name-col">{{theirRoster.startingDST.firstName + ' ' + theirRoster.startingDST.lastName}}</td>
+              </tr>
+            </tbody>
+          </table>
+        <!-- <ul>
+          <li *ngFor="let player of theirTeam; i as index">{{ player.fullName }}</li>
+        </ul> -->
+      </div>
+    </div>
+  </div>
   <div class="row mt-2">
     <div class="col-12">
       <button (click)="deleteSeasonStats()" class="btn">Delete Season Stats</button>
