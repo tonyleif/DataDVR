@@ -38,7 +38,7 @@ export class RegularSeasonActivePlayers2017Service {
     const headers = new Headers();
     this.createAuthorizationHeader(headers); // &position=qb,rb,fb,wr,te,k,p
     return this.http
-      .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/latest/active_players.json?position=qb,rb,fb,wr,te', { headers: headers })
+      .get('https://api.mysportsfeeds.com/v1.2/pull/nfl/latest/active_players.json?position=qb,rb,fb,wr,te,k', { headers: headers })
       .map((res: Response) => {
         const playerArray: Player[] = new Array<Player>();
         const allPlayers: Array<string> = res.json().activeplayers.playerentry;

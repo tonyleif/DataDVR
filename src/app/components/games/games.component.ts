@@ -123,12 +123,6 @@ export class GamesComponent implements OnInit {
     }
   }
 
-  // loadPlayers() {
-  // if (!localStorage.getItem('activeplayers')) {
-  //   this.activePlayersService.getActivePlayersFromAPI().subscribe(result => result);
-  // }
-  // }
-
   get doneLoadingSchedule(): boolean {
     return (localStorage.getItem('fullgameschedule') !== null);
   }

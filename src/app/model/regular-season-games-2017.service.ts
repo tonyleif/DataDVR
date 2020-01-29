@@ -37,15 +37,18 @@ export class RegularSeasonGames2017Service {
   }
 
   getGamesByWeek(week: number): Array<any> {
+    // console.log('getGamesByWeek');
     const jsonObject: any = JSON.parse(localStorage.getItem('fullgameschedule')); // JSON.parse(this.getGamesJSON());
+    // console.log(jsonObject);
     const allGames: Array<string> = jsonObject.fullgameschedule.gameentry;
     const games: Game[] = new Array<Game>();
     allGames.forEach(game => {
       // console.log(game);
       const gameObject: Game = new Game(game);
-      // console.log(gameObject.week);
+      // console.log(gameObject.week + '===' + week + ': ' + (gameObject.week == week));
       // console.log(gameObject.watched);
-      if (gameObject.week === week) {
+      if (gameObject.week == week) {
+        // console.log('pushing');
         games.push(gameObject);
       }
     });
