@@ -50,7 +50,7 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     RouterModule.forRoot(appRoutes),
     NgbModule // ,
-    // TypeaheadModule // ,
+    // NgbdTypeaheadBasic ,
     // HttpClientModule,
   ], // NgbModule, CommonModule -- HttpClientModule, NgbModule
   bootstrap: [AppComponent]
